@@ -1,2 +1,2 @@
-# bpd-stopwatch-app
-Stopwatch web application
+# Stopwatch
+Web app that helps peapole to perform training.

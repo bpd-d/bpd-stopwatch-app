@@ -1,0 +1,32 @@
+$prefix : 'cui' !default;
+
+@use "../../node_modules/cui-styles/styles/variables"as variables with($prefix: $prefix);
+@use "../../node_modules/cui-styles/styles/root"as root with($prefix          : $prefix);
+@use '../../node_modules/cui-styles/styles/core/head'as head;
+@use '../../node_modules/cui-styles/styles/core/body'as body;
+@use '../../node_modules/cui-styles/styles/dark'as dark;
+@use '../../node_modules/cui-styles/styles/components/print'as print;
+@use '../../node_modules/cui-styles/styles/commons'as commons;
+@use '../../node_modules/cui-styles/styles/base'as base;
+@use '../../node_modules/cui-styles/styles/components'as components;
+@use "../../node_modules/cui-styles/styles/mixins"as mixins;
+
+:root {
+    @include root.variables;
+}
+
+html {
+    @include head.html;
+}
+
+
+body {
+    @include body.main-body;
+}
+
+// Commons
+@include commons.definitions;
+@include base.definitions;
+@include components.definitions;
+@include dark.definitions;
+@include print.definitions;
