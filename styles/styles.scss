@@ -1,15 +1,16 @@
-$prefix : 'cui' !default;
+$prefix       : 'cui' !default;
+$navbar-height: 60px;
 
-@use "../../node_modules/cui-styles/styles/variables"as variables with($prefix: $prefix);
-@use "../../node_modules/cui-styles/styles/root"as root with($prefix          : $prefix);
-@use '../../node_modules/cui-styles/styles/core/head'as head;
-@use '../../node_modules/cui-styles/styles/core/body'as body;
-@use '../../node_modules/cui-styles/styles/dark'as dark;
-@use '../../node_modules/cui-styles/styles/components/print'as print;
-@use '../../node_modules/cui-styles/styles/commons'as commons;
-@use '../../node_modules/cui-styles/styles/base'as base;
-@use '../../node_modules/cui-styles/styles/components'as components;
-@use "../../node_modules/cui-styles/styles/mixins"as mixins;
+@use "../node_modules/cui-styles/styles/variables"as variables with($prefix: $prefix);
+@use "../node_modules/cui-styles/styles/root"as root with($prefix          : $prefix);
+@use '../node_modules/cui-styles/styles/core/head'as head;
+@use '../node_modules/cui-styles/styles/core/body'as body;
+@use '../node_modules/cui-styles/styles/dark'as dark;
+@use '../node_modules/cui-styles/styles/components/print'as print;
+@use '../node_modules/cui-styles/styles/commons'as commons;
+@use '../node_modules/cui-styles/styles/base'as base;
+@use '../node_modules/cui-styles/styles/components'as components;
+@use "../node_modules/cui-styles/styles/mixins"as mixins;
 
 :root {
     @include root.variables;
@@ -17,11 +18,65 @@ $prefix : 'cui' !default;
 
 html {
     @include head.html;
+    height: 100%;
 }
 
 
 body {
     @include body.main-body;
+    height: 100%;
+}
+
+#root {
+    height: 100vh;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.stopwatch-layout-navigation {
+    height: $navbar-height;
+
+}
+
+.stopwatch-layout-main {
+    height: 100vh;
+
+    .stopwatch-layout-content {
+        height: calc(100vh - #{$navbar-height});
+    }
+}
+
+.stopwatch-page-layout {
+    height  : 100%;
+    overflow: hidden;
+
+    &.cui-accent {
+        background-color: variables.$component-background-accent;
+    }
+
+    .stopwatch-page-top {
+        height: 50%;
+    }
+
+    .stopwatch-page-bottom {
+        height                 : 50%;
+        border-top-right-radius: 12px;
+        border-top-left-radius : 12px;
+        background-color       : variables.$component-background-default;
+        transition             : transform 300ms ease-in;
+
+        &.cui-active {
+            transform      : translateY(-200px);
+            //   box-shadow: variables.$shadow2;
+        }
+    }
+}
+
+.stopwatch-content-width {
+    width : 1200px;
+    margin: 0 auto;
 }
 
 // Commons

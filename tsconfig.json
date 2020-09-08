@@ -5,7 +5,7 @@
         "sourceMap": true,
         "module": "esnext",
         "target": "esnext",
-        "jsx": "react",
+        "jsx": "preserve",
         "allowJs": true,
         "experimentalDecorators": true,
         "declaration": true

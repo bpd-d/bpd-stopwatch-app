@@ -20,7 +20,7 @@ module.exports = merge(common, {
     plugins: [
         new CopyPlugin({
             patterns: [
-                { from: path.resolve(__dirname, 'assets'), to: `${path.resolve(__dirname, 'dist')}/assets` },
+                { from: path.resolve(__dirname, 'static'), to: `${path.resolve(__dirname, 'dist')}/static` },
                 { from: "netlify.toml", to: `${path.resolve(__dirname, 'dist')}` },
             ],
         }),

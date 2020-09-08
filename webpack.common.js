@@ -41,14 +41,13 @@ module.exports = {
         noInfo: false
     },
     entry: {
-        index: './src/index.tsx',
-        //styles: './src/styles.ts',
+        index: './src/index.tsx'
     },
     module: {
         rules: [
             {
                 test: /\.tsx?$/,
-                use: 'ts-loader',
+                use: 'babel-loader',
                 exclude: /node_modules/,
             },
             {
@@ -73,6 +72,7 @@ module.exports = {
         ]
     },
     resolve: {
+
         extensions: ['.tsx', '.ts', '.js'],
     },
     output: {
