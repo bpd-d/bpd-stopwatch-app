@@ -75,8 +75,25 @@ body {
 }
 
 .stopwatch-content-width {
-    width : 1200px;
+    width : 100%;
     margin: 0 auto;
+}
+
+.actions-add-new-button {
+    height: 100px;
+}
+
+@include mixins.media-screen-min-large {
+    .stopwatch-content-width {
+        width: 1000px !important;
+    }
+
+}
+
+@include mixins.media-screen-min-xlarge {
+    .stopwatch-content-width {
+        width: 1200px !important;
+    }
 }
 
 // Commons

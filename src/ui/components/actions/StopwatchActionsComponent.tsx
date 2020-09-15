@@ -1,9 +1,10 @@
 import * as React from 'react'
 import { StopwatchAction, StopwatchActionType } from '../../../core/models';
 import { DefaultActions } from '../../../core/statics';
-import { BpdDialog } from '../common/dialog';
+import { BpdDialog } from '../common/BpdDialog';
 import { validateStopwatchAction } from '../../../core/helpers';
 import { ACTIONS_FLOW_ACTIONS } from '../../../app/flow/actions';
+import { BpdActionIcon } from '../common/BpdActionIcon';
 
 export interface BpdDialogState {
     action: StopwatchAction;
@@ -34,7 +35,13 @@ export function StopwatchActionsComponent() {
     }
 
     function onDelete(action: StopwatchAction) {
-        window.$actionsFlow.perform(ACTIONS_FLOW_ACTIONS.REMOVE_ACTION, action);
+        window.$cui.alert("delete-action-dialog", "YesNoCancel", {
+            title: "Delete action",
+            message: "Do you really want to delete action: " + action.name,
+            onYes: () => {
+                window.$actionsFlow.perform(ACTIONS_FLOW_ACTIONS.REMOVE_ACTION, action);
+            }
+        })
     }
 
     function onGetAll(actions: StopwatchAction[]) {
@@ -44,14 +51,20 @@ export function StopwatchActionsComponent() {
         })
     }
 
-    function onSetOrRemove(flag: boolean) {
+    function onAddOrEditClick(action?: StopwatchAction) {
+        setState({
+            ...state,
+            current: action
+        })
+        let dialogCui = window.$cui.get("#add-action-dialog");
+        dialogCui.emit('open');
 
     }
 
     React.useEffect(() => {
         const getAllSub = window.$actionsFlow.subscribe(ACTIONS_FLOW_ACTIONS.GET_ALL, { finish: onGetAll })
-        const setActionSub = window.$actionsFlow.subscribe(ACTIONS_FLOW_ACTIONS.SET_ACTION, { finish: onSetOrRemove })
-        const removeActionSub = window.$actionsFlow.subscribe(ACTIONS_FLOW_ACTIONS.REMOVE_ACTION, { finish: onSetOrRemove })
+        const setActionSub = window.$actionsFlow.subscribe(ACTIONS_FLOW_ACTIONS.SET_ACTION)
+        const removeActionSub = window.$actionsFlow.subscribe(ACTIONS_FLOW_ACTIONS.REMOVE_ACTION)
         window.$actionsFlow.perform(ACTIONS_FLOW_ACTIONS.GET_ALL);
         return () => {
             window.$actionsFlow.unsubscribe(ACTIONS_FLOW_ACTIONS.GET_ALL, getAllSub.id);
@@ -61,35 +74,45 @@ export function StopwatchActionsComponent() {
     }, [state.actions])
 
     return (<><div className="cui-container stopwatch-content-width">
-        <div>
-            <button className="cui-button cui-accent" cui-open="target: #add-action-dialog">Add new</button>
+        <div className="stopwatch-page-top cui-container cui-center">
+            <div>
+                <h1 className="cui-h1 cui-text-center">Activities</h1>
+                <p className="cui-text-center">Define activies which you want to perform in trainings!</p>
+            </div>
         </div>
-        <table className="cui-table">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Type</th>
-                    <th>Duration</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                {state.actions && state.actions.map((action: StopwatchAction, index: number) => {
-                    return (<tr key={index}>
-                        <td>{action.name}</td>
-                        <td>{action.type}</td>
-                        <td>{action.duration}</td>
-                        <td className="cui-flex cui-right">
-                            <ul className="cui-icon-nav">
-                                {action.editable && <li><a href="#" className="cui-icon" cui-icon="edit"></a></li>}
-                                {action.removable && <li><a href="#" className="cui-icon" cui-icon="trash" onClick={() => onDelete(action)}></a></li>}
-                            </ul>
-                        </td>
-                    </tr>)
-                })}
-            </tbody>
-        </table>
+        <div className="cui-margin-top cui-flex-grid cui-flex-grid-match cui-child-width-1-1-s cui-child-width-1-3--m" cui-item-height="130px">
+            {state.actions && state.actions.map((action: StopwatchAction, index: number) => {
+                return (
+                    <div key={index}>
+                        <div className="cui-card cui-default">
+                            <div className="cui-card-header cui-flex cui-between">
+                                <span className="cui-card-title">{action.name}</span>
+                                <BpdActionIcon type={action.type} />
+                            </div>
+                            <div className="cui-card-body">
+                                <div className="cui-flex cui-middle">
+                                    <div className="cui-flex-grow">
+                                        <div>Duration: <span>{action.duration} seconds</span></div>
+                                    </div>
+                                    <div className="cui-flex-shrink">
+                                        <ul className="cui-icon-nav">
+                                            {action.editable && <li><a className="cui-icon" cui-icon="edit" onClick={() => onAddOrEditClick(action)}></a></li>}
+                                            {action.removable && <li><a className="cui-icon" cui-icon="trash" onClick={() => onDelete(action)}></a></li>}
+                                        </ul>
+                                    </div>
+                                </div>
 
+                            </div>
+                        </div>
+                    </div>)
+            })}
+            <div className="actions-add-new-button">
+                <div className="cui-flex-center cui-card">
+                    <button className="cui-icon cui-button" cui-icon="plus" onClick={() => { onAddOrEditClick() }}><span className="cui-margin-small-left"> Add new</span></button>
+                </div>
+
+            </div>
+        </div>
     </div>
         <AddActionDialog action={state.current} onSave={onDialogSave} /></>);
 }
@@ -98,7 +121,7 @@ export function StopwatchActionsComponent() {
 export function AddActionDialog(props: AddActionDialogProps) {
     const [state, setState] = React.useState<StopwatchAction>({
         name: "",
-        duration: 0,
+        duration: 5,
         removable: true,
         editable: false,
         type: StopwatchActionType.EXERCISE
@@ -123,18 +146,22 @@ export function AddActionDialog(props: AddActionDialogProps) {
 
     function onSave() {
         if (props.onSave) {
-            let dialogCui = window.$cui.get("#add-action-dialog")
+            let dialogCui = window.$cui.get("#add-action-dialog");
             props.onSave({ ...state });
             dialogCui.emit('close');
         }
     }
 
     React.useEffect(() => {
-
+        if (props.action) {
+            setState({
+                ...props.action
+            })
+        }
         return () => {
 
         }
-    })
+    }, [props.action])
     return (<BpdDialog
         title="Add new"
         id="add-action-dialog"

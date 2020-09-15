@@ -6,7 +6,9 @@ import { ErrorRoute } from "./error";
 import { Navbar } from "./components/navbar/navbar";
 import { OffCanvas } from "./components/offacanvas/offcanvas";
 import { Edit } from "./components/edit/edit";
-import { StopwatchActionsComponent } from "./components/actions/actions";
+import { StopwatchActionsComponent } from "./components/actions/StopwatchActionsComponent";
+import EditTraining from "./components/trainings/EditTraining";
+import { PerfromTraining } from "./components/perform/PerformTraining";
 
 export interface AppProps {
 }
@@ -33,7 +35,9 @@ export class App extends React.Component<AppProps, AppState> {
                 <Navbar />
                 <div className="stopwatch-layout-content">
                     <Switch>
-                        <Route path="/trainings/edit/:id" component={Edit}></Route>
+                        <Route path="/trainings/perform/:id" component={PerfromTraining}></Route>
+                        <Route path="/trainings/edit/new" component={EditTraining}></Route>
+                        <Route path="/trainings/edit/:id" component={EditTraining}></Route>
                         <Route path="/actions" component={StopwatchActionsComponent}></Route>
                         <Route path="/" component={Home}></Route>
                         <Route>

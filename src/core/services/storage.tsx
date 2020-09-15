@@ -2,6 +2,7 @@ import { ITrainingsService, IActionsService } from "./interfaces";
 import { Training, StopwatchAction } from "../models";
 import { BpdStorage } from "../../../node_modules/bpd-storage/dist/index";
 import { validateStopwatchAction } from "../helpers";
+import { TaskedEventEmitHandler } from "../../../node_modules/cui-light/dist/index";
 
 export class TrainingsStorageService implements ITrainingsService {
     #storage: BpdStorage;
@@ -41,15 +42,19 @@ export class TrainingsStorageService implements ITrainingsService {
 
     updateTraining(training: Training): boolean {
         let result = false;
-        if (this.validate(training) && training.id) {
-            this.onAction((t: Training[]) => {
-                let idx = t.findIndex(item => item.id === training.id);
-                if (idx > -1) {
-                    t[idx] = training;
-                    result = true;
-                }
-                return result;
-            })
+        if (this.validate(training)) {
+            if (!training.id || training.id < 0) {
+                result = this.addTraining(training)
+            } else {
+                this.onAction((t: Training[]) => {
+                    let idx = t.findIndex(item => item.id === training.id);
+                    if (idx > -1) {
+                        t[idx] = training;
+                        result = true;
+                    }
+                    return result;
+                })
+            }
         }
         return result;
     }

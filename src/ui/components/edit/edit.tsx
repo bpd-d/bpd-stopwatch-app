@@ -1,6 +1,7 @@
 import * as React from 'react'
 import { useParams } from 'react-router-dom';
 import { Training } from '../../../core/models';
+import { NotFound } from '../common/NotFound';
 import { RoundsList } from './list';
 
 export interface EditState {
@@ -32,7 +33,7 @@ export function Edit() {
     }
     return (<div className="stopwatch-page-layout cui-accent">
         {
-            state.training ? <TrainingDetails training={state.training} /> : <NotFound />
+            state.training ? <TrainingDetails training={state.training} /> : <NotFound message="Training has not been found" classes="stopwatch-page-top cui-flex-center cui-dark" />
         }
 
     </div>);
@@ -56,8 +57,8 @@ export function TrainingDetails(props: TrainingDetailsProps) {
 }
 
 
-export function NotFound() {
-    return (<div className="stopwatch-page-top cui-flex-center cui-dark">
-        <h2 className="cui-h2">Training has not been found</h2>
-    </div>);
-}
+// export function NotFound() {
+//     return (<div className="stopwatch-page-top cui-flex-center cui-dark">
+//         <h2 className="cui-h2">Training has not been found</h2>
+//     </div>);
+// }

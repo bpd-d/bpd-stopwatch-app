@@ -46,7 +46,7 @@ export class Home extends React.Component<any, HomeState> {
             <div className="stopwatch-page-top cui-container cui-center">
                 <div>
                     <span className="cui-icon cui-dark" cui-icon="stopwatch"></span>
-                    <h1 className="cui-h1 cui-text-center cui-dark">Stopwatch</h1>
+                    <h1 className="cui-h1 cui-text-center cui-text-dark">Stopwatch</h1>
                 </div>
             </div>
             <div className="stopwatch-page-bottom cui-card cui-overflow-y-auto stopwatch-content-width" cui-offset="offsetY: 100; action: .cui-active">
@@ -58,7 +58,7 @@ export class Home extends React.Component<any, HomeState> {
                 </div>
             </div>
             <div className="cui-position-float cui-position-bottom cui-position-right cui-margin">
-                <button className="cui-icon-button cui-default" cui-icon="plus"></button>
+                <Link to="/trainings/edit/new" className="cui-icon-button cui-default" cui-icon="plus"></Link>
             </div>
         </div>;
     }

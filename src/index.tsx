@@ -39,8 +39,8 @@ let actionsFlow = new ActionsFlow(actionsService);
 
 window.$flow = FlowFactory.create<TrainingsFlowInput, TrainingsFlowOutput>(traningsFlow.getActions());
 window.$actionsFlow = FlowFactory.create<ActionsFlowInput, ActionsFlowOutput>(actionsFlow.getActions());
-ReactDOM.render(<App />, rootElement);
+
 window.cuiInit.init(cuiSetup).then((result) => {
-    console.log(result)
+    ReactDOM.render(<App />, rootElement);
 });
 

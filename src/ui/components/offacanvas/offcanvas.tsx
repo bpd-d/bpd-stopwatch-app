@@ -1,6 +1,6 @@
 import * as React from "react";
 import { ElementManager } from "../../../../node_modules/cui-light/dist/index";
-import { NavbarLink } from "../common/link";
+import { NavbarLink } from "../common/NavbarLink";
 
 export interface OffCanvasProps {
 }

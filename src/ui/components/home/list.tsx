@@ -43,8 +43,9 @@ export function TrainingListItem(props: TrainingListItemProps) {
         </div>
         <div className="cui-flex-shrink cui-flex-center">
             <ul className="cui-icon-nav">
-                <li><Link to={`/trainings/edit/${props.data.id}`} href="#" className="cui-icon" cui-icon="edit"></Link></li>
-                <li><a onClick={onDelete} href="#" className="cui-icon" cui-icon="trash"></a></li>
+                <li><Link to={`/trainings/perform/${props.data.id}`} className="cui-icon cui-accent cui-tooltip" cui-icon="media_play" data-tooltip="Start training"></Link></li>
+                <li><Link to={`/trainings/edit/${props.data.id}`} className="cui-icon" cui-icon="edit"></Link></li>
+                <li><a onClick={onDelete} className="cui-icon" cui-icon="trash"></a></li>
             </ul>
         </div>
     </div>

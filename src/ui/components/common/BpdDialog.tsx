@@ -8,11 +8,13 @@ export interface BpdDialogProps {
 }
 
 export function BpdDialog(props: BpdDialogProps) {
+    React.useEffect(() => {
+    }, [props])
     return (<div className="cui-dialog" cui-dialog="escClose: Y" id={props.id}>
         <div className="cui-dialog-container">
             <div className="cui-dialog-header">
                 <span className="cui-dialog-title">{props.title}</span>
-                <a href="#" className="cui-icon" cui-icon="close" cui-close=""></a>
+                <a className="cui-icon" cui-icon="close" cui-close=""></a>
             </div>
             <div className="cui-dialog-body">
                 {props.body}

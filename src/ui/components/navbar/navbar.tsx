@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { NavbarLink } from "../common/link";
+import { NavbarLink } from "../common/NavbarLink";
 
 export interface NavbarState {
     currentSite: string;
@@ -23,8 +23,7 @@ export function Navbar(props: NavbarProps) {
     return <nav className={"cui-navbar cui-transparent cui-sticky stopwatch-layout-navigation"}>
         <div className="cui-navbar-left cui-width-1-1 cui-width-auto--m cui-flex cui-middle cui-between" id="navbar-left">
             <ul>
-                {state.currentSite && <li><Link className="" to="/">Home</Link></li>}
-                <li><span>{state.currentSite}</span></li>
+                {state.currentSite && <li><Link className="cui-icon" to="/" cui-icon="stopwatch_small"></Link></li>}
             </ul>
             <a className="cui-icon cui-padding cui-button cui-hidden--m" cui-icon="menu" cui-open="target: #app-offcanvas"></a>
         </div>

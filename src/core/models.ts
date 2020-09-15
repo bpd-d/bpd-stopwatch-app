@@ -21,6 +21,7 @@ export interface Round {
 
 export interface Training {
     name: string;
+    description?: string;
     id?: number;
     rounds: Round[];
 }
