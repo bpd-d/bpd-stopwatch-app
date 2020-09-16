@@ -27,4 +27,9 @@ export const DefaultActions: StopwatchAction[] = [{
     type: StopwatchActionType.WARMUP,
     removable: false,
     editable: false
-}]
+    }]
+
+export const ERROR_CODES = { 
+    "0000": "OK",
+    "0010": "Training name is missing"
+}

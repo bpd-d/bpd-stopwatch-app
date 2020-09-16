@@ -43,9 +43,11 @@ body {
 .stopwatch-layout-main {
     height: 100vh;
 
-    .stopwatch-layout-content {
-        height: calc(100vh - #{$navbar-height});
-    }
+
+}
+
+.stopwatch-layout-content {
+    height: calc(100vh - #{$navbar-height});
 }
 
 .stopwatch-page-layout {
