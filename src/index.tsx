@@ -8,6 +8,8 @@ import { Flow, FlowFactory } from '../node_modules/bpd-flow/dist/index';
 import { TrainingsStorageService, ActionStorageService } from './core/services/storage';
 import { TrainingsFlow, TrainingsFlowInput, TrainingsFlowOutput } from "./app/flow/trainings";
 import { ActionsFlowInput, ActionsFlowOutput, ActionsFlow } from "./app/flow/actions";
+import { StopWatch } from "./api/stopwatch/stopwatch";
+import { TestApi } from "./api/test/test";
 
 
 declare global {
@@ -16,6 +18,8 @@ declare global {
         $cui: CuiInstance;
         $flow: Flow<any, any>;
         $actionsFlow: Flow<ActionsFlowInput, ActionsFlowOutput>;
+        $stopwatch: StopWatch;
+        $testApi: TestApi;
     }
 }
 
@@ -39,6 +43,9 @@ let actionsFlow = new ActionsFlow(actionsService);
 
 window.$flow = FlowFactory.create<TrainingsFlowInput, TrainingsFlowOutput>(traningsFlow.getActions());
 window.$actionsFlow = FlowFactory.create<ActionsFlowInput, ActionsFlowOutput>(actionsFlow.getActions());
+window.$stopwatch = new StopWatch();
+
+window.$testApi = new TestApi();
 
 window.cuiInit.init(cuiSetup).then((result) => {
     ReactDOM.render(<App />, rootElement);

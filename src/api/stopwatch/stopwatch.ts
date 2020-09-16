@@ -6,6 +6,10 @@ export const StopWatchStateOptions: any = {
 
 export type StopWatchState = "RUNNING" | 'PAUSED' | "STOPPED";
 
+export interface StopwatchCallback {
+    (current: number, stopWatch: StopWatch): boolean;
+}
+
 export interface IStopWatch {
     start(): boolean;
     stop(): boolean;
@@ -15,7 +19,7 @@ export interface IStopWatch {
 }
 
 export class StopWatch implements IStopWatch {
-    callback: (current: number, stopWatch: StopWatch) => boolean;
+    #callback: StopwatchCallback;
     current: number;
     #isReset: boolean;
     #state: StopWatchState;
@@ -25,14 +29,14 @@ export class StopWatch implements IStopWatch {
         this.#state = StopWatchStateOptions.STOPPED;
     }
 
-    onTick(callback: (current: number, stopWatch: StopWatch) => boolean) {
-        this.callback = callback;
+    onTick(callback: StopwatchCallback) {
+        this.#callback = callback;
     }
 
     tick() {
         setTimeout(() => {
             try {
-                if (this.#state === StopWatchStateOptions.RUNNING && this.callback(this.current, this)) {
+                if (this.#state === StopWatchStateOptions.RUNNING && this.#callback(this.current, this)) {
                     console.log("tick");
                     if (this.#isReset) {
                         this.current = 0;
@@ -51,6 +55,28 @@ export class StopWatch implements IStopWatch {
                 this.stop();
             }
         }, 1000)
+    }
+
+    tickCallback() {
+        try {
+            if (this.#state === StopWatchStateOptions.RUNNING && this.#callback(this.current, this)) {
+                console.log("tick");
+                if (this.#isReset) {
+                    this.current = 0;
+                    this.#isReset = false;
+                } else {
+                    this.current += 1;
+                }
+
+                //  this.tick();
+            } else if (this.#state !== StopWatchStateOptions.PAUSED) {
+                this.stop();
+            }
+        } catch (e) {
+            console.error("An error occured on stopwatch tick")
+            console.error(e)
+            this.stop();
+        }
     }
 
     reset() {
