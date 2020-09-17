@@ -5,6 +5,7 @@ import { ACTIONS_FLOW_ACTIONS } from '../../../app/flow/actions';
 import { showMessage, validateTraining } from '../../../core/helpers';
 import { Round, StopwatchAction, Training } from '../../../core/models';
 import { DefaultActions } from '../../../core/statics';
+import { RoundValidator, TrainingValidator } from '../../../core/validators';
 import { NotFound } from '../common/NotFound';
 import { EditRoundDialog } from './EditRoundDialog';
 import { EditRoundListItem } from './EditRoundListItem';
@@ -100,7 +101,7 @@ function EditTraining(props: EditTrainingProps) {
 
     return (<>
         <div className="cui-container stopwatch-content-width">
-            <div className="stopwatch-page-top cui-container cui-center">
+            <div className="stopwatch-page-header cui-container cui-center">
                 <div>
                     <h1 className="cui-h1 cui-text-center">Define training</h1>
                     <p className="cui-text-center">Customize your training settings</p>
@@ -152,27 +153,36 @@ function EditTrainingSection(props: EditTrainingSectionProps) {
 
     function onTrainingSave() {
         if (props.onSave) {
-            if (validateTraining(state.training)) {
+            let validaton = new TrainingValidator().validate(state.training);
+            if (validaton.status) {
                 props.onSave(state.training)
             } else {
-                showMessage("Training not valid", "Training name is missing, please fill it up!")
+                showMessage("Training not valid", validaton.errors.join(", "))
             }
 
         }
     }
 
     function onRoundSave(round: Round, index: number) {
+        let validation = new RoundValidator().validate(round);
+        if (validation.status) {
+            updateRoundsState(updateOrInsertRound(round, index));
+            window.$cui.get("#edit-round-dialog").emit("close");
+        } else {
+            alert(validation.errors.join('\n'))
+        }
+
+    }
+
+    function updateOrInsertRound(round: Round, index: number) {
         let rounds = []
         if (index > -1) {
             rounds = [...state.training.rounds];
             rounds[index] = round;
-
         } else {
             rounds = [...state.training.rounds, round];
         }
-
-        updateRoundsState(rounds);
-        window.$cui.get("#edit-round-dialog").emit("close");
+        return rounds;
     }
 
     function updateRoundsState(rounds: Round[]) {
@@ -222,7 +232,7 @@ function EditTrainingSection(props: EditTrainingSectionProps) {
         <div className="cui-container stopwatch-content-width cui-flex-grid cui-child-width-1-1 cui-child-width-1-2--m">
             <div className="cui-padding-small-right">
                 <h3 className="cui-h3 cui-text-muted">Common</h3>
-                <div className="cui-form">
+                <div className="cui-form transition-toggle show-up">
                     <label htmlFor="" className="cui-form-label">Name</label>
                     <input type="text" className="cui-input" placeholder="Name" name="name" value={state.training.name} onChange={onFormChange} />
                 </div>
@@ -235,7 +245,7 @@ function EditTrainingSection(props: EditTrainingSectionProps) {
                 <h3 className="cui-h3 cui-text-muted">Rounds (total count: {state.training.rounds.length})</h3>
                 <ul className="cui-list">
                     {state.training && state.training.rounds.map((round: Round, index: number) => {
-                        return <li key={index}><EditRoundListItem index={index} round={round} onEdit={onRoundEdit} onDelete={onRoundDelete} /></li>
+                        return <li key={index} className="show-up"><EditRoundListItem index={index} round={round} onEdit={onRoundEdit} onDelete={onRoundDelete} /></li>
                     })}
                     <li>
                         <button className="cui-button cui-icon cui-width-1-1" cui-icon="plus" onClick={() => {

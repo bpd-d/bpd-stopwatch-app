@@ -21,7 +21,14 @@ export function TrainingList(props: TrainingListProps) {
 export function TrainingListItem(props: TrainingListItemProps) {
     const deleteTrainingAction = "DELETE_TRAINING"
     function onDelete() {
-        window.$flow.perform(deleteTrainingAction, props.data.id)
+        window.$cui.alert("delete-training-dialog", "YesNoCancel", {
+            title: "Delete training",
+            message: "Do you really want to delete training: " + props.data.name + "?",
+            onYes: () => {
+                window.$flow.perform(deleteTrainingAction, props.data.id)
+            }
+        })
+
     }
 
     React.useEffect(() => {

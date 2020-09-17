@@ -61,7 +61,7 @@ export class TrainingsStorageService implements ITrainingsService {
 
     deleteTraining(id: number): boolean {
         let result = false;
-        if (!id || id < 0) {
+        if (id < 0) {
             return false;
         }
         this.onAction((t: Training[]) => {

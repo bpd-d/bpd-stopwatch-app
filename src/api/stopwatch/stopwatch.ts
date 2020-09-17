@@ -15,6 +15,7 @@ export interface IStopWatch {
     stop(): boolean;
     pause(): boolean;
     resume(): boolean;
+    finish(): void;
     getState(): StopWatchState;
 }
 
@@ -23,10 +24,12 @@ export class StopWatch implements IStopWatch {
     current: number;
     #isReset: boolean;
     #state: StopWatchState;
+    #id: any;
     constructor() {
         this.current = 0;
         this.#isReset = false;
         this.#state = StopWatchStateOptions.STOPPED;
+        this.#id = undefined;
     }
 
     onTick(callback: StopwatchCallback) {
@@ -34,7 +37,7 @@ export class StopWatch implements IStopWatch {
     }
 
     tick() {
-        setTimeout(() => {
+        this.#id = setTimeout(() => {
             try {
                 if (this.#state === StopWatchStateOptions.RUNNING && this.#callback(this.current, this)) {
                     console.log("tick");
@@ -68,7 +71,7 @@ export class StopWatch implements IStopWatch {
                     this.current += 1;
                 }
 
-                //  this.tick();
+                this.tick();
             } else if (this.#state !== StopWatchStateOptions.PAUSED) {
                 this.stop();
             }
@@ -97,6 +100,7 @@ export class StopWatch implements IStopWatch {
     stop(): boolean {
         if (this.#state === StopWatchStateOptions.RUNNING) {
             console.log("Stopping stopwatch")
+            this.finish();
             this.#state = StopWatchStateOptions.STOPPED;
             return true;
         }
@@ -122,6 +126,12 @@ export class StopWatch implements IStopWatch {
         return false;
     }
 
+    finish(): void {
+        if (this.#id) {
+            clearTimeout(this.#id);
+            this.#id = undefined;
+        }
+    }
     getState() {
         return this.#state;
     }

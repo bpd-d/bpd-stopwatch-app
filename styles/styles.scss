@@ -59,11 +59,11 @@ body {
     }
 
     .stopwatch-page-top {
-        height: 50%;
+        height: 50vh;
     }
 
     .stopwatch-page-bottom {
-        height                 : 50%;
+        min-height             : 45vh;
         border-top-right-radius: 12px;
         border-top-left-radius : 12px;
         background-color       : variables.$component-background-default;
@@ -76,6 +76,11 @@ body {
     }
 }
 
+.stopwatch-page-header {
+    height: 40vh;
+
+}
+
 .stopwatch-content-width {
     width : 100%;
     margin: 0 auto;
@@ -85,9 +90,39 @@ body {
     height: 100px;
 }
 
+.stopwatch-warmup {
+    background-color: variables.$component-background-success;
+}
+
+.stopwatch-break {
+    background-color: variables.$component-background-secondary;
+}
+
+.stopwatch-cooldown {
+    background-color: variables.$component-background-shade;
+}
+
+.stopwatch-exercise {
+    background-color: variables.$component-background-accent;
+}
+
+.transition-toggle {
+    opacity: 0;
+}
+
+.show-up {
+    opacity   : 1 !important;
+    transition: opacity 300ms ease-in;
+}
+
 @include mixins.media-screen-min-large {
     .stopwatch-content-width {
         width: 1000px !important;
+    }
+
+    .stopwatch-page-header {
+        height: 20vh;
+
     }
 
 }
@@ -95,6 +130,10 @@ body {
 @include mixins.media-screen-min-xlarge {
     .stopwatch-content-width {
         width: 1200px !important;
+    }
+
+    .stopwatch-page-header {
+        height: 20vh;
     }
 }
 

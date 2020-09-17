@@ -74,7 +74,7 @@ export function StopwatchActionsComponent() {
     }, [state.actions])
 
     return (<><div className="cui-container stopwatch-content-width">
-        <div className="stopwatch-page-top cui-container cui-center">
+        <div className="stopwatch-page-header cui-container cui-center">
             <div>
                 <h1 className="cui-h1 cui-text-center">Activities</h1>
                 <p className="cui-text-center">Define activies which you want to perform in trainings!</p>

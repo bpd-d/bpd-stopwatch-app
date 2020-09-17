@@ -22,7 +22,6 @@ interface PerfromTrainingStateCls {
 
 interface PerfromTrainingState {
     training: Training;
-    //stopWatch: StopWatch;
 }
 
 interface CurrentTrainingState {
@@ -30,223 +29,210 @@ interface CurrentTrainingState {
     roundIdx: number;
     action: StopwatchAction;
     actionIdx: number;
+    class: string;
 }
 
 interface StopwatchState {
     timer: string;
     state: StopWatchState;
+    startBtnCls: string;
+    timerCls: string;
 }
 
-// export class PerfromTraining extends React.Component<any, PerfromTrainingStateCls> {
-//     stopwatch: StopWatch;
-//     subscription: FlowTask<any>;
-//     constructor(props: any) {
-//         super(props);
-//         this.state = {
-//             training: undefined,
-//             action: undefined,
-//             round: undefined,
-//             roundIdx: -1,
-//             actionIdx: -1,
-//             state: StopWatchStateOptions.STOPPED,
-//             timer: "00:00"
-//         }
-
-//         this.onStartClick = this.onStartClick.bind(this);
-//         this.onPauseClick = this.onPauseClick.bind(this);
-//         this.stopwatch = new StopWatch();
-//         this.onStopWatchTick = this.onStopWatchTick.bind(this);
-//     }
-
-//     componentDidMount() {
-//         this.stopwatch.onTick(this.onStopWatchTick)
-//         this.subscription = window.$flow.subscribe("GET_TRAINING", { finish: this.onGetTraining })
-//         window.$flow.perform("GEt")
-//     }
-
-//     componentWillUnmount() {
-//         window.$flow.unsubscribe("GET_TRAINING", this.subscription.id);
-//     }
-
-//     componentDidUpdate() {
-
-//     }
-
-//     onPauseClick() {
-
-//     }
-
-//     onStartClick() {
-//         this.stopwatch.start();
-//     }
-
-//     onStopWatchTick(current: number, stopwatch: StopWatch) {
-//         console.log(current)
-//         return true;
-//     }
-
-//     onGetTraining(training: Training) {
-//         this.setState({
-//             ...this.state,
-//             training: training
-//         })
-//     }
-
-//     render() {
-//         return (<>
-//             {!this.state.training ?
-//                 <NotFound message="We couldn't find training" /> :
-//                 <div className="stopwatch-layout-content cui-flex-center">
-//                     {/* Content */}
-//                     <div className="stopwatch-content-width cui-text-center">
-//                         <h2 className="cui-h2 ">{this.state.training.name}</h2>
-//                         <h1 className="cui-h1">{this.state.timer}</h1>
-//                         <p>Round {this.state.roundIdx + 1} of {this.state.training.rounds.length}</p>
-//                         <h3 className="cui-h3">{this.state.action && this.state.action.name}</h3>
-//                         <div className="cui-flex cui-center">
-//                             {this.state.state !== StopWatchStateOptions.STOPPED && <button className="cui-button cui-default cui-margin-small-right" onClick={this.onPauseClick}>{this.state.state === StopWatchStateOptions.PAUSED ? "Resume" : "Pause"}</button>}
-//                             <button className="cui-button cui-accent" onClick={this.onStartClick}>{this.state.state === StopWatchStateOptions.STOPPED ? "Start" : "Stop"}</button>
-//                         </div>
-//                         <p className="cui-text-muted">{this.state.training.description}</p>
-//                     </div>
-//                 </div>
-//             }
-//         </>)
-//     }
-// }
+const defaultCurrent: CurrentTrainingState = {
+    round: undefined,
+    roundIdx: -1,
+    actionIdx: -1,
+    action: undefined,
+    class: ""
+}
 
 export function PerfromTraining() {
-    const [state, setState] = React.useState<PerfromTrainingStateCls>({
+    const [state, setState] = React.useState<PerfromTrainingState>({
         training: undefined,
-        round: undefined,
-        roundIdx: -1,
-        actionIdx: -1,
-        action: undefined,
-        timer: "00:00",
-        state: StopWatchStateOptions.STOPPED,
-        stopwatch: undefined
     })
 
-    const stopwatch: StopWatch = useStopwatch(onStopwatchTick)
-    // const [current, setCurrent] = React.useState<CurrentTrainingState>({
+    const [stopwatch, setStopwatch] = React.useState<StopWatch>(undefined)
+    const [current, setCurrent] = React.useState<CurrentTrainingState>(defaultCurrent)
 
-    // })
-
-    // const [watchState, setWatchState] = React.useState<StopwatchState>({
-
-    // })
+    const [watchState, setWatchState] = React.useState<StopwatchState>({
+        timer: "00:00",
+        state: StopWatchStateOptions.STOPPED,
+        startBtnCls: getStartBtnCls(StopWatchStateOptions.STOPPED),
+        timerCls: ""
+    })
 
 
     const { id } = useParams();
+
+    const currentRef = React.useRef(current);
+    currentRef.current = current;
+    const trainingRef = React.useRef(state.training);
+    trainingRef.current = state.training;
 
     function onGetTraining(training: Training) {
         if (training) {
             setState({
                 ...state,
                 training: training,
+            })
+            setCurrent({
                 roundIdx: 0,
                 round: training.rounds[0],
                 action: training.rounds[0].actions[0],
                 actionIdx: 0,
+                class: getClassByType(training.rounds[0].actions[0].type)
             })
         }
     }
 
     function setNextAction(): boolean {
-        let nextActionIdx = state.actionIdx;
-        if (state.round.actions.length > nextActionIdx) {
-            setState({
-                ...state,
+        let nextActionIdx = currentRef.current.actionIdx + 1;
+        if (currentRef.current.round.actions.length > nextActionIdx) {
+            let newAction = currentRef.current.round.actions[nextActionIdx]
+            setCurrent({
+                ...currentRef.current,
                 actionIdx: nextActionIdx,
-                action: state.round.actions[nextActionIdx]
+                action: newAction,
+                class: getClassByType(newAction.type)
             })
             return true;
         }
-        let nextRoundIdx = state.roundIdx + 1;
-        if (state.training.rounds.length > nextRoundIdx) {
-            let newRound = state.training.rounds[nextRoundIdx];
-            setState({
-                ...state,
+        let nextRoundIdx = currentRef.current.roundIdx + 1;
+        if (trainingRef.current.rounds.length > nextRoundIdx) {
+            let newRound = trainingRef.current.rounds[nextRoundIdx];
+            let newAction = newRound.actions[0];
+            setCurrent({
                 round: newRound,
                 roundIdx: nextRoundIdx,
                 actionIdx: 0,
-                action: newRound.actions[0]
+                action: newAction,
+                class: getClassByType(newAction.type)
             })
             return true;
         }
+        let newRound = trainingRef.current.rounds[0];
+        let newAction = newRound.actions[0];
+        setCurrent({
+            roundIdx: 0,
+            round: newRound,
+            action: newAction,
+            actionIdx: 0,
+            class: getClassByType(newAction.type)
+        })
         return false;
     }
 
     function onStopwatchTick(currentTime: number, stopwatch: StopWatch): boolean {
-        let ct = state.action.duration - currentTime;
+        let ct = currentRef.current.action.duration - currentTime;
         if (ct > 0) {
-            setState({
-                ...state,
+            setWatchState({
+                //...watchState,
                 state: stopwatch.getState(),
-                timer: calcDisplayTimer(ct)
+                timer: calcDisplayTimer(ct),
+                startBtnCls: getStartBtnCls(StopWatchStateOptions.RUNNING),
+                timerCls: getTimerCls(ct)
             })
             return true;
         } else {
             stopwatch.reset();
-            setState({
-                ...state,
-                timer: "00:00"
+            setWatchState({
+                ...watchState,
+                timer: "00:00",
+                state: StopWatchStateOptions.RUNNING,
+                startBtnCls: getStartBtnCls(StopWatchStateOptions.RUNNING)
             })
-            return setNextAction();
+            if (!setNextAction()) {
+                setStopWatchState(StopWatchStateOptions.STOPPED)
+                return false;
+            }
+            return true;
         }
     }
 
     function onStartClick() {
-        if (state.state === StopWatchStateOptions.STOPPED && stopwatch.start()) {
+        if (watchState.state === StopWatchStateOptions.STOPPED && stopwatch.start()) {
             setStopWatchState(StopWatchStateOptions.RUNNING);
-        } else if (state.state !== StopWatchStateOptions.STOPPED && stopwatch.stop()) {
-            setState({
-                ...state,
+        } else if (watchState.state !== StopWatchStateOptions.STOPPED && stopwatch.stop()) {
+            setWatchState({
+                ...watchState,
                 state: StopWatchStateOptions.STOPPED,
-                timer: calcDisplayTimer(0)
+                timer: calcDisplayTimer(0),
+                startBtnCls: getStartBtnCls(StopWatchStateOptions.STOPPED),
+                timerCls: ""
             })
         }
     }
 
     function onPauseClick() {
-        if (state.state === StopWatchStateOptions.RUNNING && stopwatch.pause()) {
+        if (watchState.state === StopWatchStateOptions.RUNNING && stopwatch.pause()) {
             setStopWatchState(StopWatchStateOptions.PAUSED);
-        } else if (state.state === StopWatchStateOptions.PAUSED && stopwatch && stopwatch.resume()) {
+        } else if (watchState.state === StopWatchStateOptions.PAUSED && stopwatch && stopwatch.resume()) {
             setStopWatchState(StopWatchStateOptions.RUNNING);
         }
     }
 
     function setStopWatchState(watchstate: StopWatchState) {
-        setState({
-            ...state,
-            state: watchstate
+        setWatchState({
+            ...watchState,
+            state: watchstate,
+            startBtnCls: getStartBtnCls(watchstate)
         })
+    }
+
+    function getClassByType(type: string) {
+        switch (type) {
+            case 'warmup':
+                return "cui-text-success";
+            case 'break':
+                return "scui-text-error";
+            case 'exercise':
+                return "cui-text-accent";
+            case 'cooldown':
+                return "cui-text-secondar";
+            default:
+                return "";
+        }
+    }
+
+    function getTimerCls(timer: number): string {
+        return timer > 0 && timer <= 3 ? "cui-text-warning cui-animation-blink" : "";
+    }
+
+    function getStartBtnCls(state: StopWatchState) {
+        console.log(state)
+        return state !== StopWatchStateOptions.STOPPED ? "cui-error" : "cui-accent";
     }
 
     React.useEffect(() => {
         const getTrainingSubscription = window.$flow.subscribe("GET_TRAINING", { finish: onGetTraining })
-
+        let stop = new StopWatch();
+        stop.onTick(onStopwatchTick);
+        setStopwatch(stop);
         if (id > -1) {
             window.$flow.perform("GET_TRAINING", id)
 
         }
         return () => {
             window.$flow.unsubscribe("GET_TRAINING", getTrainingSubscription.id)
+            if (stopwatch)
+                stopwatch.finish();
         }
     }, [id])
     return (<>
         {!state.training ?
             <NotFound message="We couldn't find training" /> :
-            <div className="stopwatch-layout-content cui-flex-center">
-                {/* Content */}
+            <div className="stopwatch-layout-content cui-flex-center ">
                 <div className="stopwatch-content-width cui-text-center">
                     <h2 className="cui-h2 ">{state.training.name}</h2>
-                    <h1 className="cui-h1">{state.timer}</h1>
-                    <p>Round {state.roundIdx + 1} of {state.training.rounds.length}</p>
-                    <h3 className="cui-h3">{state.action && state.action.name}</h3>
+                    <p>Round {current.roundIdx + 1} of {state.training.rounds.length}</p>
+
+                    <h1 className={"cui-h1 cui-margin-remove-top " + watchState.timerCls}>{watchState.timer}</h1>
+                    <div className="cui-text-bold">{current.actionIdx + 1}</div>
+                    <h3 className={"cui-h3 " + current.class}>{current.action && current.action.name}</h3>
                     <div className="cui-flex cui-center">
-                        {state.state !== StopWatchStateOptions.STOPPED && <button className="cui-button cui-default cui-margin-small-right" onClick={onPauseClick}>{state.state === StopWatchStateOptions.PAUSED ? "Resume" : "Pause"}</button>}
-                        <button className="cui-button cui-accent" onClick={onStartClick}>{state.state === StopWatchStateOptions.STOPPED ? "Start" : "Stop"}</button>
+                        {watchState.state !== StopWatchStateOptions.STOPPED && <button className="cui-button cui-default cui-margin-small-right" onClick={onPauseClick}>{watchState.state === StopWatchStateOptions.PAUSED ? "Resume" : "Pause"}</button>}
+                        <button className={"cui-button " + watchState.startBtnCls} onClick={onStartClick}>{watchState.state === StopWatchStateOptions.STOPPED ? "Start" : "Stop"}</button>
                     </div>
                     <p className="cui-text-muted">{state.training.description}</p>
                 </div>

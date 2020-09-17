@@ -18,8 +18,6 @@ declare global {
         $cui: CuiInstance;
         $flow: Flow<any, any>;
         $actionsFlow: Flow<ActionsFlowInput, ActionsFlowOutput>;
-        $stopwatch: StopWatch;
-        $testApi: TestApi;
     }
 }
 
@@ -43,9 +41,6 @@ let actionsFlow = new ActionsFlow(actionsService);
 
 window.$flow = FlowFactory.create<TrainingsFlowInput, TrainingsFlowOutput>(traningsFlow.getActions());
 window.$actionsFlow = FlowFactory.create<ActionsFlowInput, ActionsFlowOutput>(actionsFlow.getActions());
-window.$stopwatch = new StopWatch();
-
-window.$testApi = new TestApi();
 
 window.cuiInit.init(cuiSetup).then((result) => {
     ReactDOM.render(<App />, rootElement);

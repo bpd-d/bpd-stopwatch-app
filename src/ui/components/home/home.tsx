@@ -49,7 +49,7 @@ export class Home extends React.Component<any, HomeState> {
                     <h1 className="cui-h1 cui-text-center cui-text-dark">Stopwatch</h1>
                 </div>
             </div>
-            <div className="stopwatch-page-bottom cui-card cui-overflow-y-auto stopwatch-content-width" cui-offset="offsetY: 100; action: .cui-active">
+            <div className="stopwatch-page-bottom cui-card cui-overflow-y-auto stopwatch-content-width">
                 <div className="cui-card-header">
                     <span className="cui-card-title cui-text-muted">Your trainings</span>
                 </div>
@@ -65,18 +65,7 @@ export class Home extends React.Component<any, HomeState> {
 }
 
 export function NoTrainings() {
-    function onButtonClick() {
-        let training: Training = {
-            name: "nasd",
-            //id: 0,
-            rounds: [{
-                actions: [new WarmUp(5), new CoolDown(5), new Exercise(30, "Exer")]
-            }]
-        }
-        window.$flow.perform("ADD_TRAINING", training)
-    }
     return <div className="cui-container cui-center">
-        <p className="cui-text-muted cui-text-center">There are no trainings recorded. <Link className="cui-link cui-accent" to="/">Add new</Link> training to start your execises!</p>
-        <button onClick={onButtonClick} >Add New</button>
+        <p className="cui-text-muted cui-text-center">There are no trainings recorded. <Link className="cui-link cui-accent" to="/trainings/edit/new">Add new</Link> training to start your execises!</p>
     </div>;
 }
