@@ -40,7 +40,6 @@ export class StopWatch implements IStopWatch {
         this.#id = setTimeout(() => {
             try {
                 if (this.#state === StopWatchStateOptions.RUNNING && this.#callback(this.current, this)) {
-                    console.log("tick");
                     if (this.#isReset) {
                         this.current = 0;
                         this.#isReset = false;

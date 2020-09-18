@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { TrainingList } from "./list";
 import { Training, WarmUp, CoolDown, Exercise } from "../../../core/models";
 import { FlowTask } from "../../../../node_modules/bpd-flow/dist/index";
+import { showMessage } from "../../../core/helpers";
 
 export interface HomeProps {
     site?: string;
@@ -15,6 +16,7 @@ export interface HomeState {
 export class Home extends React.Component<any, HomeState> {
     list: Training[];
     subscription: FlowTask<Training[]>
+    onDeleteSubscription: FlowTask<boolean>;
     state: HomeState;
     constructor(props: HomeProps) {
         super(props);
@@ -22,16 +24,48 @@ export class Home extends React.Component<any, HomeState> {
             list: []
         }
 
+        this.updateList = this.updateList.bind(this);
+        this.onDeleteTrainingComplete = this.onDeleteTrainingComplete.bind(this);
+        this.deleteTraining = this.deleteTraining.bind(this);
+
     }
 
     componentDidMount() {
         this.subscription = window.$flow.subscribe("GET_ALL_TRAININGS");
-        this.subscription.finish(this.updateList.bind(this));
+        this.subscription.finish(this.updateList);
+        this.onDeleteSubscription = window.$flow.subscribe("DELETE_TRAINING", { finish: this.onDeleteTrainingComplete })
         window.$flow.perform("GET_ALL_TRAININGS");
     }
 
     componentWillUnmount() {
         window.$flow.unsubscribe("GET_ALL_TRAININGS", this.subscription.id);
+        window.$flow.unsubscribe("DELETE_TRAINING", this.onDeleteSubscription.id);
+    }
+
+    deleteTraining(id: number) {
+        let list = [...this.state.list];
+        let elementIdx = list.findIndex(item => item.id === id);
+        if (elementIdx > -1) {
+            window.$cui.alert("delete-training-dialog", "YesNoCancel", {
+                title: "Delete training",
+                message: "Do you really want to delete training: " + list[elementIdx].name + "?",
+                onYes: () => {
+                    window.$flow.perform("DELETE_TRAINING", id)
+                }
+            })
+        } else {
+            showMessage("Delete training", "We cannot remove this training. Identified doesn't match.")
+        }
+
+
+    }
+
+    onDeleteTrainingComplete(flag: boolean) {
+        if (flag) {
+            window.$flow.perform("GET_ALL_TRAININGS");
+        } else {
+            showMessage("Delete training", "Service could not remove training")
+        }
     }
 
     updateList(list: Training[]) {
@@ -40,6 +74,8 @@ export class Home extends React.Component<any, HomeState> {
             list: list
         });
     }
+
+
 
     render() {
         return <div className="stopwatch-page-layout cui-accent" >
@@ -54,7 +90,7 @@ export class Home extends React.Component<any, HomeState> {
                     <span className="cui-card-title cui-text-muted">Your trainings</span>
                 </div>
                 <div className="cui-card-body" >
-                    {this.state.list.length > 0 ? <TrainingList list={this.state.list} /> : <NoTrainings />}
+                    {this.state.list.length > 0 ? <TrainingList list={this.state.list} onDelete={this.deleteTraining} /> : <NoTrainings />}
                 </div>
             </div>
             <div className="cui-position-float cui-position-bottom cui-position-right cui-margin">

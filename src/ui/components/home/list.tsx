@@ -4,16 +4,18 @@ import { Link } from "react-router-dom";
 
 export interface TrainingListProps {
     list: Training[];
+    onDelete: (id: number) => void;
 }
 
 export interface TrainingListItemProps {
     data: Training;
+    onDelete: (id: number) => void;
 }
 
 export function TrainingList(props: TrainingListProps) {
     return <ul className="cui-list">
         {props.list && props.list.map(item => {
-            return <li key={item.id}><TrainingListItem data={item} /></li>
+            return <li key={item.id}><TrainingListItem data={item} onDelete={props.onDelete} /></li>
         })}
     </ul>
 }
@@ -21,13 +23,16 @@ export function TrainingList(props: TrainingListProps) {
 export function TrainingListItem(props: TrainingListItemProps) {
     const deleteTrainingAction = "DELETE_TRAINING"
     function onDelete() {
-        window.$cui.alert("delete-training-dialog", "YesNoCancel", {
-            title: "Delete training",
-            message: "Do you really want to delete training: " + props.data.name + "?",
-            onYes: () => {
-                window.$flow.perform(deleteTrainingAction, props.data.id)
-            }
-        })
+        if (props.onDelete) {
+            props.onDelete(props.data.id)
+        }        // window.$cui.alert("delete-training-dialog", "YesNoCancel", {
+        //     title: "Delete training",
+        //     message: "Do you really want to delete training: " + props.data.name + "?",
+        //     onYes: () => {
+
+        //         window.$flow.perform(deleteTrainingAction, props.data.id)
+        //     }
+        // })
 
     }
 
@@ -41,9 +46,9 @@ export function TrainingListItem(props: TrainingListItemProps) {
         }
     })
 
-    return <div className="cui-flex">
+    return <div className="cui-flex animation-fade-in">
         <div className="cui-flex-grow">
-            <h3 className="cui-h3">{props.data.name}</h3>
+            <span className="cui-text-bold cui-text-large">{props.data.name}</span>
             <div className="">
                 <span>Rounds: {props.data.rounds.length}</span>
             </div>

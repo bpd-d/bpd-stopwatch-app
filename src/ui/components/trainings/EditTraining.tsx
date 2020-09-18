@@ -164,13 +164,13 @@ function EditTrainingSection(props: EditTrainingSectionProps) {
     }
 
     function onRoundSave(round: Round, index: number) {
-        let validation = new RoundValidator().validate(round);
-        if (validation.status) {
-            updateRoundsState(updateOrInsertRound(round, index));
-            window.$cui.get("#edit-round-dialog").emit("close");
-        } else {
-            alert(validation.errors.join('\n'))
-        }
+        // let validation = new RoundValidator().validate(round);
+        //   if (validation.status) {
+        updateRoundsState(updateOrInsertRound(round, index));
+        window.$cui.get("#edit-round-dialog").emit("close");
+        // } else {
+        // alert(validation.errors.join('\n'))
+        // }
 
     }
 
@@ -232,20 +232,20 @@ function EditTrainingSection(props: EditTrainingSectionProps) {
         <div className="cui-container stopwatch-content-width cui-flex-grid cui-child-width-1-1 cui-child-width-1-2--m">
             <div className="cui-padding-small-right">
                 <h3 className="cui-h3 cui-text-muted">Common</h3>
-                <div className="cui-form transition-toggle show-up">
+                <div className="cui-form">
                     <label htmlFor="" className="cui-form-label">Name</label>
-                    <input type="text" className="cui-input" placeholder="Name" name="name" value={state.training.name} onChange={onFormChange} />
+                    <input type="text" className="cui-input stopwatch-input-width" placeholder="Name" name="name" value={state.training.name} onChange={onFormChange} />
                 </div>
                 <div className="cui-form cui-margin-top">
                     <label htmlFor="" className="cui-form-label">Description</label>
-                    <textarea className="cui-textarea" placeholder="Description" name="description" rows={5} value={state.training.description} onChange={onFormChange}></textarea>
+                    <textarea className="cui-textarea stopwatch-input-width stopwatch-text-area" placeholder="Description" name="description" rows={5} value={state.training.description} onChange={onFormChange}></textarea>
                 </div>
             </div>
             <div className="cui-padding-small-left">
                 <h3 className="cui-h3 cui-text-muted">Rounds (total count: {state.training.rounds.length})</h3>
                 <ul className="cui-list">
                     {state.training && state.training.rounds.map((round: Round, index: number) => {
-                        return <li key={index} className="show-up"><EditRoundListItem index={index} round={round} onEdit={onRoundEdit} onDelete={onRoundDelete} /></li>
+                        return <li key={index} className="animation-fade-in"><EditRoundListItem index={index} round={round} onEdit={onRoundEdit} onDelete={onRoundDelete} /></li>
                     })}
                     <li>
                         <button className="cui-button cui-icon cui-width-1-1" cui-icon="plus" onClick={() => {

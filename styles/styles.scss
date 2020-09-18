@@ -87,7 +87,7 @@ body {
 }
 
 .actions-add-new-button {
-    height: 100px;
+    height: 110px;
 }
 
 .stopwatch-warmup {
@@ -110,9 +110,40 @@ body {
     opacity: 0;
 }
 
-.show-up {
-    opacity   : 1 !important;
-    transition: opacity 300ms ease-in;
+.timer-blink-animation {
+    animation: timerPulse 1s linear infinite;
+}
+
+.stopwatch-input-width {
+    width: 100%;
+}
+
+.stopwatch-text-area {
+    resize: none;
+}
+
+@keyframes timerPulse {
+    0% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.2;
+    }
+
+    100% {
+        opacity: 1
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
 }
 
 @include mixins.media-screen-min-large {
@@ -123,6 +154,10 @@ body {
     .stopwatch-page-header {
         height: 20vh;
 
+    }
+
+    .stopwatch-input-width {
+        width: 300px !important;
     }
 
 }

@@ -3,8 +3,9 @@ import { useParams } from 'react-router-dom';
 import { FlowTask } from '../../../../node_modules/bpd-flow/dist/index';
 import { StopWatch, StopWatchState, StopWatchStateOptions } from '../../../api/stopwatch/stopwatch';
 import { TestApi } from '../../../api/test/test';
-import { calcDisplayTimer } from '../../../core/helpers';
+import { calcDisplayTimer, showMessage } from '../../../core/helpers';
 import { Round, StopwatchAction, Training } from '../../../core/models';
+import { ActionValidator, RoundValidator, TrainingValidator } from '../../../core/validators';
 import { NotFound } from '../common/NotFound';
 import { RoundListItem } from '../edit/list';
 import { useStopwatch } from './hook';
@@ -71,19 +72,39 @@ export function PerfromTraining() {
     trainingRef.current = state.training;
 
     function onGetTraining(training: Training) {
-        if (training) {
-            setState({
-                ...state,
-                training: training,
-            })
-            setCurrent({
-                roundIdx: 0,
-                round: training.rounds[0],
-                action: training.rounds[0].actions[0],
-                actionIdx: 0,
-                class: getClassByType(training.rounds[0].actions[0].type)
-            })
+        let validation = new TrainingValidator().validate(training);
+        if (!validation.status) {
+            showMessage("Incorrect training", `Training is not correct: ${validation.errors.join(", ")}`)
+            return;
         }
+        let roundValidator = new RoundValidator().validate(training.rounds[0]);
+        if (!roundValidator.status) {
+            showMessage("Incorrect training", `Training is not correct: ${roundValidator.errors.join(", ")}`)
+            return;
+        }
+        let actionValidator = new ActionValidator().validate(training.rounds[0].actions[0]);
+        if (!actionValidator.status) {
+            showMessage("Incorrect training", `Training is not correct: ${actionValidator.errors.join(", ")}`)
+            return;
+        }
+        setState({
+            ...state,
+            training: training,
+        })
+        setDefaultCurrentState(training);
+    }
+
+
+    function setDefaultCurrentState(training: Training) {
+        let round = training.rounds[0];
+        let action = round.actions[0];
+        setCurrent({
+            roundIdx: 0,
+            round: round,
+            action: action,
+            actionIdx: 0,
+            class: getClassByType(action.type)
+        })
     }
 
     function setNextAction(): boolean {
@@ -111,37 +132,24 @@ export function PerfromTraining() {
             })
             return true;
         }
-        let newRound = trainingRef.current.rounds[0];
-        let newAction = newRound.actions[0];
-        setCurrent({
-            roundIdx: 0,
-            round: newRound,
-            action: newAction,
-            actionIdx: 0,
-            class: getClassByType(newAction.type)
-        })
+        setDefaultCurrentState(trainingRef.current);
         return false;
     }
 
     function onStopwatchTick(currentTime: number, stopwatch: StopWatch): boolean {
         let ct = currentRef.current.action.duration - currentTime;
+        if (currentTime === 0) {
+            //playSound();
+        }
         if (ct > 0) {
-            setWatchState({
-                //...watchState,
-                state: stopwatch.getState(),
-                timer: calcDisplayTimer(ct),
-                startBtnCls: getStartBtnCls(StopWatchStateOptions.RUNNING),
-                timerCls: getTimerCls(ct)
-            })
+            setStopWatchState(stopwatch.getState(), ct)
+            if (ct > 0 && ct <= 3) {
+                //  playSound();
+            }
             return true;
         } else {
             stopwatch.reset();
-            setWatchState({
-                ...watchState,
-                timer: "00:00",
-                state: StopWatchStateOptions.RUNNING,
-                startBtnCls: getStartBtnCls(StopWatchStateOptions.RUNNING)
-            })
+            setStopWatchState(StopWatchStateOptions.RUNNING, 0)
             if (!setNextAction()) {
                 setStopWatchState(StopWatchStateOptions.STOPPED)
                 return false;
@@ -154,13 +162,8 @@ export function PerfromTraining() {
         if (watchState.state === StopWatchStateOptions.STOPPED && stopwatch.start()) {
             setStopWatchState(StopWatchStateOptions.RUNNING);
         } else if (watchState.state !== StopWatchStateOptions.STOPPED && stopwatch.stop()) {
-            setWatchState({
-                ...watchState,
-                state: StopWatchStateOptions.STOPPED,
-                timer: calcDisplayTimer(0),
-                startBtnCls: getStartBtnCls(StopWatchStateOptions.STOPPED),
-                timerCls: ""
-            })
+            setStopWatchState(StopWatchStateOptions.STOPPED, 0);
+            setDefaultCurrentState(state.training);
         }
     }
 
@@ -172,13 +175,29 @@ export function PerfromTraining() {
         }
     }
 
-    function setStopWatchState(watchstate: StopWatchState) {
-        setWatchState({
-            ...watchState,
-            state: watchstate,
-            startBtnCls: getStartBtnCls(watchstate)
-        })
+    function setStopWatchState(watchstate: StopWatchState, time?: number) {
+        if (typeof time === 'undefined' || time === null || time < 0) {
+            setWatchState({
+                ...watchState,
+                state: watchstate,
+                startBtnCls: getStartBtnCls(watchstate)
+            })
+        } else {
+            setWatchState({
+                timer: calcDisplayTimer(time),
+                timerCls: getTimerCls(time),
+                state: watchstate,
+                startBtnCls: getStartBtnCls(watchstate)
+            })
+        }
     }
+
+    function playSound() {
+        let note = document.getElementById("note-sound") as HTMLAudioElement;
+        note.currentTime = 0;
+        note.play();
+    }
+
 
     function getClassByType(type: string) {
         switch (type) {
@@ -196,7 +215,7 @@ export function PerfromTraining() {
     }
 
     function getTimerCls(timer: number): string {
-        return timer > 0 && timer <= 3 ? "cui-text-warning cui-animation-blink" : "";
+        return timer > 0 && timer <= 3 ? "cui-text-warning timer-blink-animation" : "";
     }
 
     function getStartBtnCls(state: StopWatchState) {
@@ -223,7 +242,7 @@ export function PerfromTraining() {
         {!state.training ?
             <NotFound message="We couldn't find training" /> :
             <div className="stopwatch-layout-content cui-flex-center ">
-                <div className="stopwatch-content-width cui-text-center">
+                <div className="stopwatch-content-width cui-text-center animation-fade-in">
                     <h2 className="cui-h2 ">{state.training.name}</h2>
                     <p>Round {current.roundIdx + 1} of {state.training.rounds.length}</p>
 
@@ -236,6 +255,7 @@ export function PerfromTraining() {
                     </div>
                     <p className="cui-text-muted">{state.training.description}</p>
                 </div>
+                <audio id="note-sound" src="/static/audio/pik.mp3" />
             </div>
         }
     </>);
