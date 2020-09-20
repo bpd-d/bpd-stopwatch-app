@@ -94,7 +94,7 @@ export function AddActionDialog(props: AddActionDialogProps) {
         }
         footer={
             <div className="cui-flex cui-right">
-                <button className="cui-button cui-default cui-margin-small-right" cui-close="">Cancel</button>
+                <button className="cui-button cui-margin-small-right" cui-close="">Cancel</button>
                 <button className="cui-button cui-accent" onClick={onSave}>Save</button>
             </div>
         }

@@ -6,6 +6,13 @@ import { ACTIONS_FLOW_ACTIONS } from '../../../app/flow/actions';
 import { BpdActionIcon } from '../common/BpdActionIcon';
 import { AddActionDialog } from './AddActionDialog';
 
+const defaultAction: StopwatchAction = {
+    name: "",
+    type: "exercise",
+    duration: 5,
+    removable: true,
+    editable: false
+}
 
 export interface BpdDialogState {
     action: StopwatchAction;
@@ -52,7 +59,7 @@ export function StopwatchActionsComponent() {
     function onAddOrEditClick(action?: StopwatchAction) {
         setState({
             ...state,
-            current: action
+            current: action || { ...defaultAction }
         })
         let dialogCui = window.$cui.get("#add-action-dialog");
         dialogCui.emit('open');
