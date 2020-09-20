@@ -121,6 +121,7 @@ export class ActionStorageService implements IActionsService {
     #actions: StopwatchAction[];
     constructor() {
         this.#storage = new BpdStorage("local", "BPD_TRAININGS");
+        this.#actions = [];
         this.getActionsFromStorage();
     }
     getAllActions(): StopwatchAction[] {
@@ -161,7 +162,7 @@ export class ActionStorageService implements IActionsService {
     }
     private getActionsFromStorage() {
         let val = this.#storage.getAny("ACTIONS");
-        this.#actions = val;
+        this.#actions = val ?? [];
     }
 
     private setActionsToStorage() {
