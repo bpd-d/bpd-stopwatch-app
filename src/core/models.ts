@@ -5,6 +5,11 @@ export const StopwatchActionType = {
     WARMUP: "warmup"
 }
 
+export interface Settings {
+    darkMode: boolean;
+    soundEnabled: boolean;
+}
+
 export interface StopwatchAction {
     name: string;
     duration: number;

@@ -54,26 +54,21 @@ body {
     height  : 100%;
     overflow: hidden;
 
-    &.cui-accent {
-        background-color: variables.$component-background-accent;
-    }
-
     .stopwatch-page-top {
-        height: 50vh;
+        height  : 55%;
+        overflow: hidden;
     }
 
     .stopwatch-page-bottom {
-        min-height             : 45vh;
+        height                 : 45%;
         border-top-right-radius: 12px;
         border-top-left-radius : 12px;
-        background-color       : variables.$component-background-default;
         transition             : transform 300ms ease-in;
-
-        &.cui-active {
-            transform      : translateY(-200px);
-            //   box-shadow: variables.$shadow2;
-        }
     }
+}
+
+.stopwatch-home-list {
+    height: calc(100% - 64px);
 }
 
 .stopwatch-page-header {
@@ -89,6 +84,8 @@ body {
 .actions-add-new-button {
     height: 110px;
 }
+
+
 
 .stopwatch-warmup {
     background-color: variables.$component-background-success;
@@ -146,7 +143,24 @@ body {
     }
 }
 
-@include mixins.media-screen-min-large {
+@include mixins.media-screen-min-small-landscape {
+    .stopwatch-page-layout {
+        display: flex;
+
+        .stopwatch-page-top {
+            height  : 100%;
+            overflow: hidden;
+            width   : 40%;
+        }
+
+        .stopwatch-page-bottom {
+            height: 100%;
+            width : 60%;
+        }
+    }
+}
+
+@include mixins.media-screen-min-large-landscape {
     .stopwatch-content-width {
         width: 1000px !important;
     }
@@ -160,9 +174,23 @@ body {
         width: 300px !important;
     }
 
+    .stopwatch-page-layout {
+        display: block;
+
+        .stopwatch-page-top {
+            height  : 40%;
+            overflow: hidden;
+            width   : 100%;
+        }
+
+        .stopwatch-page-bottom {
+            height: 60%;
+            width : 100%;
+        }
+    }
 }
 
-@include mixins.media-screen-min-xlarge {
+@include mixins.media-screen-min-xlarge-landscape {
     .stopwatch-content-width {
         width: 1200px !important;
     }

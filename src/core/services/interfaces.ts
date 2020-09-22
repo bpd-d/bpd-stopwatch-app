@@ -1,4 +1,4 @@
-import { Training, StopwatchAction } from "../models";
+import { Training, StopwatchAction, Settings } from "../models";
 
 export interface ITrainingsService {
     getAllTrainings(): Training[];
@@ -14,4 +14,13 @@ export interface IActionsService {
     getAllActions(): StopwatchAction[];
     setAction(action: StopwatchAction): boolean;
     removeAction(action: StopwatchAction): boolean;
+}
+
+export interface ISettingsService {
+    setSoundEnabled(flag: boolean): void;
+    isSoundEnabled(): boolean;
+    setDarkMode(flag: boolean): void;
+    isDarkMode(): boolean;
+    setSettings(value: Settings): boolean;
+    getSettings(): Settings;
 }

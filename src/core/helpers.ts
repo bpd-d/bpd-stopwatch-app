@@ -47,3 +47,10 @@ export function getDisplayTimerValue(value: number): string {
     }
     return value < 10 ? "0" + value : "" + value;
 }
+
+export function setDarkMode(darkMode: boolean) {
+    if (window.$cui) {
+        let utils = window.$cui.getUtils();
+        utils.setLightMode(darkMode ? "dark" : "light");
+    }
+}

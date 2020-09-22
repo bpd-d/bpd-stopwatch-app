@@ -81,15 +81,15 @@ export class Home extends React.Component<any, HomeState> {
         return <div className="stopwatch-page-layout cui-accent" >
             <div className="stopwatch-page-top cui-container cui-center">
                 <div>
-                    <span className="cui-icon cui-dark" cui-icon="stopwatch"></span>
-                    <h1 className="cui-h1 cui-text-center cui-text-dark">Stopwatch</h1>
+                    <span className="cui-icon" cui-icon="stopwatch"></span>
+                    <h1 className="cui-h1 cui-text-center">Stopwatch</h1>
                 </div>
             </div>
-            <div className="stopwatch-page-bottom cui-card cui-overflow-y-auto stopwatch-content-width">
+            <div className="stopwatch-page-bottom cui-card stopwatch-content-width">
                 <div className="cui-card-header">
                     <span className="cui-card-title cui-text-muted">Your trainings</span>
                 </div>
-                <div className="cui-card-body" >
+                <div className="cui-card-body stopwatch-home-list cui-overflow-y-auto">
                     {this.state.list.length > 0 ? <TrainingList list={this.state.list} onDelete={this.deleteTraining} /> : <NoTrainings />}
                 </div>
             </div>

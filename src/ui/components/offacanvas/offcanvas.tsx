@@ -26,6 +26,7 @@ export class OffCanvas extends React.Component<OffCanvasProps, {}> {
                         <ul className="cui-list cui-interactive cui-margin-top">
                             <li><NavbarLink url="/" name="Home" shouldClose={true} /></li>
                             <li><NavbarLink url="/actions" name="Actions" shouldClose={true} /></li>
+                            <li><NavbarLink url="/settings" name="Settings" shouldClose={true} /></li>
                         </ul>
                     </div>
                 </div>

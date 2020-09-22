@@ -1,5 +1,5 @@
-import { ITrainingsService, IActionsService } from "./interfaces";
-import { Training, StopwatchAction } from "../models";
+import { ITrainingsService, IActionsService, ISettingsService } from "./interfaces";
+import { Training, StopwatchAction, Settings } from "../models";
 import { BpdStorage } from "../../../node_modules/bpd-storage/dist/index";
 import { validateStopwatchAction } from "../helpers";
 import { TaskedEventEmitHandler } from "../../../node_modules/cui-light/dist/index";
@@ -167,5 +167,49 @@ export class ActionStorageService implements IActionsService {
 
     private setActionsToStorage() {
         this.#storage.setAny("ACTIONS", this.#actions);
+    }
+}
+
+export class SettingsService implements ISettingsService {
+    #storage: BpdStorage;
+    constructor() {
+        this.#storage = new BpdStorage("local", "BPD_SETTINGS");
+
+    }
+
+    setSettings(value: Settings): boolean {
+        this.#storage.setAny("SETTINGS", value);
+        return true;
+    }
+
+    getSettings(): Settings {
+        return this.#storage.getAny("SETTINGS") || {
+            darkMode: false,
+            soundEnabled: false
+        };
+    }
+
+    setSoundEnabled(flag: boolean): void {
+        let settings = this.getSettings();
+        if (flag !== settings.soundEnabled) {
+            settings.soundEnabled = flag;
+            this.setSettings(settings)
+        }
+    }
+
+    isSoundEnabled(): boolean {
+        return this.getSettings()?.soundEnabled;
+    }
+
+    setDarkMode(flag: boolean): void {
+        let settings = this.getSettings();
+        if (flag !== settings.darkMode) {
+            settings.darkMode = flag;
+            this.setSettings(settings)
+        }
+    }
+
+    isDarkMode(): boolean {
+        return this.getSettings()?.darkMode;
     }
 }

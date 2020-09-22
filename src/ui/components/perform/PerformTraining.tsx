@@ -138,16 +138,14 @@ export function PerfromTraining() {
 
     function onStopwatchTick(currentTime: number, stopwatch: StopWatch): boolean {
         let ct = currentRef.current.action.duration - currentTime;
-        if (currentTime === 0) {
-            //playSound();
-        }
         if (ct > 0) {
             setStopWatchState(stopwatch.getState(), ct)
             if (ct > 0 && ct <= 3) {
-                //  playSound();
+                playSound();
             }
             return true;
         } else {
+            playEndSound();
             stopwatch.reset();
             setStopWatchState(StopWatchStateOptions.RUNNING, 0)
             if (!setNextAction()) {
@@ -193,7 +191,19 @@ export function PerfromTraining() {
     }
 
     function playSound() {
-        let note = document.getElementById("note-sound") as HTMLAudioElement;
+        let note = document.getElementById("stopwatch-countdown") as HTMLAudioElement;
+        note.currentTime = 0;
+        note.play();
+    }
+
+    function playStartSound() {
+        let note = document.getElementById("stopwatch-start") as HTMLAudioElement;
+        note.currentTime = 0;
+        note.play();
+    }
+
+    function playEndSound() {
+        let note = document.getElementById("stopwatch-end") as HTMLAudioElement;
         note.currentTime = 0;
         note.play();
     }
@@ -255,7 +265,9 @@ export function PerfromTraining() {
                     </div>
                     <p className="cui-text-muted">{state.training.description}</p>
                 </div>
-                <audio id="note-sound" src="/static/audio/pik.mp3" />
+                <audio id="stopwatch-start" src="/static/audio/stopwatch_start.mp3" />
+                <audio id="stopwatch-countdown" src="/static/audio/stopwatch_countdown.mp3" />
+                <audio id="stopwatch-end" src="/static/audio/stopwatch_end.mp3" />
             </div>
         }
     </>);

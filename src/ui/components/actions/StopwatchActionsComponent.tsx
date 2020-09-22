@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { StopwatchAction, StopwatchActionType } from '../../../core/models';
+import { StopwatchAction } from '../../../core/models';
 import { DefaultActions } from '../../../core/statics';
 import { validateStopwatchAction } from '../../../core/helpers';
 import { ACTIONS_FLOW_ACTIONS } from '../../../app/flow/actions';
@@ -85,7 +85,7 @@ export function StopwatchActionsComponent() {
                 <p className="cui-text-center">Define activies which you want to perform in trainings!</p>
             </div>
         </div>
-        <div className="cui-margin-top cui-flex-grid cui-flex-grid-match cui-child-width-1-1-s cui-child-width-1-3--m" cui-item-height="130px">
+        <div className="cui-margin-top cui-flex-grid cui-flex-grid-match cui-child-width-1-2--s cui-child-width-1-3--m" cui-item-height="130px">
             {state.actions && state.actions.map((action: StopwatchAction, index: number) => {
                 return (
                     <div key={index} className="cui-animation-fade-in">
