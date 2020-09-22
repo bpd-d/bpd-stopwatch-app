@@ -119,6 +119,16 @@ body {
     resize: none;
 }
 
+.perform-layout {
+    display: block;
+
+    .perform-main-controls {}
+
+    .perform-buttons {
+        margin-top: variables.$margin-global-large;
+    }
+}
+
 @keyframes timerPulse {
     0% {
         opacity: 1;
@@ -158,6 +168,23 @@ body {
             width : 60%;
         }
     }
+
+    .perform-layout {
+        display: flex;
+
+        .perform-main-controls {
+            height: 100%;
+            width : 50%;
+        }
+
+        .perform-buttons {
+            margin-top     : 0px;
+            width          : 50%;
+            display        : flex;
+            align-items    : center;
+            justify-content: center;
+        }
+    }
 }
 
 @include mixins.media-screen-min-large-landscape {
@@ -186,6 +213,21 @@ body {
         .stopwatch-page-bottom {
             height: 60%;
             width : 100%;
+        }
+    }
+
+    .perform-layout {
+        display: block;
+
+        .perform-main-controls {
+
+            width: 100%;
+        }
+
+        .perform-buttons {
+
+            // height: 100%;
+            width: 100%;
         }
     }
 }

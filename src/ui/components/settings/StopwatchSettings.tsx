@@ -17,10 +17,12 @@ export function StopwatchSettings() {
         if (name !== 'soundEnabled' && name !== "darkMode") {
             return;
         }
-        window.$settingsFlow.perform(SETTINGS_FLOW_ACTIONS.SET_SETTINGS, {
+        let newSettings = {
             ...settings,
             [name]: value
-        });
+        }
+        window.$settingsFlow.perform(SETTINGS_FLOW_ACTIONS.SET_SETTINGS, newSettings);
+        setSettings(newSettings)
     }
 
     function onUpdateSettings() {
@@ -37,14 +39,16 @@ export function StopwatchSettings() {
     }
 
     React.useEffect(() => {
+        console.log("Reload")
         const settingsSub = window.$settingsFlow.subscribe(SETTINGS_FLOW_ACTIONS.GET_SETTINGS, { finish: onGetSettings })
         const settingsUpdateSub = window.$settingsFlow.subscribe(SETTINGS_FLOW_ACTIONS.SET_SETTINGS, { finish: onUpdateSettings })
+
         onUpdateSettings();
         return () => {
             window.$settingsFlow.unsubscribe(SETTINGS_FLOW_ACTIONS.GET_SETTINGS, settingsSub.id);
             window.$settingsFlow.unsubscribe(SETTINGS_FLOW_ACTIONS.SET_SETTINGS, settingsUpdateSub.id);
         }
-    })
+    }, [settings.darkMode, settings.soundEnabled])
     return (<><div className="cui-container stopwatch-content-width">
         <div className="stopwatch-page-header cui-container cui-center">
             <div>

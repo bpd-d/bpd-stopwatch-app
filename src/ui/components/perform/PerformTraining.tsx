@@ -1,25 +1,11 @@
 import * as React from 'react'
 import { useParams } from 'react-router-dom';
-import { FlowTask } from '../../../../node_modules/bpd-flow/dist/index';
 import { StopWatch, StopWatchState, StopWatchStateOptions } from '../../../api/stopwatch/stopwatch';
-import { TestApi } from '../../../api/test/test';
+import { SETTINGS_FLOW_ACTIONS } from '../../../app/flow/settings';
 import { calcDisplayTimer, showMessage } from '../../../core/helpers';
 import { Round, StopwatchAction, Training } from '../../../core/models';
 import { ActionValidator, RoundValidator, TrainingValidator } from '../../../core/validators';
-import { NotFound } from '../common/NotFound';
-import { RoundListItem } from '../edit/list';
-import { useStopwatch } from './hook';
-
-interface PerfromTrainingStateCls {
-    training: Training;
-    round: Round;
-    roundIdx: number;
-    action: StopwatchAction;
-    actionIdx: number;
-    timer: string;
-    state: StopWatchState;
-    stopwatch: StopWatch;
-}
+import { NotFound } from '../common/NotFound';;
 
 interface PerfromTrainingState {
     training: Training;
@@ -55,6 +41,7 @@ export function PerfromTraining() {
 
     const [stopwatch, setStopwatch] = React.useState<StopWatch>(undefined)
     const [current, setCurrent] = React.useState<CurrentTrainingState>(defaultCurrent)
+    const [canPlay, setCanPlay] = React.useState<boolean>(false);
 
     const [watchState, setWatchState] = React.useState<StopwatchState>({
         timer: "00:00",
@@ -191,21 +178,20 @@ export function PerfromTraining() {
     }
 
     function playSound() {
-        let note = document.getElementById("stopwatch-countdown") as HTMLAudioElement;
-        note.currentTime = 0;
-        note.play();
-    }
+        if (canPlay) {
+            let note = document.getElementById("stopwatch-countdown") as HTMLAudioElement;
+            note.currentTime = 0;
+            note.play();
+        }
 
-    function playStartSound() {
-        let note = document.getElementById("stopwatch-start") as HTMLAudioElement;
-        note.currentTime = 0;
-        note.play();
     }
 
     function playEndSound() {
-        let note = document.getElementById("stopwatch-end") as HTMLAudioElement;
-        note.currentTime = 0;
-        note.play();
+        if (canPlay) {
+            let note = document.getElementById("stopwatch-end") as HTMLAudioElement;
+            note.currentTime = 0;
+            note.play();
+        }
     }
 
 
@@ -233,8 +219,16 @@ export function PerfromTraining() {
         return state !== StopWatchStateOptions.STOPPED ? "cui-error" : "cui-accent";
     }
 
+    function onGetPlaySound(canPlay: boolean) {
+        setCanPlay(canPlay);
+    }
+
     React.useEffect(() => {
         const getTrainingSubscription = window.$flow.subscribe("GET_TRAINING", { finish: onGetTraining })
+        const settingsPlaySound = window.$settingsFlow.subscribe(SETTINGS_FLOW_ACTIONS.GET_SOUND_ENABLED, {
+            finish: onGetPlaySound
+        })
+        window.$settingsFlow.perform(SETTINGS_FLOW_ACTIONS.GET_SOUND_ENABLED);
         let stop = new StopWatch();
         stop.onTick(onStopwatchTick);
         setStopwatch(stop);
@@ -244,26 +238,33 @@ export function PerfromTraining() {
         }
         return () => {
             window.$flow.unsubscribe("GET_TRAINING", getTrainingSubscription.id)
+            window.$settingsFlow.unsubscribe(SETTINGS_FLOW_ACTIONS.GET_SOUND_ENABLED, settingsPlaySound.id);
             if (stopwatch)
                 stopwatch.finish();
         }
-    }, [id])
+    }, [id, canPlay])
     return (<>
         {!state.training ?
             <NotFound message="We couldn't find training" /> :
             <div className="stopwatch-layout-content cui-flex-center ">
-                <div className="stopwatch-content-width cui-text-center animation-fade-in">
-                    <h2 className="cui-h2 ">{state.training.name}</h2>
-                    <p>Round {current.roundIdx + 1} of {state.training.rounds.length}</p>
+                <div className="stopwatch-content-width perform-layout cui-text-center animation-fade-in">
+                    <div className="perform-main-controls">
+                        <h2 className="cui-h2 ">{state.training.name}</h2>
+                        <p>Round {current.roundIdx + 1} of {state.training.rounds.length}</p>
 
-                    <h1 className={"cui-h1 cui-margin-remove-top " + watchState.timerCls}>{watchState.timer}</h1>
-                    <div className="cui-text-bold">{current.actionIdx + 1}</div>
-                    <h3 className={"cui-h3 " + current.class}>{current.action && current.action.name}</h3>
-                    <div className="cui-flex cui-center">
-                        {watchState.state !== StopWatchStateOptions.STOPPED && <button className="cui-button cui-default cui-margin-small-right" onClick={onPauseClick}>{watchState.state === StopWatchStateOptions.PAUSED ? "Resume" : "Pause"}</button>}
-                        <button className={"cui-button " + watchState.startBtnCls} onClick={onStartClick}>{watchState.state === StopWatchStateOptions.STOPPED ? "Start" : "Stop"}</button>
+                        <h1 className={"cui-h1 cui-margin-remove-top " + watchState.timerCls}>{watchState.timer}</h1>
+                        <div className="cui-text-bold">{current.actionIdx + 1}</div>
+                        <h3 className={"cui-h3 " + current.class}>{current.action && current.action.name}</h3>
                     </div>
-                    <p className="cui-text-muted">{state.training.description}</p>
+                    <div className="perform-buttons">
+                        <div>
+                            <div className="cui-flex cui-center">
+                                {watchState.state !== StopWatchStateOptions.STOPPED && <button className="cui-button cui-default cui-margin-small-right" onClick={onPauseClick}>{watchState.state === StopWatchStateOptions.PAUSED ? "Resume" : "Pause"}</button>}
+                                <button className={"cui-button " + watchState.startBtnCls} onClick={onStartClick}>{watchState.state === StopWatchStateOptions.STOPPED ? "Start" : "Stop"}</button>
+                            </div>
+                            <p className="cui-text-muted">{state.training.description}</p>
+                        </div>
+                    </div>
                 </div>
                 <audio id="stopwatch-start" src="/static/audio/stopwatch_start.mp3" />
                 <audio id="stopwatch-countdown" src="/static/audio/stopwatch_countdown.mp3" />
