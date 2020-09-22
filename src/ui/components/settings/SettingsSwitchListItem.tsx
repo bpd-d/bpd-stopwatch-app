@@ -23,7 +23,7 @@ export function SettingsSwitchListItem(props: SettingsSwitchListItemProps) {
 
     }, [props.value, props.name])
     return (
-        <div className="cui-flex cui-middle">
+        <div className="cui-flex cui-middle cui-padding-small">
             <div className="cui-flex-grow">{props.label}</div>
             <div className="cui-input-switch">
                 <input type="checkbox" id={props.name} name={props.name} checked={props.value} onChange={onChange} />

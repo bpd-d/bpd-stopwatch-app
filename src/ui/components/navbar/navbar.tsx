@@ -44,6 +44,7 @@ export function Navbar(props: NavbarProps) {
             <li><NavbarLink class="cui-navbar-item" url="/" name="Home" /></li>
             <li><NavbarLink class="cui-navbar-item" url="/actions" name="Actions" /></li>
             <li><NavbarLink class="cui-navbar-item" url="/settings" name="Settings" /></li>
+            <li><NavbarLink class="cui-navbar-item" url="/about" name="About" /></li>
         </ul>
     </nav>
 }

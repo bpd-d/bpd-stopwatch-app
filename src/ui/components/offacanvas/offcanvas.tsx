@@ -27,6 +27,7 @@ export class OffCanvas extends React.Component<OffCanvasProps, {}> {
                             <li><NavbarLink url="/" name="Home" shouldClose={true} /></li>
                             <li><NavbarLink url="/actions" name="Actions" shouldClose={true} /></li>
                             <li><NavbarLink url="/settings" name="Settings" shouldClose={true} /></li>
+                            <li><NavbarLink url="/about" name="About" shouldClose={true} /></li>
                         </ul>
                     </div>
                 </div>

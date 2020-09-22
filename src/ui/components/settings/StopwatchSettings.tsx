@@ -2,6 +2,7 @@ import * as React from 'react'
 import { SETTINGS_FLOW_ACTIONS } from '../../../app/flow/settings';
 import { setDarkMode } from '../../../core/helpers';
 import { Settings } from '../../../core/models';
+import { PageHeader } from '../common/PageHeader';
 import { SettingsSwitchListItem } from './SettingsSwitchListItem'
 export interface SettingsState {
     darkModeEnabled: boolean;
@@ -50,12 +51,7 @@ export function StopwatchSettings() {
         }
     }, [settings.darkMode, settings.soundEnabled])
     return (<><div className="cui-container stopwatch-content-width">
-        <div className="stopwatch-page-header cui-container cui-center">
-            <div>
-                <h1 className="cui-h1 cui-text-center">Settings</h1>
-                <p className="cui-text-center cui-text-muted">Change application setup</p>
-            </div>
-        </div>
+        <PageHeader title="Settings" description="Change application setup" />
         <div className="cui-margin-top">
             <ul className="cui-list">
                 <li>

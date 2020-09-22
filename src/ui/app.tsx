@@ -12,6 +12,7 @@ import { StopwatchSettings } from "./components/settings/StopwatchSettings";
 import { FlowTask } from "../../node_modules/bpd-flow/dist/index";
 import { SETTINGS_FLOW_ACTIONS } from "../app/flow/settings";
 import { setDarkMode } from "../core/helpers";
+import { About } from "./components/about/About";
 
 export interface AppProps {
 }
@@ -57,6 +58,7 @@ export class App extends React.Component<AppProps, AppState> {
                         <Route path="/trainings/edit/:id" component={EditTraining}></Route>
                         <Route path="/actions" component={StopwatchActionsComponent}></Route>
                         <Route path="/settings" component={StopwatchSettings}></Route>
+                        <Route path="/about" component={About}></Route>
                         <Route path="/" component={Home}></Route>
                         <Route>
                             <ErrorRoute />

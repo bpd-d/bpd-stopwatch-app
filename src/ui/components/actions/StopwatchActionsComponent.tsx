@@ -5,6 +5,7 @@ import { validateStopwatchAction } from '../../../core/helpers';
 import { ACTIONS_FLOW_ACTIONS } from '../../../app/flow/actions';
 import { BpdActionIcon } from '../common/BpdActionIcon';
 import { AddActionDialog } from './AddActionDialog';
+import { PageHeader } from '../common/PageHeader';
 
 const defaultAction: StopwatchAction = {
     name: "",
@@ -79,12 +80,7 @@ export function StopwatchActionsComponent() {
     }, [state.actions])
 
     return (<><div className="cui-container stopwatch-content-width">
-        <div className="stopwatch-page-header cui-container cui-center">
-            <div>
-                <h1 className="cui-h1 cui-text-center">Activities</h1>
-                <p className="cui-text-center">Define activies which you want to perform in trainings!</p>
-            </div>
-        </div>
+        <PageHeader title="Activities" description="Define activies which you want to perform in trainings!" />
         <div className="cui-margin-top cui-flex-grid cui-flex-grid-match cui-child-width-1-2--s cui-child-width-1-3--m" cui-item-height="130px">
             {state.actions && state.actions.map((action: StopwatchAction, index: number) => {
                 return (
