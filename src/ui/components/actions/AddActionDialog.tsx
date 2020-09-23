@@ -81,14 +81,15 @@ export function AddActionDialog(props: AddActionDialogProps) {
                     <option value="cooldown">Cooldown</option>
                 </select>
             </div>
-            <div className="cui-form cui-margin-top">
-                <input type="checkbox" className="cui-checkbox" id="checkbox-1-1" name="removable" checked={state.removable} onChange={onValueChange} />
-                <label htmlFor="checkbox-1-1"> Removable</label>
-            </div>
-            <div className="cui-form cui-margin-top">
+            <div className="cui-form cui-flex cui-middle cui-reverse cui-margin-top">
                 <input type="checkbox" className="cui-checkbox" id="checkbox-1-2" name="editable" checked={state.editable} onChange={onValueChange} />
                 <label htmlFor="checkbox-1-2"> Editable</label>
             </div>
+            <div className="cui-form cui-flex cui-middle cui-reverse cui-margin-top">
+                <input type="checkbox" className="cui-checkbox" id="checkbox-1-1" name="removable" checked={state.removable} onChange={onValueChange} />
+                <label htmlFor="checkbox-1-1"> Removable</label>
+            </div>
+
             <ErrorsList errors={errors} />
         </>
         }

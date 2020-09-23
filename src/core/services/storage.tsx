@@ -1,17 +1,18 @@
 import { ITrainingsService, IActionsService, ISettingsService } from "./interfaces";
 import { Training, StopwatchAction, Settings } from "../models";
 import { BpdStorage } from "../../../node_modules/bpd-storage/dist/index";
-import { validateStopwatchAction } from "../helpers";
-import { TaskedEventEmitHandler } from "../../../node_modules/cui-light/dist/index";
+import { ActionValidator, TrainingValidator } from "../validators";
 
 export class TrainingsStorageService implements ITrainingsService {
     #storage: BpdStorage;
     #trainings: Training[];
     #STORAGE_NAME: string;
+    #validator: TrainingValidator;
     constructor() {
         this.#storage = new BpdStorage("local", "BPD_TRAININGS");
         this.#STORAGE_NAME = "Trainings";
         this.#trainings = [];
+        this.#validator = new TrainingValidator();
     }
 
 
@@ -23,9 +24,7 @@ export class TrainingsStorageService implements ITrainingsService {
     addTraining(training: Training): boolean {
         let result = false;
         if (this.validate(training)) {
-            console.log("Add valid")
             this.onAction((t: Training[]) => {
-                console.log("Add on Action")
                 let len = t.length
                 if (!training.id) {
                     training.id = len > 0 ? t[len - 1].id + 1 : 0;
@@ -105,7 +104,7 @@ export class TrainingsStorageService implements ITrainingsService {
     }
 
     private validate(training: Training): boolean {
-        return training && training.name && training.name.length > 0;
+        return this.#validator.validate(training).status;
     }
 
     private onAction(callback: (t: Training[]) => boolean) {
@@ -119,9 +118,11 @@ export class TrainingsStorageService implements ITrainingsService {
 export class ActionStorageService implements IActionsService {
     #storage: BpdStorage;
     #actions: StopwatchAction[];
+    #validator: ActionValidator;
     constructor() {
         this.#storage = new BpdStorage("local", "BPD_TRAININGS");
         this.#actions = [];
+        this.#validator = new ActionValidator();
         this.getActionsFromStorage();
     }
     getAllActions(): StopwatchAction[] {
@@ -129,7 +130,7 @@ export class ActionStorageService implements IActionsService {
     }
 
     setAction(action: StopwatchAction): boolean {
-        if (!validateStopwatchAction(action)) {
+        if (!this.#validator.validate(action).status) {
             return false;
         }
         let existingIndex = this.getIndex(action);
@@ -143,7 +144,7 @@ export class ActionStorageService implements IActionsService {
     }
 
     removeAction(action: StopwatchAction): boolean {
-        if (!validateStopwatchAction(action)) {
+        if (!this.#validator.validate(action).status) {
             return false;
         }
 

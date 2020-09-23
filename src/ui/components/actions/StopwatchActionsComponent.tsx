@@ -1,11 +1,11 @@
 import * as React from 'react'
 import { StopwatchAction } from '../../../core/models';
 import { DefaultActions } from '../../../core/statics';
-import { validateStopwatchAction } from '../../../core/helpers';
 import { ACTIONS_FLOW_ACTIONS } from '../../../app/flow/actions';
 import { BpdActionIcon } from '../common/BpdActionIcon';
 import { AddActionDialog } from './AddActionDialog';
 import { PageHeader } from '../common/PageHeader';
+import { ActionValidator } from '../../../core/validators';
 
 const defaultAction: StopwatchAction = {
     name: "",
@@ -35,9 +35,7 @@ export function StopwatchActionsComponent() {
 
 
     function onDialogSave(action: StopwatchAction) {
-        if (validateStopwatchAction(action)) {
-            window.$actionsFlow.perform(ACTIONS_FLOW_ACTIONS.SET_ACTION, action);
-        }
+        window.$actionsFlow.perform(ACTIONS_FLOW_ACTIONS.SET_ACTION, action);
     }
 
     function onDelete(action: StopwatchAction) {
@@ -79,9 +77,9 @@ export function StopwatchActionsComponent() {
         }
     }, [state.actions])
 
-    return (<><div className="cui-container stopwatch-content-width">
+    return (<><div className="stopwatch-content-width ">
         <PageHeader title="Activities" description="Define activies which you want to perform in trainings!" />
-        <div className="cui-margin-top cui-flex-grid cui-flex-grid-match cui-child-width-1-2--s cui-child-width-1-3--m" cui-item-height="130px">
+        <div className="cui-container cui-flex-grid cui-flex-grid-match cui-child-width-1-2--s cui-child-width-1-3--m">
             {state.actions && state.actions.map((action: StopwatchAction, index: number) => {
                 return (
                     <div key={index} className="cui-animation-fade-in">

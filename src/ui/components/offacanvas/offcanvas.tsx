@@ -8,7 +8,6 @@ export interface OffCanvasProps {
 // 'HelloProps' describes the shape of props.
 // State is never set so we use the '{}' type.
 export class OffCanvas extends React.Component<OffCanvasProps, {}> {
-    offcanvas: ElementManager;
     constructor(props: OffCanvasProps) {
         super(props);
     }

@@ -38,10 +38,10 @@ export function TrainingListItem(props: TrainingListItemProps) {
         }
     })
 
-    return <div className="cui-flex cui-animation-fade-in">
+    return <div className="cui-flex cui-animation-fade-in cui-padding-bottom cui-padding-top">
         <div className="cui-flex-grow">
             <span className="cui-text-bold cui-text-large">{props.data.name}</span>
-            <div className="">
+            <div className="cui-text-muted">
                 <span>Rounds: {props.data.rounds.length}</span>
             </div>
         </div>

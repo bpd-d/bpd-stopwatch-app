@@ -1,6 +1,6 @@
-$prefix       : 'cui' !default;
-$navbar-height: 60px;
-
+$prefix                                                                    : 'cui' !default;
+$navbar-height                                                             : 60px;
+$footer-height                                                             : 36px;
 @use "../node_modules/cui-styles/styles/variables"as variables with($prefix: $prefix);
 @use "../node_modules/cui-styles/styles/root"as root with($prefix          : $prefix);
 @use '../node_modules/cui-styles/styles/core/head'as head;
@@ -31,6 +31,7 @@ body {
     height: 100vh;
 }
 
+
 * {
     box-sizing: border-box;
 }
@@ -47,7 +48,12 @@ body {
 }
 
 .stopwatch-layout-content {
-    height: calc(100vh - #{$navbar-height});
+    height : calc(100vh - #{$navbar-height} - #{$footer-height});
+    z-index: 10;
+}
+
+.stopwatch-footer {
+    height: $footer-height;
 }
 
 .stopwatch-page-layout {
@@ -68,12 +74,16 @@ body {
 }
 
 .stopwatch-home-list {
-    height: calc(100% - 64px);
+    height: 100%;
 }
 
 .stopwatch-page-header {
     height: 40vh;
+}
 
+.stopwatch-icon {
+    height: 160px;
+    width : 160px;
 }
 
 .stopwatch-content-width {
@@ -121,8 +131,6 @@ body {
 
 .perform-layout {
     display: block;
-
-    .perform-main-controls {}
 
     .perform-buttons {
         margin-top: variables.$margin-global-large;
@@ -197,6 +205,10 @@ body {
 
     }
 
+    .stopwatch-page-content {
+        height: calc(100vh - #{$navbar-height} - #{$footer-height} - 20vh);
+    }
+
     .stopwatch-input-width {
         width: 300px !important;
     }
@@ -239,6 +251,10 @@ body {
 
     .stopwatch-page-header {
         height: 20vh;
+    }
+
+    .stopwatch-page-content {
+        height: calc(100vh - #{$navbar-height} - #{$footer-height} - 20vh);
     }
 }
 

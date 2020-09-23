@@ -13,6 +13,7 @@ import { FlowTask } from "../../node_modules/bpd-flow/dist/index";
 import { SETTINGS_FLOW_ACTIONS } from "../app/flow/settings";
 import { setDarkMode } from "../core/helpers";
 import { About } from "./components/about/About";
+import { Footer } from "./components/footer/Footer";
 
 export interface AppProps {
 }
@@ -51,7 +52,7 @@ export class App extends React.Component<AppProps, AppState> {
         return <BrowserRouter>
             <div className="stopwatch-layout-main">
                 <Navbar />
-                <div className="stopwatch-layout-content">
+                <div className="stopwatch-layout-content cui-overflow-y-auto">
                     <Switch>
                         <Route path="/trainings/perform/:id" component={PerfromTraining}></Route>
                         <Route path="/trainings/edit/new" component={EditTraining}></Route>
@@ -65,6 +66,8 @@ export class App extends React.Component<AppProps, AppState> {
                         </Route>
                     </Switch>
                 </div>
+                <Footer />
+                
                 <OffCanvas />
             </div></BrowserRouter>;
     }

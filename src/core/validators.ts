@@ -1,6 +1,6 @@
-import { is } from "../../node_modules/cui-light/dist/index";
 import { Round, StopwatchAction, Training } from "./models";
 import { ERROR_CODES } from "./statics";
+import { is } from '../../node_modules/bpd-toolkit/dist/esm/index';
 
 export interface ValidationResult {
     status: boolean;
@@ -21,10 +21,11 @@ export abstract class ValidatorBase<T> implements IValidator<T> {
                 result.errors = errors;
             }
         } catch (e) {
-            console.error("An error occured during validation")
+            let errorMsg = "An error occured during validation";
+            console.error(errorMsg)
             console.error(e)
             result.status = false;
-            result.errors = ["Error during validation: " + e.message]
+            result.errors = [errorMsg + ": " + e.message]
         }
         return result;
     }
@@ -38,14 +39,14 @@ export class TrainingValidator extends ValidatorBase<Training> {
     }
 
     protected performValidation(t: Training): string[] {
-        if (isNotObject(t)) {
+        if (!is(t)) {
             return ([ERROR_CODES.e0100]);
         }
         let errors = []
-        if (isEmptyString(t.name)) {
+        if (!is(t.name)) {
             errors.push(ERROR_CODES.e0101)
         }
-        if (isEmptyArray(t.rounds)) {
+        if (!is(t.rounds)) {
             errors.push(ERROR_CODES.e0102)
         }
         return errors;
@@ -60,10 +61,10 @@ export class RoundValidator extends ValidatorBase<Round> {
     }
 
     protected performValidation(t: Round): string[] {
-        if (isNotObject(t)) {
+        if (!is(t)) {
             return ([ERROR_CODES.e0200]);
         }
-        if (isEmptyArray(t.actions))
+        if (!is(t.actions))
             return [ERROR_CODES.e0201]
     }
 }
@@ -74,14 +75,14 @@ export class ActionValidator extends ValidatorBase<StopwatchAction> {
     }
 
     protected performValidation(t: StopwatchAction): string[] {
-        if (isNotObject(t)) {
+        if (!is(t)) {
             return ([ERROR_CODES.e0300]);
         }
         let errors = []
-        if (isEmptyString(t.name)) {
+        if (!is(t.name)) {
             errors.push(ERROR_CODES.e0301)
         }
-        if (isEmptyString(t.type)) {
+        if (!is(t.type)) {
             errors.push(ERROR_CODES.e0302)
         }
         if (t.duration < 0) {
@@ -89,16 +90,4 @@ export class ActionValidator extends ValidatorBase<StopwatchAction> {
         }
         return errors;
     }
-}
-
-function isEmptyArray<T>(t: T[]) {
-    return isNotObject(t) || t.length === 0;
-}
-
-function isNotObject<T>(t: T) {
-    return !t || t === null;
-}
-
-function isEmptyString(t: string) {
-    return isNotObject(t) || t === "";
 }

@@ -50,9 +50,9 @@ export function StopwatchSettings() {
             window.$settingsFlow.unsubscribe(SETTINGS_FLOW_ACTIONS.SET_SETTINGS, settingsUpdateSub.id);
         }
     }, [settings.darkMode, settings.soundEnabled])
-    return (<><div className="cui-container stopwatch-content-width">
+    return (<><div className="stopwatch-content-width">
         <PageHeader title="Settings" description="Change application setup" />
-        <div className="cui-margin-top">
+        <div className="">
             <ul className="cui-list">
                 <li>
                     <SettingsSwitchListItem label="Dark mode" name="darkMode" value={settings.darkMode} onUpdate={onValueChange} />
