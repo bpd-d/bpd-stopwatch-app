@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { useParams } from 'react-router-dom';
+import { KeepScreenAwake } from '../../../api/screen/screen';
 import { StopWatch, StopWatchState, StopWatchStateOptions } from '../../../api/stopwatch/stopwatch';
 import { SETTINGS_FLOW_ACTIONS } from '../../../app/flow/settings';
 import { calcDisplayTimer, showMessage } from '../../../core/helpers';
@@ -229,6 +230,13 @@ export function PerfromTraining() {
             finish: onGetPlaySound
         })
         window.$settingsFlow.perform(SETTINGS_FLOW_ACTIONS.GET_SOUND_ENABLED);
+        const wakeLock = new KeepScreenAwake();
+        try {
+            wakeLock.activate();
+        } catch (e) {
+            showMessage("Keep screen awake", "Feature which keep screen awake during perform couldn't be activated. Device screen may dim or turn off after some inactivity time.")
+            console.error(e);
+        }
         let stop = new StopWatch();
         stop.onTick(onStopwatchTick);
         setStopwatch(stop);
@@ -241,6 +249,7 @@ export function PerfromTraining() {
             window.$settingsFlow.unsubscribe(SETTINGS_FLOW_ACTIONS.GET_SOUND_ENABLED, settingsPlaySound.id);
             if (stopwatch)
                 stopwatch.finish();
+            wakeLock.release();
         }
     }, [id, canPlay])
     return (<>
