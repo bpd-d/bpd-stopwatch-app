@@ -15,7 +15,7 @@ export interface TrainingListItemProps {
 export function TrainingList(props: TrainingListProps) {
     return <ul className="cui-list">
         {props.list && props.list.map(item => {
-            return <li key={item.id}><TrainingListItem data={item} onDelete={props.onDelete} /></li>
+            return <li key={item.id} className="stopwatch-content-width"><TrainingListItem data={item} onDelete={props.onDelete} /></li>
         })}
     </ul>
 }

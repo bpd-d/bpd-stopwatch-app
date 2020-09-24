@@ -51,7 +51,7 @@ export function PerfromTraining() {
         timerCls: ""
     })
 
-
+    const [errorMessage, setErrorMessage] = React.useState("");
     const { id } = useParams();
 
     const currentRef = React.useRef(current);
@@ -234,8 +234,7 @@ export function PerfromTraining() {
         try {
             wakeLock.activate();
         } catch (e) {
-            showMessage("Keep screen awake", "Feature to keep your screen awake during performance could not be activated.")
-            console.error(e);
+            setErrorMessage("Feature to keep your screen awake during performance could not be activated.")
         }
         let stop = new StopWatch();
         stop.onTick(onStopwatchTick);
@@ -272,6 +271,7 @@ export function PerfromTraining() {
                                 <button className={"cui-button " + watchState.startBtnCls} onClick={onStartClick}>{watchState.state === StopWatchStateOptions.STOPPED ? "Start" : "Stop"}</button>
                             </div>
                             <p className="cui-text-muted">{state.training.description}</p>
+                            <span className="cui-text-error">{errorMessage}</span>
                         </div>
                     </div>
                 </div>

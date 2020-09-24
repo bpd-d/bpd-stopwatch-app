@@ -85,7 +85,7 @@ export class Home extends React.Component<any, HomeState> {
                     <h1 className="cui-h1 cui-text-center cui-margin-small-top">Stopwatch</h1>
                 </div>
             </div>
-            <div className="stopwatch-page-bottom stopwatch-content-width">
+            <div className="stopwatch-page-bottom">
                 {/* <div className="cui-card-header">
                     <span className="cui-card-title cui-text-muted">Your trainings</span>
                 </div> */}
@@ -94,7 +94,7 @@ export class Home extends React.Component<any, HomeState> {
                 </div>
             </div>
             <div className="cui-position-float cui-position-bottom cui-position-right cui-margin cui-margin-large--l">
-                <Link to="/trainings/edit/new" className="cui-icon-button cui-default" cui-icon="plus"></Link>
+                <Link to="/trainings/edit/new" className="cui-button cui-accent cui-icon cui-rounded" cui-icon="plus"><span className="cui-margin-small-left cui-visible--m">ADD NEW</span></Link>
             </div>
         </div>;
     }
