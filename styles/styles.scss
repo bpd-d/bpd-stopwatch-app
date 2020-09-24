@@ -344,3 +344,11 @@ body {
 @include components.definitions;
 @include dark.definitions;
 @include print.definitions;
+
+.#{$prefix}-dark {
+    .training-list-item-icon {
+        &:before {
+            background-color: variables.$component-background-shade-dark;
+        }
+    }
+}
