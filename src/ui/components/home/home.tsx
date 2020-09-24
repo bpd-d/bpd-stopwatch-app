@@ -78,25 +78,22 @@ export class Home extends React.Component<any, HomeState> {
 
 
     render() {
-        return <div className="stopwatch-page-layout cui-accent" >
+        return <div className="stopwatch-page-layout" >
             <div className="stopwatch-page-top cui-container cui-center">
                 <div>
                     <span className="cui-icon stopwatch-icon" cui-icon="stopwatch"></span>
-                    <h1 className="cui-h1 cui-text-center cui-margin-small-top">Stopwatch</h1>
+                    <h1 className="cui-h3 cui-text-center cui-margin-small-top stopwatch-title">Stopwatch</h1>
                 </div>
             </div>
             <div className="stopwatch-page-bottom">
-                {/* <div className="cui-card-header">
-                    <span className="cui-card-title cui-text-muted">Your trainings</span>
-                </div> */}
                 <div className="stopwatch-home-list cui-overflow-y-auto">
                     {this.state.list.length > 0 ? <TrainingList list={this.state.list} onDelete={this.deleteTraining} /> : <NoTrainings />}
                 </div>
             </div>
             <div className="cui-position-float cui-position-bottom cui-position-right cui-margin cui-margin-large--l">
-                <Link to="/trainings/edit/new" className="cui-button cui-accent cui-icon cui-rounded" cui-icon="plus"><span className="cui-margin-small-left cui-visible--m">ADD NEW</span></Link>
+                <Link to="/trainings/edit/new" className="cui-button cui-large cui-background-default cui-box-shadow cui-rounded"><span className="cui-icon" cui-icon="plus"></span><span className="cui-margin-small-left cui-visible--m">ADD NEW</span></Link>
             </div>
-        </div>;
+        </div >;
     }
 }
 

@@ -79,9 +79,84 @@ body {
     height: 40vh;
 }
 
+.training-list-item-icon {
+    width   : 40px;
+    height  : 40px;
+    position: relative;
+
+    &:before {
+        content         : "";
+        position        : absolute;
+        top             : 50%;
+        left            : 50%;
+        transform       : translate(-50%, -50%);
+        width           : 40px;
+        height          : 40px;
+        background-color: variables.$component-background-shade;
+        border-radius   : 50%
+    }
+
+    span {
+        position : absolute;
+        top      : 50%;
+        left     : 50%;
+        transform: translate(-50%, -50%);
+    }
+}
+
 .stopwatch-icon {
-    height: 160px;
-    width : 160px;
+    height: 170px;
+    width : 170px;
+
+    svg {
+        path {
+            &.outer-border {
+                stroke-width: 2px;
+            }
+
+            &.center {
+                fill: variables.$component-background-accent;
+            }
+
+            &.tick {
+                stroke              : variables.$component-background-accent;
+                stroke-width        : 2px;
+                stroke-dasharray    : 12;
+                // stroke-dashoffset: 12;
+                animation           : tickFrames 300ms linear forwards;
+            }
+
+            &.minutes {
+                transform-origin: center center;
+                animation       : stopTickWatch 300ms ease-out forwards;
+            }
+
+            &.hours {
+                transform-origin: center center;
+                animation       : stopTickWatch 500ms ease-out forwards;
+            }
+        }
+    }
+}
+
+@keyframes stopTickWatch {
+    0% {
+        transform: rotate(-120deg);
+    }
+
+    100% {
+        transform: rotate(0deg);
+    }
+}
+
+@keyframes tickFrames {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
 }
 
 .stopwatch-content-width {
@@ -93,6 +168,13 @@ body {
     height: 110px;
 }
 
+
+.stopwatch-title {
+    background             : linear-gradient(180deg, variables.$component-background-accent 0%, variables.$component-background-secondary 100%);
+    -webkit-background-clip: text;
+    background-clip        : text;
+    -webkit-text-fill-color: transparent;
+}
 
 
 .stopwatch-warmup {

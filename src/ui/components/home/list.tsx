@@ -40,9 +40,15 @@ export function TrainingListItem(props: TrainingListItemProps) {
 
     return <div className="cui-flex cui-animation-fade-in cui-padding-bottom cui-padding-top">
         <div className="cui-flex-grow">
-            <span className="cui-text-bold cui-text-large">{props.data.name}</span>
-            <div className="cui-text-muted">
-                <span>Rounds: {props.data.rounds.length}</span>
+            <div className="cui-flex cui-middle">
+                <div className="training-list-item-icon">
+                    <span className="cui-text-bold">{props.data.name[0].toUpperCase()}</span>
+                </div>
+                <div className="cui-flex-grow cui-margin-left">
+                    <span className=" cui-text-large">{props.data.name}</span>
+                    <div className="cui-text-muted">
+                        <span>Rounds: {props.data.rounds.length}</span>
+                    </div></div>
             </div>
         </div>
         <div className="cui-flex-shrink cui-flex-center">

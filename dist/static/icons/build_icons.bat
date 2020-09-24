@@ -1,1 +1,0 @@
-python C:\Users\barto\Documents\Development\bpd_dev\svg-cleaner\main.py -i "C:\Users\barto\Documents\Development\bpd_dev\bpd-stopwatch-app\static\icons\raw" -o "C:\Users\barto\Documents\Development\bpd_dev\bpd-stopwatch-app\static\icons\out" --clean --json

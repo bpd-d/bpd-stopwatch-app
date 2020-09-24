@@ -234,7 +234,7 @@ export function PerfromTraining() {
         try {
             wakeLock.activate();
         } catch (e) {
-            setErrorMessage("Feature to keep your screen awake during performance could not be activated.")
+            setErrorMessage("We cannot activate feature to keep your device's screen awake during training performance")
         }
         let stop = new StopWatch();
         stop.onTick(onStopwatchTick);

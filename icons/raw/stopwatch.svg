@@ -7,7 +7,7 @@
    xmlns="http://www.w3.org/2000/svg"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   inkscape:version="1.0 (4035a4fb49, 2020-05-01)"
+   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)"
    id="svg8"
    version="1.1"
    viewBox="0 0 200 200"
@@ -23,9 +23,9 @@
      inkscape:document-rotation="0"
      inkscape:current-layer="svg8"
      inkscape:document-units="px"
-     inkscape:cy="139.73565"
-     inkscape:cx="197.46186"
-     inkscape:zoom="0.70710678"
+     inkscape:cy="84.497058"
+     inkscape:cx="14.802672"
+     inkscape:zoom="2.8284271"
      inkscape:pageshadow="2"
      inkscape:pageopacity="0.0"
      borderopacity="1.0"
@@ -57,36 +57,49 @@
   <path
      d="m 87.063507,7.6902003 c -1.894378,0 -3.419455,1.5248948 -3.419455,3.4190467 v 2.279364 c 0,1.894152 1.525077,3.419046 3.419455,3.419046 h 8.377218 v 4.672252 a 85.486373,85.476165 0 0 0 -80.927099,85.353731 85.486373,85.476165 0 0 0 85.486373,85.47617 85.486373,85.476165 0 0 0 85.486371,-85.47617 85.486373,85.476165 0 0 0 -80.9271,-85.353731 v -4.672252 h 8.37722 c 1.89437,0 3.41945,-1.524894 3.41945,-3.419046 v -2.279364 c 0,-1.8941519 -1.52508,-3.4190467 -3.41945,-3.4190467 z"
      style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;paint-order:fill markers stroke"
-     id="path842" />
+     id="path842"
+     class="outer-border" />
   <path
      d="M 151.86173,105.12189 A 51.861736,51.855545 0 0 1 99.999992,156.97743 51.861736,51.855545 0 0 1 48.138256,105.12189 51.861736,51.855545 0 0 1 99.999992,53.266342 51.861736,51.855545 0 0 1 151.86173,105.12189"
      style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;paint-order:fill markers stroke"
-     id="path856" />
+     id="path856"
+     class="inner-border" />
   <path
      d="m 99.999999,166.66467 v 11.4391"
      style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-     id="path858" />
+     id="path858"
+     class="tick" />
   <path
      d="m 99.999999,32.140025 -3e-6,11.439101"
      style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-     id="path873" />
+     id="path873"
+     class="tick" />
   <path
      d="M 38.449882,105.1219 H 27.00941"
      style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-     id="path860" />
+     id="path860"
+     class="tick" />
   <path
      d="M 172.99058,105.1219 H 161.55011"
      style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-     id="path867" />
+     id="path867"
+     class="tick" />
   <path
      sodipodi:nodetypes="cc"
      id="path878"
      d="m 99.999999,60.80568 v 44.10019"
-     style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
+     style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+     class="minutes" />
   <path
      inkscape:transform-center-x="-10.960154"
      inkscape:transform-center-y="10.960153"
      style="fill:none;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
      d="M 125.05857,129.85765 99.926593,104.72867"
-     id="path880" />
+     id="hours"
+     class="hours" />
+  <path
+     id="rect838"
+     style="fill:#464646;stroke-width:10;stroke-linecap:round;stroke-linejoin:round;paint-order:fill markers stroke"
+     d="m 100,101.91334 c 1.662,0 3,1.338 3,3 0,1.662 -1.338,3 -3,3 -1.662,0 -3,-1.338 -3,-3 0,-1.662 1.338,-3 3,-3 z"
+     class="center" />
 </svg>
