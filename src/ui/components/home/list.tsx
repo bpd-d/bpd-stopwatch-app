@@ -1,6 +1,7 @@
 import * as React from "react";
-import { Training } from "../../../core/models";
+import { Round, Training } from "../../../core/models";
 import { Link } from "react-router-dom";
+import { calculateDuration } from "../../../core/helpers";
 
 export interface TrainingListProps {
     list: Training[];
@@ -28,6 +29,17 @@ export function TrainingListItem(props: TrainingListItemProps) {
         }
     }
 
+    function getActionsDuration(training: Training) {
+        return training.rounds.reduce<[number, number]>((result: [number, number], current: Round) => {
+            return [result[0] + current.actions.length, result[1] + calculateDuration(current.actions)];
+        }, [0, 0]);
+    }
+
+    function getDetails(training: Training) {
+        const [actions, duration] = getActionsDuration(training);
+        return `Duration: ${duration} seconds`;
+    }
+
     React.useEffect(() => {
         const deleteSubscription = window.$flow.subscribe(deleteTrainingAction).finish((result) => {
             window.$flow.perform("GET_TRAININGS")
@@ -40,14 +52,14 @@ export function TrainingListItem(props: TrainingListItemProps) {
 
     return <div className="cui-flex cui-animation-fade-in cui-padding-bottom cui-padding-top">
         <div className="cui-flex-grow">
-            <div className="cui-flex cui-middle">
+            <div className="cui-flex cui-middle cui-nowrap">
                 <div className="training-list-item-icon">
                     <span className="cui-text-bold">{props.data.name[0].toUpperCase()}</span>
                 </div>
                 <div className="cui-flex-grow cui-margin-left">
-                    <span className=" cui-text-large">{props.data.name}</span>
-                    <div className="cui-text-muted">
-                        <span>Rounds: {props.data.rounds.length}</span>
+                    <span className=" ">{props.data.name}</span>
+                    <div className="cui-text-muted cui-text-truncate cui-overflow-hidden">
+                        <span>{getDetails(props.data)}</span>
                     </div></div>
             </div>
         </div>

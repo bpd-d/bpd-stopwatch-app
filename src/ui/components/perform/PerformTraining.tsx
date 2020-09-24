@@ -269,18 +269,16 @@ export function PerfromTraining() {
                 <div className="stopwatch-content-width perform-layout cui-text-center animation-fade-in">
                     <div className="perform-main-controls">
                         <h2 className="cui-h2 cui-margin-small-bottom">{state.training.name}</h2>
-                        <p className="cui-text-muted">Round {current.roundIdx + 1} of {state.training.rounds.length}</p>
+                        <p className="cui-text-muted cui-text-small">Round {current.roundIdx + 1} of {state.training.rounds.length}</p>
                         <span className="cui-svg countdown-circle-progress" cui-circle-progress={watchState.progress} id="stopwatch-circle-progress">
                             <div className="">
-                                <h1 className={"cui-h1 cui-margin-remove-top cui-margin-remove-bottom " + watchState.timerCls}>{watchState.timer}</h1>
-                                <div className="cui-margin-small-top"><span className="cui-text-small cui-text-muted">Activity {current.actionIdx + 1}</span></div>
+                                <h1 className={"cui-h1 " + watchState.timerCls}>{watchState.timer}</h1>
                             </div>
                         </span>
-
-
                     </div>
                     <div className="perform-buttons">
                         <div>
+                            <span>{current.actionIdx + 1}</span>
                             <h3 className={"cui-h3 " + current.class}>{current.action && current.action.name}</h3>
                             <div className="cui-flex cui-center">
                                 {watchState.state !== StopWatchStateOptions.STOPPED && <button className="cui-button cui-default cui-margin-small-right" onClick={onPauseClick}>{watchState.state === StopWatchStateOptions.PAUSED ? "Resume" : "Pause"}</button>}

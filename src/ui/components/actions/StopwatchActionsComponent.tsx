@@ -107,7 +107,7 @@ export function StopwatchActionsComponent() {
             })}
             <div className="actions-add-new-button">
                 <div className="cui-flex-center cui-card">
-                    <button className="cui-icon cui-button" cui-icon="plus" onClick={() => { onAddOrEditClick() }}><span className="cui-margin-small-left"> Add new</span></button>
+                    <button className="cui-icon cui-button" cui-icon="plus" onClick={() => { onAddOrEditClick() }}><span className="cui-margin-small-left"> Add New</span></button>
                 </div>
 
             </div>

@@ -92,7 +92,7 @@ body {
         transform       : translate(-50%, -50%);
         width           : 40px;
         height          : 40px;
-        background-color: variables.$component-background-shade;
+        background-color: variables.$component-background-accent-shade;
         border-radius   : 50%
     }
 
@@ -220,13 +220,13 @@ body {
 .countdown-circle-progress {
     display : block;
     position: relative;
-    width   : 160px;
-    height  : 160px;
+    width   : 180px;
+    height  : 180px;
 
     svg {
         position: absolute;
-        width   : 160px;
-        height  : 160px;
+        width   : 180px;
+        height  : 180px;
         top     : 0px;
         left    : 0px;
     }
