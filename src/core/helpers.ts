@@ -44,3 +44,7 @@ export function setDarkMode(darkMode: boolean) {
         utils.setLightMode(darkMode ? "dark" : "light");
     }
 }
+
+export function calculateProgress(current: number, max: number) {
+    return Math.floor((current * 100) / max);
+}

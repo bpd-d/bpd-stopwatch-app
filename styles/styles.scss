@@ -217,6 +217,29 @@ body {
     }
 }
 
+.countdown-circle-progress {
+    display : block;
+    position: relative;
+    width   : 160px;
+    height  : 160px;
+
+    svg {
+        position: absolute;
+        width   : 160px;
+        height  : 160px;
+        top     : 0px;
+        left    : 0px;
+    }
+
+    >div {
+        position : absolute;
+        top      : 50%;
+        left     : 50%;
+        transform: translate(-50%, -50%);
+
+    }
+}
+
 @keyframes timerPulse {
     0% {
         opacity: 1;
