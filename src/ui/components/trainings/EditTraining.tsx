@@ -1,12 +1,12 @@
 import * as React from 'react'
-import { useParams, withRouter } from 'react-router-dom';
-import { ElementManager } from '../../../../node_modules/cui-light/dist/index';
+import { Link, useParams, withRouter } from 'react-router-dom';
 import { ACTIONS_FLOW_ACTIONS } from '../../../app/flow/actions';
-import { showMessage, validateTraining } from '../../../core/helpers';
+import { showMessage } from '../../../core/helpers';
 import { Round, StopwatchAction, Training } from '../../../core/models';
 import { DefaultActions } from '../../../core/statics';
-import { RoundValidator, TrainingValidator } from '../../../core/validators';
+import { TrainingValidator } from '../../../core/validators';
 import { NotFound } from '../common/NotFound';
+import { PageHeader } from '../common/PageHeader';
 import { EditRoundDialog } from './EditRoundDialog';
 import { EditRoundListItem } from './EditRoundListItem';
 
@@ -101,12 +101,7 @@ function EditTraining(props: EditTrainingProps) {
 
     return (<>
         <div className="cui-container stopwatch-content-width">
-            <div className="stopwatch-page-header cui-container cui-center">
-                <div>
-                    <h1 className="cui-h1 cui-text-center">Define training</h1>
-                    <p className="cui-text-center">Customize your training settings</p>
-                </div>
-            </div>
+            <PageHeader title="Define training" description="Customize your training settings" />
         </div>
         <div className="">
             {state.training ?
@@ -164,14 +159,8 @@ function EditTrainingSection(props: EditTrainingSectionProps) {
     }
 
     function onRoundSave(round: Round, index: number) {
-        // let validation = new RoundValidator().validate(round);
-        //   if (validation.status) {
         updateRoundsState(updateOrInsertRound(round, index));
         window.$cui.get("#edit-round-dialog").emit("close");
-        // } else {
-        // alert(validation.errors.join('\n'))
-        // }
-
     }
 
     function updateOrInsertRound(round: Round, index: number) {
@@ -208,6 +197,21 @@ function EditTrainingSection(props: EditTrainingSectionProps) {
         }
     }
 
+    function onDeleteTrainingSub(result: boolean) {
+        props.onCancel();
+    }
+
+    function onDeleteTraining() {
+        window.$cui.alert("delete-training-dialog", "YesNoCancel", {
+            title: "Delete training",
+            message: "Do you really want to delete training: " + state.training.name + "?",
+            reverse: true,
+            onYes: () => {
+                window.$flow.perform("DELETE_TRAINING", state.training.id)
+            }
+        })
+    }
+
     function getDefinedActions(actions: StopwatchAction[]) {
         setDefinedActions({
             actions: [...DefaultActions, ...actions]
@@ -215,8 +219,9 @@ function EditTrainingSection(props: EditTrainingSectionProps) {
     }
 
     React.useEffect(() => {
-        console.log("Edit redraw")
-
+        const deleteTraininSub = window.$flow.subscribe("DELETE_TRAINING", {
+            finish: onDeleteTrainingSub
+        })
         const getDefinedActionsSub = window.$actionsFlow.subscribe(ACTIONS_FLOW_ACTIONS.GET_ALL, { finish: getDefinedActions });
         window.$actionsFlow.perform(ACTIONS_FLOW_ACTIONS.GET_ALL);
         setState({
@@ -225,10 +230,17 @@ function EditTrainingSection(props: EditTrainingSectionProps) {
         })
         return () => {
             window.$actionsFlow.unsubscribe(ACTIONS_FLOW_ACTIONS.GET_ALL, getDefinedActionsSub.id)
+            window.$flow.unsubscribe("DELETE_TRAINING", deleteTraininSub.id);
         }
     }, [props])
 
     return (<>
+        <div className="cui-container cui-flex cui-right cui-middle stopwatch-content-width">
+            <ul className="cui-list cui-inline">
+                <li className="cui-padding-remove"><Link to={`/trainings/perform/${state.training.id}`} className="cui-icon cui-button cui-accent cui-icon-margin" cui-icon="media_play">Run</Link></li>
+                <li className="cui-padding-remove"><a className="cui-icon cui-button cui-icon-margin" cui-icon="trash" onClick={onDeleteTraining}>Delete</a></li>
+            </ul>
+        </div>
         <div className="cui-container stopwatch-content-width cui-flex-grid cui-child-width-1-1 cui-child-width-1-2--m">
             <div className="cui-padding-small-right">
                 <h3 className="cui-h3 cui-text-muted">Common</h3>
@@ -248,9 +260,9 @@ function EditTrainingSection(props: EditTrainingSectionProps) {
                         return <li key={index} className="animation-fade-in"><EditRoundListItem index={index} round={round} onEdit={onRoundEdit} onDelete={onRoundDelete} /></li>
                     })}
                     <li>
-                        <button className="cui-button cui-icon cui-width-1-1" cui-icon="plus" onClick={() => {
+                        <button className="cui-button cui-icon cui-icon-margin cui-width-1-1" cui-icon="plus" onClick={() => {
                             onRoundEdit(null, -1);
-                        }}><span className="cui-margin-small-left">Add New</span></button>
+                        }}>Add New</button>
                     </li>
                 </ul>
             </div>

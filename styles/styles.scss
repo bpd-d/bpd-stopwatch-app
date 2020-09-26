@@ -71,6 +71,11 @@ body {
     }
 }
 
+.edit-round-dialog-body {
+    max-height: 400px;
+    overflow-y: auto;
+}
+
 .stopwatch-home-list {
     height: 100%;
 }
@@ -96,7 +101,8 @@ body {
         border-radius   : 50%
     }
 
-    span {
+    span,
+    a {
         position : absolute;
         top      : 50%;
         left     : 50%;

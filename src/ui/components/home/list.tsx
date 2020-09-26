@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Round, Training } from "../../../core/models";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { calculateDuration } from "../../../core/helpers";
 
 export interface TrainingListProps {
@@ -22,12 +22,8 @@ export function TrainingList(props: TrainingListProps) {
 }
 
 export function TrainingListItem(props: TrainingListItemProps) {
-    const deleteTrainingAction = "DELETE_TRAINING"
-    function onDelete() {
-        if (props.onDelete) {
-            props.onDelete(props.data.id)
-        }
-    }
+    const deleteTrainingAction = "DELETE_TRAINING";
+    let history = useHistory();
 
     function getActionsDuration(training: Training) {
         return training.rounds.reduce<[number, number]>((result: [number, number], current: Round) => {
@@ -38,6 +34,10 @@ export function TrainingListItem(props: TrainingListItemProps) {
     function getDetails(training: Training) {
         const [actions, duration] = getActionsDuration(training);
         return `Duration: ${duration} seconds`;
+    }
+
+    function onItemClick(id: number) {
+        history.push(`/trainings/edit/${props.data.id}`)
     }
 
     React.useEffect(() => {
@@ -51,24 +51,22 @@ export function TrainingListItem(props: TrainingListItemProps) {
     })
 
     return <div className="cui-flex cui-animation-fade-in cui-padding-bottom cui-padding-top">
-        <div className="cui-flex-grow">
+        <div className="cui-flex-grow" onClick={() => {
+            onItemClick(props.data.id)
+        }}>
             <div className="cui-flex cui-middle cui-nowrap">
                 <div className="training-list-item-icon">
                     <span className="cui-text-bold">{props.data.name[0].toUpperCase()}</span>
                 </div>
                 <div className="cui-flex-grow cui-margin-left">
-                    <span className=" ">{props.data.name}</span>
+                    <span >{props.data.name}</span>
                     <div className="cui-text-muted cui-text-truncate cui-overflow-hidden">
                         <span>{getDetails(props.data)}</span>
                     </div></div>
             </div>
         </div>
         <div className="cui-flex-shrink cui-flex-center">
-            <ul className="cui-icon-nav">
-                <li><Link to={`/trainings/perform/${props.data.id}`} className="cui-icon cui-accent" cui-icon="media_play"></Link></li>
-                <li><Link to={`/trainings/edit/${props.data.id}`} className="cui-icon" cui-icon="edit"></Link></li>
-                <li><a onClick={onDelete} className="cui-icon" cui-icon="trash"></a></li>
-            </ul>
+            <Link to={`/trainings/perform/${props.data.id}`} className="cui-icon-button cui-bold" cui-icon="media_play"></Link>
         </div>
     </div>
 }

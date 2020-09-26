@@ -63,6 +63,7 @@ export function AddActionDialog(props: AddActionDialogProps) {
     return (<BpdDialog
         title="Add new"
         id="add-action-dialog"
+        className="cui-reverse-auto"
         body={<>
             <div className="cui-form">
                 <label className="cui-form-label">Name</label>

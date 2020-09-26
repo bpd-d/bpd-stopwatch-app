@@ -80,45 +80,48 @@ export function EditRoundDialog(props: EditRoundDialogProps) {
     return (<BpdDialog
         id="edit-round-dialog"
         title="Edit Round"
+        className="cui-reverse-auto"
         body={<>
-            <ul className="cui-list">
-                {state.actions && state.actions.map((item: StopwatchAction, index: number) => {
-                    return <li key={index} className="animation-fade-in" >
-                        <div className="cui-flex cui-middle">
-                            <div className="cui-flex-grow">
-                                <div className="cui-flex cui-middle">
-                                    <div className="cui-flex-center cui-margin-right">
-                                        <BpdActionIcon type={item.type} />
+            <div className="edit-round-dialog-body">
+                <ul className="cui-list">
+                    {state.actions && state.actions.map((item: StopwatchAction, index: number) => {
+                        return <li key={index} className="animation-fade-in" >
+                            <div className="cui-flex cui-middle">
+                                <div className="cui-flex-grow">
+                                    <div className="cui-flex cui-middle">
+                                        <div className="cui-flex-center cui-margin-right">
+                                            <BpdActionIcon type={item.type} />
+                                        </div>
+                                        <div className="cui-flex-grow">
+                                            <div className="">{item.name}</div>
+                                            <div className="cui-text-muted">Lasts {item.duration} seconds</div>
+                                        </div>
                                     </div>
-                                    <div className="cui-flex-grow">
-                                        <div className="">{item.name}</div>
-                                        <div className="cui-text-muted">Lasts {item.duration} seconds</div>
-                                    </div>
-                                </div>
 
+                                </div>
+                                <ul className="cui-icon-nav">
+                                    <li><a className="cui-icon" cui-icon="trash" onClick={() => { onDeleteAction(index) }}></a></li>
+                                </ul>
                             </div>
-                            <ul className="cui-icon-nav">
-                                <li><a className="cui-icon" cui-icon="trash" onClick={() => { onDeleteAction(index) }}></a></li>
-                            </ul>
+                        </li>
+                    })}
+                    <li>
+                        <div className="cui-flex cui-middle cui-nowrap">
+                            <div className="cui-flex-grow">
+                                <ActionsSelect id="round-action-select" className="cui-width-1-2" name="action" value={state.selected?.name} actions={props.definedActions} onSelect={onActionSelectChange} />
+                            </div>
+                            <div className="">
+                                <a cui-icon="plus" className="cui-icon-button" onClick={onAddAction}></a>
+                            </div>
                         </div>
                     </li>
-                })}
-                <li>
-                    <div className="cui-flex cui-middle cui-nowrap">
-                        <div className="cui-flex-grow">
-                            <ActionsSelect id="round-action-select" className="cui-width-1-2" name="action" value={state.selected?.name} actions={props.definedActions} onSelect={onActionSelectChange} />
-                        </div>
-                        <div className="">
-                            <a cui-icon="plus" className="cui-icon-button" onClick={onAddAction}></a>
-                        </div>
-                    </div>
-                </li>
-            </ul>
-            {state.errors && state.errors.length > 0 && <ul className="cui-list ">
-                {state.errors.map((error: string, index: number) => {
-                    return <li key={index} className="cui-animation-slide-in"><span className="cui-text-error">{error}</span></li>
-                })}
-            </ul>}
+                </ul>
+                {state.errors && state.errors.length > 0 && <ul className="cui-list ">
+                    {state.errors.map((error: string, index: number) => {
+                        return <li key={index} className="cui-animation-slide-in"><span className="cui-text-error">{error}</span></li>
+                    })}
+                </ul>}
+            </div>
         </>
         }
         footer={
