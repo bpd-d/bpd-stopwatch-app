@@ -65,8 +65,10 @@ export function TrainingListItem(props: TrainingListItemProps) {
                     </div></div>
             </div>
         </div>
-        <div className="cui-flex-shrink cui-flex-center">
-            <Link to={`/trainings/perform/${props.data.id}`} className="cui-icon-button cui-bold" cui-icon="media_play"></Link>
+        <div className="cui-flex-shrink">
+            <div>
+                <Link to={`/trainings/perform/${props.data.id}`} className="cui-icon-button cui-bold" cui-icon="media_play"></Link>
+            </div>
         </div>
     </div>
 }

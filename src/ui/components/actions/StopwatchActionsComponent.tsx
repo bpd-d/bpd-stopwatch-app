@@ -13,7 +13,7 @@ const defaultAction: StopwatchAction = {
     type: "exercise",
     duration: 5,
     removable: true,
-    editable: false
+    editable: true
 }
 
 export interface BpdDialogState {
@@ -24,7 +24,6 @@ export interface StopWatchActionsState {
     actions: StopwatchAction[];
     current: StopwatchAction;
 }
-
 
 
 export function StopwatchActionsComponent() {
@@ -75,28 +74,24 @@ export function StopwatchActionsComponent() {
 
     return (<><div className="stopwatch-content-width ">
         <PageHeader title="Activities" description="Define activies which you want to perform in trainings!" />
-        <div className="cui-container cui-flex-grid cui-flex-grid-match cui-child-width-1-2--s cui-child-width-1-3--m">
+        <div className="cui-container cui-flex-grid cui-flex-grid-match cui-child-width-1-2 cui-child-width-1-3--m">
             {state.actions && state.actions.map((action: StopwatchAction, index: number) => {
                 return (
                     <div key={index} className="cui-animation-fade-in">
-                        <div className={"cui-card cui-default " + getBgClassByType(action.type)}>
+                        <div className={"cui-card cui-default " + getBgClassByType(action.type)} onClick={() => { if (action.editable) { onAddOrEditClick(action) } }}>
                             <div className="cui-card-header cui-flex cui-between">
                                 <span className="cui-card-title">{action.name}</span>
                                 <BpdActionIcon type={action.type} />
                             </div>
-                            <div className="cui-card-body">
-                                <div className="cui-flex cui-middle">
-                                    <div className="cui-flex-grow">
-                                        <div className="cui-text-muted">Duration: <span>{action.duration} seconds</span></div>
-                                    </div>
-                                    <div className="cui-flex-shrink">
-                                        <ul className="cui-icon-nav">
-                                            {action.editable && <li><a className="cui-icon" cui-icon="edit" onClick={() => onAddOrEditClick(action)}></a></li>}
-                                            {action.removable && <li><a className="cui-icon" cui-icon="trash" onClick={() => onDelete(action)}></a></li>}
-                                        </ul>
-                                    </div>
+                            <div className="cui-card-body cui-flex cui-middle action-card-height">
+                                <div className="cui-flex-grow">
+                                    <div className="cui-text-muted"><span>{action.duration} seconds</span></div>
                                 </div>
-
+                                <div className="cui-flex-shrink">
+                                    <ul className="cui-icon-nav">
+                                        {action.removable && <li><a className="cui-icon" cui-icon="trash" onClick={() => onDelete(action)}></a></li>}
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>)

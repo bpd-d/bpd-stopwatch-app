@@ -348,7 +348,9 @@ export function PerfromTraining() {
                                 <button className={"cui-button " + watchState.startBtnCls} onClick={onStartClick}>{watchState.state === StopWatchStateOptions.STOPPED ? "Start" : "Stop"}</button>
                             </div>
                             <p className="cui-text-muted">{state.training.description}</p>
-                            <span className="cui-text-error">{errorMessage}</span>
+                            <div className="">
+                                {is(errorMessage) && <span className="cui-icon cui-error cui-tooltip" cui-icon="ban" data-tooltip="error"></span>}
+                            </div>
                         </div>
                     </div>
                 </div>
