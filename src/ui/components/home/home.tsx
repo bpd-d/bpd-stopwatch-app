@@ -91,11 +91,9 @@ export class Home extends React.Component<any, HomeState> {
                 </div>
             </div>
             <div className="cui-position-float cui-position-bottom cui-position-right cui-margin cui-margin-large--l">
-                <Link to="/trainings/edit/new" className="cui-button cui-background-default cui-box-shadow cui-rounded">
-                    <span className="cui-icon" cui-icon="plus"></span>
-                    <span className="cui-margin-small-left cui-text-muted cui-visible--m">Add New</span></Link>
+                <Link to="/trainings/edit/new" className="cui-button cui-icon cui-icon-margin cui-background-default cui-box-shadow cui-rounded" cui-icon="plus">Add New</Link>
             </div>
-        </div >;
+        </div>;
     }
 }
 

@@ -13,7 +13,7 @@
    viewBox="0 0 20 20"
    version="1.1"
    id="svg8"
-   inkscape:version="1.0 (4035a4fb49, 2020-05-01)">
+   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)">
   <defs
      id="defs2" />
   <sodipodi:namedview
@@ -50,16 +50,14 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
-  <circle
-     r="8.5"
-     cy="10"
-     cx="10"
+  <path
      id="path1439"
-     style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;paint-order:fill markers stroke" />
+     style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;paint-order:fill markers stroke"
+     d="M 18.5,10 A 8.5,8.5 0 0 1 10,18.5 8.5,8.5 0 0 1 1.5,10 8.5,8.5 0 0 1 10,1.5 8.5,8.5 0 0 1 18.5,10 Z" />
   <path
      d="M 10 3.5 L 10 10 L 16.5 10 A 6.5 6.5 0 0 0 10 3.5 z "
      style="fill:none;stroke:#000000;stroke-width:0.999998;stroke-linecap:round;stroke-linejoin:round;paint-order:fill markers stroke"

@@ -13,7 +13,7 @@
    viewBox="0 0 20 20"
    version="1.1"
    id="svg8"
-   inkscape:version="1.0 (4035a4fb49, 2020-05-01)">
+   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)">
   <defs
      id="defs2" />
   <sodipodi:namedview
@@ -59,12 +59,10 @@
      style="fill:none;stroke:#000000;stroke-width:0.999997;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;paint-order:fill markers stroke"
      d="m 6.9116187,18 v -1.98834 c -4.6e-6,-0.0039 -6.8e-6,-0.0078 -6.8e-6,-0.01166 0,-3.037566 1.362932,-5.5 3.044194,-5.5 C 11.637067,10.5 13,12.962434 13,16 v 0 c 0,0.0039 -2e-6,0.0078 -7e-6,0.01171 V 18"
      sodipodi:nodetypes="cccssscc" />
-  <circle
-     r="2.5"
-     cy="3.9843886"
-     cx="9.9831076"
+  <path
      id="circle845"
-     style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;paint-order:fill markers stroke" />
+     style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;paint-order:fill markers stroke"
+     d="m 12.483108,3.9843886 a 2.5,2.5 0 0 1 -2.5000004,2.5 2.5,2.5 0 0 1 -2.5,-2.5 2.5,2.5 0 0 1 2.5,-2.5 2.5,2.5 0 0 1 2.5000004,2.5 z" />
   <path
      id="path858"
      style="fill:none;stroke:#000000;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-opacity:1;paint-order:fill markers stroke"

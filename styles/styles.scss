@@ -452,10 +452,52 @@ body {
 @include dark.definitions;
 @include print.definitions;
 
-.#{$prefix}-dark {
+
+@include mixins.mode-dark {
     .training-list-item-icon {
         &:before {
             background-color: variables.$component-background-shade-dark;
+        }
+    }
+
+    .action-background-warmup {
+        background-color: variables.$component-background-success-shade-dark !important;
+    }
+
+    .action-background-break {
+        background-color: variables.$component-background-secondary-shade-dark !important;
+    }
+
+    .action-background-cooldown {
+        background-color: variables.$component-background-shade-dark !important;
+    }
+
+    .action-background-exercise {
+        background-color: variables.$component-background-accent-shade-dark !important;
+    }
+
+    .total-circle-progress {
+        svg {
+            path {
+                stroke: variables.$component-background-success !important;
+            }
+
+        }
+    }
+
+    .current-circle-progress {
+        svg {
+            path {
+                stroke: variables.$component-background-secondary !important;
+            }
+        }
+    }
+
+    .countdown-circle-progress {
+        svg {
+            path {
+                stroke: variables.$component-background-accent !important;
+            }
         }
     }
 }
