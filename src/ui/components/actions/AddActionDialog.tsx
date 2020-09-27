@@ -89,7 +89,6 @@ export function AddActionDialog(props: AddActionDialogProps) {
                 <input type="checkbox" className="cui-checkbox" id="checkbox-1-1" name="removable" checked={state.removable} onChange={onValueChange} />
                 <label htmlFor="checkbox-1-1"> Removable</label>
             </div>
-
             <ErrorsList errors={errors} />
         </>
         }

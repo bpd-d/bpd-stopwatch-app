@@ -323,7 +323,7 @@ export function PerfromTraining() {
             <div className={"stopwatch-layout-content cui-flex-center " + getBackgroundClass(current.action)}>
                 <div className="stopwatch-content-width perform-layout cui-text-center animation-fade-in">
                     <div className="perform-main-controls">
-                        <h2 className="cui-h2 cui-margin-small-bottom">{state.training.name}</h2>
+                        <h2 className="cui-h2 cui-margin-remove">{state.training.name}</h2>
                         <p className="cui-text-muted cui-text-small cui-margin-remove">Round {current.roundIdx + 1} of {state.training.rounds.length}</p>
                         <span className="cui-svg total-circle-progress" cui-circle-progress={watchState.trainingProgress}>
                             <div className="">

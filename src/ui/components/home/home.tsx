@@ -90,7 +90,7 @@ export class Home extends React.Component<any, HomeState> {
                     {this.state.list.length > 0 ? <TrainingList list={this.state.list} onDelete={this.deleteTraining} /> : <NoTrainings />}
                 </div>
             </div>
-            <div className="cui-position-float cui-position-bottom cui-position-right cui-margin cui-margin-large--l">
+            <div className="cui-position-float cui-position-bottom cui-position-right cui-margin cui-margin-large--l z-index-100">
                 <Link to="/trainings/edit/new" className="cui-button cui-icon cui-icon-margin cui-background-default cui-box-shadow cui-rounded" cui-icon="plus">Add New</Link>
             </div>
         </div>;

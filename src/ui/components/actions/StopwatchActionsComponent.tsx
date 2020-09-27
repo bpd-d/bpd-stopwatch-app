@@ -5,7 +5,6 @@ import { ACTIONS_FLOW_ACTIONS } from '../../../app/flow/actions';
 import { BpdActionIcon } from '../common/BpdActionIcon';
 import { AddActionDialog } from './AddActionDialog';
 import { PageHeader } from '../common/PageHeader';
-import { ActionValidator } from '../../../core/validators';
 import { deleteActionConfirmDialog } from '../common/Dialogs';
 import { getBgClassByType } from '../../../core/helpers';
 
@@ -102,14 +101,8 @@ export function StopwatchActionsComponent() {
                         </div>
                     </div>)
             })}
-            {/* <div className="actions-add-new-button">
-                <div className="cui-flex-center cui-card">
-                    <button className="cui-icon cui-button" cui-icon="plus" onClick={() => { onAddOrEditClick() }}><span className="cui-margin-small-left"> Add New</span></button>
-                </div>
-            </div> */}
-
         </div>
-        <div className="cui-position-float cui-position-bottom cui-position-right cui-margin cui-margin-large--l">
+        <div className="cui-position-float cui-position-bottom cui-position-right cui-margin cui-margin-large--l z-index-100">
             <button className="cui-icon cui-button cui-icon-margin cui-background-default cui-box-shadow cui-rounded" cui-icon="plus" onClick={() => { onAddOrEditClick() }}>Add New</button>
         </div>
     </div>

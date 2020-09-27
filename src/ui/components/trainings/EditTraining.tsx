@@ -103,7 +103,7 @@ function EditTraining(props: EditTrainingProps) {
 
     return (<>
         <div className="cui-container stopwatch-content-width">
-            <PageHeader title={is(state.training) ? "Update training " + state.training.name : "Define training"} description="Customize your training settings" />
+            <PageHeader title={is(state.training?.name) ? "Update training " + state.training.name : "Define training"} description="Customize your training settings" />
         </div>
         <div className="">
             {state.training ?
