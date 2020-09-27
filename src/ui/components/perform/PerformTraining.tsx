@@ -4,7 +4,7 @@ import { is } from '../../../../node_modules/bpd-toolkit/dist/esm/index';
 import { KeepScreenAwakeFeature } from '../../../api/screen/screen';
 import { StopWatch, StopWatchState, StopWatchStateOptions } from '../../../api/stopwatch/stopwatch';
 import { SETTINGS_FLOW_ACTIONS } from '../../../app/flow/settings';
-import { calcDisplayTimer, calculateProgress, showMessage } from '../../../core/helpers';
+import { calcDisplayTimer, calculateDuration, calculateProgress, getBgClassByType, getTotalDuration, showMessage } from '../../../core/helpers';
 import { Round, StopwatchAction, Training } from '../../../core/models';
 import { ActionValidator, RoundValidator, TrainingValidator } from '../../../core/validators';
 import { NotFound } from '../common/NotFound';;
@@ -12,6 +12,7 @@ import { NotFound } from '../common/NotFound';;
 interface TimeStateData {
     time: number;
     progress: number;
+    ct?: number;
 }
 
 interface PerfromTrainingState {
@@ -24,6 +25,8 @@ interface CurrentTrainingState {
     action: StopwatchAction;
     actionIdx: number;
     class: string;
+    roundDuration: number;
+    totalDuration: number;
 }
 
 interface StopwatchState {
@@ -32,6 +35,8 @@ interface StopwatchState {
     startBtnCls: string;
     timerCls: string;
     progress: number;
+    roundProgress: number;
+    trainingProgress: number;
 }
 
 const defaultCurrent: CurrentTrainingState = {
@@ -39,12 +44,14 @@ const defaultCurrent: CurrentTrainingState = {
     roundIdx: -1,
     actionIdx: -1,
     action: undefined,
-    class: ""
+    class: "",
+    roundDuration: 0,
+    totalDuration: 0
 }
 
 export function PerfromTraining() {
     const [state, setState] = React.useState<PerfromTrainingState>({
-        training: undefined,
+        training: undefined
     })
 
     const [stopwatch, setStopwatch] = React.useState<StopWatch>(undefined)
@@ -56,7 +63,9 @@ export function PerfromTraining() {
         state: StopWatchStateOptions.STOPPED,
         startBtnCls: getStartBtnCls(StopWatchStateOptions.STOPPED),
         timerCls: "",
-        progress: 100
+        progress: 100,
+        roundProgress: 100,
+        trainingProgress: 100,
     })
 
     const [errorMessage, setErrorMessage] = React.useState("");
@@ -85,7 +94,7 @@ export function PerfromTraining() {
         }
         setState({
             ...state,
-            training: training,
+            training: training
         })
         setDefaultCurrentState(training);
     }
@@ -99,7 +108,9 @@ export function PerfromTraining() {
             round: round,
             action: action,
             actionIdx: 0,
-            class: getClassByType(action.type)
+            class: getClassByType(action.type),
+            roundDuration: calculateDuration(round.actions),
+            totalDuration: getTotalDuration(training)[1]
         })
     }
 
@@ -120,11 +131,13 @@ export function PerfromTraining() {
             let newRound = trainingRef.current.rounds[nextRoundIdx];
             let newAction = newRound.actions[0];
             setCurrent({
+                ...currentRef.current,
                 round: newRound,
                 roundIdx: nextRoundIdx,
                 actionIdx: 0,
                 action: newAction,
-                class: getClassByType(newAction.type)
+                class: getClassByType(newAction.type),
+                roundDuration: calculateDuration(newRound.actions),
             })
             return true;
         }
@@ -135,9 +148,12 @@ export function PerfromTraining() {
     function onStopwatchTick(currentTime: number, stopwatch: StopWatch): boolean {
         let ct = currentRef.current.action.duration - currentTime;
         let progress = calculateProgress(currentTime, currentRef.current.action.duration)
-        // console.log(currentRef.current.action.duration)
         if (ct > 0) {
-            setStopWatchState(stopwatch.getState(), { time: ct, progress: 100 - progress })
+            setStopWatchState(stopwatch.getState(), {
+                time: ct,
+                progress: 100 - progress,
+                ct: currentTime
+            })
             if (ct > 0 && ct <= 3) {
                 playSound();
             }
@@ -145,9 +161,11 @@ export function PerfromTraining() {
         } else {
             playEndSound();
             stopwatch.reset();
-            setStopWatchState(StopWatchStateOptions.RUNNING, { time: 0, progress: 100 })
+            setStopWatchState(StopWatchStateOptions.RUNNING, { time: 0, progress: 100, ct: currentTime })
             if (!setNextAction()) {
-                setStopWatchState(StopWatchStateOptions.STOPPED, { time: 0, progress: 100 })
+                setStopWatchState(StopWatchStateOptions.STOPPED, {
+                    time: 0, progress: 100, ct: 0
+                })
                 return false;
             }
             return true;
@@ -158,7 +176,7 @@ export function PerfromTraining() {
         if (watchState.state === StopWatchStateOptions.STOPPED && stopwatch.start()) {
             setStopWatchState(StopWatchStateOptions.RUNNING);
         } else if (watchState.state !== StopWatchStateOptions.STOPPED && stopwatch.stop()) {
-            setStopWatchState(StopWatchStateOptions.STOPPED, { time: 0, progress: 99 });
+            setStopWatchState(StopWatchStateOptions.STOPPED, { time: 0, progress: 100, ct: 0 });
             setDefaultCurrentState(state.training);
         }
     }
@@ -179,14 +197,44 @@ export function PerfromTraining() {
                 startBtnCls: getStartBtnCls(watchstate)
             })
         } else {
+            let roundProgress = calculateRoundProgress(timeData.ct);
+            let trainginProgress = calculateTrainingProgress(timeData.ct);
+            console.log("Duration: " + trainginProgress);
             setWatchState({
                 timer: calcDisplayTimer(timeData.time),
                 timerCls: getTimerCls(timeData.time),
                 state: watchstate,
                 startBtnCls: getStartBtnCls(watchstate),
-                progress: timeData.progress
+                progress: timeData.progress,
+                roundProgress: roundProgress,
+                trainingProgress: trainginProgress
             })
         }
+    }
+
+    function calculateRoundCurrentTime(ct: number) {
+        return currentRef.current.round.actions.reduce<number>((result: number, act: StopwatchAction, idx: number) => {
+            if (idx < currentRef.current.actionIdx) {
+                return result + act.duration;
+            }
+            return result;
+        }, 0) + ct;
+    }
+
+    function calculateRoundProgress(ct: number) {
+        return 100 - calculateProgress(calculateRoundCurrentTime(ct), currentRef.current.roundDuration);
+    }
+
+    function calculateTrainingProgress(ct: number) {
+        let duration = currentRef.current.roundIdx > 0 ?
+            trainingRef.current.rounds.reduce<number>((resut: number, round: Round, idx: number) => {
+                if (idx < currentRef.current.roundIdx) {
+                    return resut + calculateDuration(round.actions);
+                }
+                return resut;
+            }, 0) + calculateRoundCurrentTime(ct)
+            : calculateRoundCurrentTime(ct);
+        return 100 - calculateProgress(duration, currentRef.current.totalDuration);
     }
 
     function playSound() {
@@ -235,6 +283,13 @@ export function PerfromTraining() {
         setCanPlay(canPlay);
     }
 
+    function getBackgroundClass(action: StopwatchAction) {
+        if (!is(action)) {
+            return "";
+        }
+        return getBgClassByType(action.type);
+    }
+
     React.useEffect(() => {
         const getTrainingSubscription = window.$flow.subscribe("GET_TRAINING", { finish: onGetTraining })
         const settingsPlaySound = window.$settingsFlow.subscribe(SETTINGS_FLOW_ACTIONS.GET_SOUND_ENABLED, {
@@ -265,20 +320,28 @@ export function PerfromTraining() {
     return (<>
         {!state.training ?
             <NotFound message="We couldn't find training" /> :
-            <div className="stopwatch-layout-content cui-flex-center ">
+            <div className={"stopwatch-layout-content cui-flex-center " + getBackgroundClass(current.action)}>
                 <div className="stopwatch-content-width perform-layout cui-text-center animation-fade-in">
                     <div className="perform-main-controls">
                         <h2 className="cui-h2 cui-margin-small-bottom">{state.training.name}</h2>
-                        <p className="cui-text-muted cui-text-small">Round {current.roundIdx + 1} of {state.training.rounds.length}</p>
-                        <span className="cui-svg countdown-circle-progress" cui-circle-progress={watchState.progress} id="stopwatch-circle-progress">
+                        <p className="cui-text-muted cui-text-small cui-margin-remove">Round {current.roundIdx + 1} of {state.training.rounds.length}</p>
+                        <span className="cui-svg total-circle-progress" cui-circle-progress={watchState.trainingProgress}>
                             <div className="">
-                                <h1 className={"cui-h1 " + watchState.timerCls}>{watchState.timer}</h1>
+                                <span className="cui-svg current-circle-progress" cui-circle-progress={watchState.roundProgress}>
+                                    <div>
+                                        <span className="cui-svg countdown-circle-progress" cui-circle-progress={watchState.progress}>
+                                            <div>
+                                                <span className="cui-block cui-text-small">{current.actionIdx + 1}</span>
+                                                <h1 className={"cui-h1 cui-margin-remove " + watchState.timerCls}>{watchState.timer}</h1>
+                                            </div>
+                                        </span>
+                                    </div>
+                                </span>
                             </div>
                         </span>
                     </div>
                     <div className="perform-buttons">
-                        <div>
-                            <span>{current.actionIdx + 1}</span>
+                        <div className="cui-width-1-1">
                             <h3 className={"cui-h3 " + current.class}>{current.action && current.action.name}</h3>
                             <div className="cui-flex cui-center">
                                 {watchState.state !== StopWatchStateOptions.STOPPED && <button className="cui-button cui-default cui-margin-small-right" onClick={onPauseClick}>{watchState.state === StopWatchStateOptions.PAUSED ? "Resume" : "Pause"}</button>}

@@ -80,7 +80,6 @@ export function EditRoundDialog(props: EditRoundDialogProps) {
     return (<BpdDialog
         id="edit-round-dialog"
         title="Edit Round"
-        className="cui-reverse-auto"
         body={<>
             <div className="edit-round-dialog-body">
                 <ul className="cui-list">

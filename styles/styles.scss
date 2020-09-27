@@ -1,6 +1,7 @@
 $prefix                                                                    : 'cui' !default;
 $navbar-height                                                             : 60px;
 $footer-height                                                             : 36px;
+$countdown-stroke-width                                                    : 6px;
 @use "../node_modules/cui-styles/styles/variables"as variables with($prefix: $prefix);
 @use "../node_modules/cui-styles/styles/root"as root with($prefix          : $prefix);
 @use '../node_modules/cui-styles/styles/core/head'as head;
@@ -30,7 +31,6 @@ body {
 #root {
     height: 100vh;
 }
-
 
 * {
     box-sizing: border-box;
@@ -145,26 +145,6 @@ body {
     }
 }
 
-@keyframes stopTickWatch {
-    0% {
-        transform: rotate(-120deg);
-    }
-
-    100% {
-        transform: rotate(0deg);
-    }
-}
-
-@keyframes tickFrames {
-    0% {
-        opacity: 0;
-    }
-
-    100% {
-        opacity: 1;
-    }
-}
-
 .stopwatch-content-width {
     width : 100%;
     margin: 0 auto;
@@ -199,6 +179,23 @@ body {
     background-color: variables.$component-background-accent;
 }
 
+
+.action-background-warmup {
+    background-color: variables.$component-background-success-shade !important;
+}
+
+.action-background-break {
+    background-color: variables.$component-background-secondary-shade !important;
+}
+
+.action-background-cooldown {
+    background-color: variables.$component-background-shade !important;
+}
+
+.action-background-exercise {
+    background-color: variables.$component-background-accent-shade !important;
+}
+
 .transition-toggle {
     opacity: 0;
 }
@@ -223,18 +220,23 @@ body {
     }
 }
 
-.countdown-circle-progress {
+.total-circle-progress {
     display : block;
     position: relative;
-    width   : 180px;
-    height  : 180px;
+    width   : 176px;
+    height  : 176px;
 
     svg {
         position: absolute;
-        width   : 180px;
-        height  : 180px;
+        width   : 174px;
+        height  : 174px;
         top     : 0px;
         left    : 0px;
+
+        path {
+            stroke      : variables.$component-background-success;
+            stroke-width: $countdown-stroke-width;
+        }
     }
 
     >div {
@@ -242,6 +244,62 @@ body {
         top      : 50%;
         left     : 50%;
         transform: translate(-50%, -50%);
+
+    }
+}
+
+.current-circle-progress {
+    display : block;
+    position: relative;
+    width   : 150px;
+    height  : 150px;
+
+    svg {
+        position: absolute;
+        width   : 148px;
+        height  : 148px;
+        top     : 0px;
+        left    : 0px;
+
+        path {
+            stroke      : variables.$component-background-secondary;
+            stroke-width: $countdown-stroke-width;
+        }
+    }
+
+    >div {
+        position : absolute;
+        top      : 50%;
+        left     : 50%;
+        transform: translate(-50%, -50%);
+
+    }
+}
+
+.countdown-circle-progress {
+    display : block;
+    position: relative;
+    width   : 128px;
+    height  : 128px;
+
+    svg {
+        position: absolute;
+        width   : 126px;
+        height  : 126px;
+        top     : 0px;
+        left    : 0px;
+
+        path {
+            stroke      : variables.$component-background-accent;
+            stroke-width: $countdown-stroke-width;
+        }
+    }
+
+    >div {
+        position : absolute;
+        top      : 50%;
+        left     : 50%;
+        transform: translate(-50%, -70%);
 
     }
 }
@@ -261,6 +319,26 @@ body {
 }
 
 @keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes stopTickWatch {
+    0% {
+        transform: rotate(-120deg);
+    }
+
+    100% {
+        transform: rotate(0deg);
+    }
+}
+
+@keyframes tickFrames {
     0% {
         opacity: 0;
     }

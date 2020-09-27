@@ -6,6 +6,8 @@ import { BpdActionIcon } from '../common/BpdActionIcon';
 import { AddActionDialog } from './AddActionDialog';
 import { PageHeader } from '../common/PageHeader';
 import { ActionValidator } from '../../../core/validators';
+import { deleteActionConfirmDialog } from '../common/Dialogs';
+import { getBgClassByType } from '../../../core/helpers';
 
 const defaultAction: StopwatchAction = {
     name: "",
@@ -39,12 +41,8 @@ export function StopwatchActionsComponent() {
     }
 
     function onDelete(action: StopwatchAction) {
-        window.$cui.alert("delete-action-dialog", "YesNoCancel", {
-            title: "Delete action",
-            message: "Do you really want to delete action: " + action.name,
-            onYes: () => {
-                window.$actionsFlow.perform(ACTIONS_FLOW_ACTIONS.REMOVE_ACTION, action);
-            }
+        deleteActionConfirmDialog(action.name, () => {
+            window.$actionsFlow.perform(ACTIONS_FLOW_ACTIONS.REMOVE_ACTION, action);
         })
     }
 
@@ -62,7 +60,6 @@ export function StopwatchActionsComponent() {
         })
         let dialogCui = window.$cui.get("#add-action-dialog");
         dialogCui.emit('open');
-
     }
 
     React.useEffect(() => {
@@ -83,7 +80,7 @@ export function StopwatchActionsComponent() {
             {state.actions && state.actions.map((action: StopwatchAction, index: number) => {
                 return (
                     <div key={index} className="cui-animation-fade-in">
-                        <div className="cui-card cui-default">
+                        <div className={"cui-card cui-default " + getBgClassByType(action.type)}>
                             <div className="cui-card-header cui-flex cui-between">
                                 <span className="cui-card-title">{action.name}</span>
                                 <BpdActionIcon type={action.type} />

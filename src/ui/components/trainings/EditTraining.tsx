@@ -1,10 +1,12 @@
 import * as React from 'react'
 import { Link, useParams, withRouter } from 'react-router-dom';
+import { is } from '../../../../node_modules/bpd-toolkit/dist/esm/index';
 import { ACTIONS_FLOW_ACTIONS } from '../../../app/flow/actions';
 import { showMessage } from '../../../core/helpers';
 import { Round, StopwatchAction, Training } from '../../../core/models';
 import { DefaultActions } from '../../../core/statics';
 import { TrainingValidator } from '../../../core/validators';
+import { deleteRoundConfirmDialog, onDeleteTrainingDialog } from '../common/Dialogs';
 import { NotFound } from '../common/NotFound';
 import { PageHeader } from '../common/PageHeader';
 import { EditRoundDialog } from './EditRoundDialog';
@@ -101,7 +103,7 @@ function EditTraining(props: EditTrainingProps) {
 
     return (<>
         <div className="cui-container stopwatch-content-width">
-            <PageHeader title="Define training" description="Customize your training settings" />
+            <PageHeader title={is(state.training) ? "Update training " + state.training.name : "Define training"} description="Customize your training settings" />
         </div>
         <div className="">
             {state.training ?
@@ -131,18 +133,13 @@ function EditTrainingSection(props: EditTrainingSectionProps) {
             currentRound: round
         })
         window.$cui.get("#edit-round-dialog").emit("open")
-        //rounds[index] = 
     }
 
     function onRoundDelete(round: Round, index: number) {
-        window.$cui.alert("delete-round-dialog", "YesNoCancel", {
-            title: "Delete round",
-            message: "Do you really want to delete this round?",
-            onYes: () => {
-                let rounds = [...state.training.rounds]
-                rounds.splice(index, 1)
-                updateRoundsState(rounds)
-            }
+        deleteRoundConfirmDialog(() => {
+            let rounds = [...state.training.rounds]
+            rounds.splice(index, 1)
+            updateRoundsState(rounds)
         })
     }
 
@@ -202,14 +199,11 @@ function EditTrainingSection(props: EditTrainingSectionProps) {
     }
 
     function onDeleteTraining() {
-        window.$cui.alert("delete-training-dialog", "YesNoCancel", {
-            title: "Delete training",
-            message: "Do you really want to delete training: " + state.training.name + "?",
-            reverse: true,
-            onYes: () => {
-                window.$flow.perform("DELETE_TRAINING", state.training.id)
-            }
-        })
+        onDeleteTrainingDialog(state.training.name, onYes)
+    }
+
+    function onYes() {
+        window.$flow.perform("DELETE_TRAINING", state.training.id)
     }
 
     function getDefinedActions(actions: StopwatchAction[]) {
@@ -232,15 +226,15 @@ function EditTrainingSection(props: EditTrainingSectionProps) {
             window.$actionsFlow.unsubscribe(ACTIONS_FLOW_ACTIONS.GET_ALL, getDefinedActionsSub.id)
             window.$flow.unsubscribe("DELETE_TRAINING", deleteTraininSub.id);
         }
-    }, [props])
+    }, [props.training])
 
     return (<>
-        <div className="cui-container cui-flex cui-right cui-middle stopwatch-content-width">
+        {state.training.id > -1 && <div className="cui-container cui-flex cui-right cui-middle stopwatch-content-width">
             <ul className="cui-list cui-inline">
-                <li className="cui-padding-remove"><Link to={`/trainings/perform/${state.training.id}`} className="cui-icon cui-button cui-accent cui-icon-margin" cui-icon="media_play">Run</Link></li>
-                <li className="cui-padding-remove"><a className="cui-icon cui-button cui-icon-margin" cui-icon="trash" onClick={onDeleteTraining}>Delete</a></li>
+                <li className="cui-padding-remove"><Link to={`/trainings/perform/${state.training.id}`} className="cui-icon cui-accent cui-icon-margin cui-margin-right" cui-icon="media_play">Run</Link></li>
+                <li className="cui-padding-remove"><a className="cui-icon cui-icon-margin" cui-icon="trash" onClick={onDeleteTraining}>Delete</a></li>
             </ul>
-        </div>
+        </div>}
         <div className="cui-container stopwatch-content-width cui-flex-grid cui-child-width-1-1 cui-child-width-1-2--m">
             <div className="cui-padding-small-right">
                 <h3 className="cui-h3 cui-text-muted">Common</h3>

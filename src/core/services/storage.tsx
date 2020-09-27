@@ -96,12 +96,13 @@ export class TrainingsStorageService implements ITrainingsService {
             let res = this.#storage.getAny(this.#STORAGE_NAME);
             this.#trainings = res ?? [];
         }
-        return this.#trainings
+        return this.#storage.getAny(this.#STORAGE_NAME) ?? [];
     }
 
-    private setTrainings(): void {
-        this.#storage.setAny(this.#STORAGE_NAME, this.#trainings);
+    private setTrainings(t: Training[]): void {
+        this.#storage.setAny(this.#STORAGE_NAME, t);
     }
+
 
     private validate(training: Training): boolean {
         return this.#validator.validate(training).status;
@@ -110,7 +111,8 @@ export class TrainingsStorageService implements ITrainingsService {
     private onAction(callback: (t: Training[]) => boolean) {
         let t = this.getTrainings();
         if (callback(t)) {
-            this.setTrainings();
+            console.log(t)
+            this.setTrainings(t);
         }
     }
 }

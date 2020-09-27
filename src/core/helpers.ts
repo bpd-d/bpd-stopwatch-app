@@ -1,5 +1,5 @@
 import { is } from "../../node_modules/bpd-toolkit/dist/esm/index";
-import { StopwatchAction } from "./models";
+import { Round, StopwatchAction, Training } from "./models";
 
 export function showMessage(title: string, message: string) {
     window.$cui.alert("common-info-dialog", "Info", {
@@ -47,4 +47,19 @@ export function setDarkMode(darkMode: boolean) {
 
 export function calculateProgress(current: number, max: number) {
     return Math.floor((current * 100) / max);
+}
+
+/**
+ * Calculates total actions count and total duration of the training
+ * @param training 
+ * @returns total actions count and total duration
+ */
+export function getTotalDuration(training: Training) {
+    return training.rounds.reduce<[number, number]>((result: [number, number], current: Round) => {
+        return [result[0] + current.actions.length, result[1] + calculateDuration(current.actions)];
+    }, [0, 0]);
+}
+
+export function getBgClassByType(type: string) {
+    return "action-background-" + type;
 }
