@@ -4,22 +4,24 @@ import { is } from '../../../../node_modules/bpd-toolkit/dist/esm/index';
 import { KeepScreenAwakeFeature } from '../../../api/screen/screen';
 import { StopWatch, StopWatchState, StopWatchStateOptions } from '../../../api/stopwatch/stopwatch';
 import { SETTINGS_FLOW_ACTIONS } from '../../../app/flow/settings';
-import { calcDisplayTimer, calculateDuration, calculateProgress, getBgClassByType, getTotalDuration, showMessage } from '../../../core/helpers';
+import { calcDisplayTimer, calculateDuration, calculateProgress, getBgClassByType, getTotalDuration, showMessage, getClassByType } from '../../../core/helpers';
 import { Round, StopwatchAction, Training } from '../../../core/models';
 import { ActionValidator, RoundValidator, TrainingValidator } from '../../../core/validators';
-import { NotFound } from '../common/NotFound';;
+import { NotFound } from '../common/NotFound'; import { CountDownTimer } from './CountDownTimer';
+;
 
 interface TimeStateData {
     time: number;
     progress: number;
     ct?: number;
+    total: number;
 }
 
 interface PerfromTrainingState {
     training: Training;
 }
 
-interface CurrentTrainingState {
+export interface CurrentTrainingState {
     round: Round;
     roundIdx: number;
     action: StopwatchAction;
@@ -29,7 +31,7 @@ interface CurrentTrainingState {
     totalDuration: number;
 }
 
-interface StopwatchState {
+export interface StopwatchState {
     timer: string;
     state: StopWatchState;
     startBtnCls: string;
@@ -75,6 +77,9 @@ export function PerfromTraining() {
     currentRef.current = current;
     const trainingRef = React.useRef(state.training);
     trainingRef.current = state.training;
+
+    const countdownSound = React.useRef(null);
+    const endSound = React.useRef(null);
 
     function onGetTraining(training: Training) {
         let validation = new TrainingValidator().validate(training);
@@ -145,26 +150,28 @@ export function PerfromTraining() {
         return false;
     }
 
-    function onStopwatchTick(currentTime: number, stopwatch: StopWatch): boolean {
+    function onStopwatchTick(currentTime: number, total: number, stopwatch: StopWatch): boolean {
         let ct = currentRef.current.action.duration - currentTime;
         let progress = calculateProgress(currentTime, currentRef.current.action.duration)
+        console.log(total)
         if (ct > 0) {
             setStopWatchState(stopwatch.getState(), {
                 time: ct,
                 progress: 100 - progress,
-                ct: currentTime
+                ct: currentTime,
+                total: total
             })
             if (ct > 0 && ct <= 3) {
-                playSound();
+                play("countdown");
             }
             return true;
         } else {
-            playEndSound();
+            play("end");
             stopwatch.reset();
-            setStopWatchState(StopWatchStateOptions.RUNNING, { time: 0, progress: 100, ct: currentTime })
+            setStopWatchState(StopWatchStateOptions.RUNNING, { time: 0, progress: 100, ct: currentTime, total: total })
             if (!setNextAction()) {
                 setStopWatchState(StopWatchStateOptions.STOPPED, {
-                    time: 0, progress: 100, ct: 0
+                    time: 0, progress: 100, ct: 0, total: 0
                 })
                 return false;
             }
@@ -176,8 +183,9 @@ export function PerfromTraining() {
         if (watchState.state === StopWatchStateOptions.STOPPED && stopwatch.start()) {
             setStopWatchState(StopWatchStateOptions.RUNNING);
         } else if (watchState.state !== StopWatchStateOptions.STOPPED && stopwatch.stop()) {
-            setStopWatchState(StopWatchStateOptions.STOPPED, { time: 0, progress: 100, ct: 0 });
             setDefaultCurrentState(state.training);
+            setStopWatchState(StopWatchStateOptions.STOPPED, { time: 0, progress: 100, ct: 0, total: 0 });
+
         }
     }
 
@@ -198,8 +206,7 @@ export function PerfromTraining() {
             })
         } else {
             let roundProgress = calculateRoundProgress(timeData.ct);
-            let trainginProgress = calculateTrainingProgress(timeData.ct);
-            console.log("Duration: " + trainginProgress);
+            let trainginProgress = calculateTrainingProgress(timeData.total);
             setWatchState({
                 timer: calcDisplayTimer(timeData.time),
                 timerCls: getTimerCls(timeData.time),
@@ -226,47 +233,22 @@ export function PerfromTraining() {
     }
 
     function calculateTrainingProgress(ct: number) {
-        let duration = currentRef.current.roundIdx > 0 ?
-            trainingRef.current.rounds.reduce<number>((resut: number, round: Round, idx: number) => {
-                if (idx < currentRef.current.roundIdx) {
-                    return resut + calculateDuration(round.actions);
-                }
-                return resut;
-            }, 0) + calculateRoundCurrentTime(ct)
-            : calculateRoundCurrentTime(ct);
-        return 100 - calculateProgress(duration, currentRef.current.totalDuration);
+        return 100 - calculateProgress(ct, currentRef.current.totalDuration);
     }
 
-    function playSound() {
-        if (canPlay) {
-            let note = document.getElementById("stopwatch-countdown") as HTMLAudioElement;
-            note.currentTime = 0;
-            note.play();
-        }
-
-    }
-
-    function playEndSound() {
-        if (canPlay) {
-            let note = document.getElementById("stopwatch-end") as HTMLAudioElement;
-            note.currentTime = 0;
-            note.play();
-        }
-    }
-
-
-    function getClassByType(type: string) {
+    function play(type: string) {
+        let element = undefined;
         switch (type) {
-            case 'warmup':
-                return "cui-text-success";
-            case 'break':
-                return "scui-text-error";
-            case 'exercise':
-                return "cui-text-accent";
-            case 'cooldown':
-                return "cui-text-secondar";
-            default:
-                return "";
+            case "countdown":
+                element = countdownSound.current;
+                break;
+            case "end":
+                element = endSound.current;
+                break;
+        }
+        if (element) {
+            element.currentTime = 0;
+            element.play();
         }
     }
 
@@ -275,7 +257,6 @@ export function PerfromTraining() {
     }
 
     function getStartBtnCls(state: StopWatchState) {
-        console.log(state)
         return state !== StopWatchStateOptions.STOPPED ? "cui-error" : "cui-accent";
     }
 
@@ -284,10 +265,7 @@ export function PerfromTraining() {
     }
 
     function getBackgroundClass(action: StopwatchAction) {
-        if (!is(action)) {
-            return "";
-        }
-        return getBgClassByType(action.type);
+        return !is(action) ? "" : getBgClassByType(action.type);
     }
 
     React.useEffect(() => {
@@ -313,7 +291,7 @@ export function PerfromTraining() {
             window.$flow.unsubscribe("GET_TRAINING", getTrainingSubscription.id)
             window.$settingsFlow.unsubscribe(SETTINGS_FLOW_ACTIONS.GET_SOUND_ENABLED, settingsPlaySound.id);
             if (stopwatch)
-                stopwatch.finish();
+                stopwatch.stop();
             wakeLock.release();
         }
     }, [id, canPlay])
@@ -325,20 +303,7 @@ export function PerfromTraining() {
                     <div className="perform-main-controls">
                         <h2 className="cui-h2 cui-margin-remove">{state.training.name}</h2>
                         <p className="cui-text-muted cui-text-small cui-margin-remove">Round {current.roundIdx + 1} of {state.training.rounds.length}</p>
-                        <span className="cui-svg total-circle-progress" cui-circle-progress={watchState.trainingProgress}>
-                            <div className="">
-                                <span className="cui-svg current-circle-progress" cui-circle-progress={watchState.roundProgress}>
-                                    <div>
-                                        <span className="cui-svg countdown-circle-progress" cui-circle-progress={watchState.progress}>
-                                            <div>
-                                                <span className="cui-block cui-text-small">{current.actionIdx + 1}</span>
-                                                <h1 className={"cui-h1 cui-margin-remove " + watchState.timerCls}>{watchState.timer}</h1>
-                                            </div>
-                                        </span>
-                                    </div>
-                                </span>
-                            </div>
-                        </span>
+                        <CountDownTimer actionIdx={current.actionIdx} watchState={watchState} />
                     </div>
                     <div className="perform-buttons">
                         <div className="cui-width-1-1">
@@ -354,8 +319,8 @@ export function PerfromTraining() {
                         </div>
                     </div>
                 </div>
-                <audio id="stopwatch-countdown" src="/static/audio/stopwatch_countdown.mp3" />
-                <audio id="stopwatch-end" src="/static/audio/stopwatch_end.mp3" />
+                <audio ref={countdownSound} id="stopwatch-countdown" src="/static/audio/stopwatch_countdown.mp3" />
+                <audio ref={endSound} id="stopwatch-end" src="/static/audio/stopwatch_end.mp3" />
             </div>
         }
     </>);

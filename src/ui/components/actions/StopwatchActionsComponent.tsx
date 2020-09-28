@@ -7,6 +7,9 @@ import { AddActionDialog } from './AddActionDialog';
 import { PageHeader } from '../common/PageHeader';
 import { deleteActionConfirmDialog } from '../common/Dialogs';
 import { getBgClassByType } from '../../../core/helpers';
+import { ICONS } from '../../../../node_modules/cui-light/dist/index';
+import { is } from '../../../../node_modules/bpd-toolkit/dist/esm/index';
+import { ClearableInput } from '../common/ClearableInput';
 
 const defaultAction: StopwatchAction = {
     name: "",
@@ -32,7 +35,7 @@ export function StopwatchActionsComponent() {
         current: null
     })
 
-
+    const [filter, setFilter] = React.useState<string>("");
 
     function onDialogSave(action: StopwatchAction) {
         window.$actionsFlow.perform(ACTIONS_FLOW_ACTIONS.SET_ACTION, action);
@@ -60,6 +63,18 @@ export function StopwatchActionsComponent() {
         dialogCui.emit('open');
     }
 
+    function updateFilter(value: string) {
+        setFilter(value);
+    }
+
+    function matchesName(name: string): boolean {
+        if (!is(filter)) {
+            return true;
+        }
+        let match = name.match(filter);
+        return is(match);
+    }
+
     React.useEffect(() => {
         const getAllSub = window.$actionsFlow.subscribe(ACTIONS_FLOW_ACTIONS.GET_ALL, { finish: onGetAll })
         const setActionSub = window.$actionsFlow.subscribe(ACTIONS_FLOW_ACTIONS.SET_ACTION)
@@ -72,11 +87,14 @@ export function StopwatchActionsComponent() {
         }
     }, [state.actions])
 
-    return (<><div className="stopwatch-content-width ">
+    return (<><div className="stopwatch-content-width">
         <PageHeader title="Activities" description="Define activies which you want to perform in trainings!" />
+        <div className="cui-container cui-flex cui-middle cui-middle cui-center cui-right--s">
+            <ClearableInput value={filter} onUpdate={updateFilter} className="cui-width-1-1 cui-width-1-3--m cui-width-1-4--l" />
+        </div>
         <div className="cui-container cui-flex-grid cui-flex-grid-match cui-child-width-1-2 cui-child-width-1-3--m">
-            {state.actions && state.actions.map((action: StopwatchAction, index: number) => {
-                return (
+            {is(state.actions) && state.actions.map((action: StopwatchAction, index: number) => {
+                return (matchesName(action.name) &&
                     <div key={index} className="cui-animation-fade-in">
                         <div className={"cui-card cui-default cui-hover " + getBgClassByType(action.type)} onClick={() => { if (action.editable) { onAddOrEditClick(action) } }}>
                             <div className="cui-card-header cui-flex cui-between cui-nowrap">

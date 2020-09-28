@@ -33,11 +33,11 @@ export function TrainingListItem(props: TrainingListItemProps) {
 
     function getDetails(training: Training) {
         const [actions, duration] = getActionsDuration(training);
-        return `Duration: ${duration} seconds`;
+        return `${duration} seconds`;
     }
 
     function onItemClick(id: number) {
-        history.push(`/trainings/edit/${props.data.id}`)
+        history.push(`/trainings/perform/${props.data.id}`)
     }
 
     React.useEffect(() => {
@@ -67,7 +67,7 @@ export function TrainingListItem(props: TrainingListItemProps) {
         </div>
         <div className="cui-flex-shrink">
             <div>
-                <Link to={`/trainings/perform/${props.data.id}`} className="cui-icon-button cui-bold" cui-icon="media_play"></Link>
+                <Link to={`/trainings/edit/${props.data.id}`} className="cui-icon-button" cui-icon="edit"></Link>
             </div>
         </div>
     </div>

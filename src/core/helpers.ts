@@ -63,3 +63,18 @@ export function getTotalDuration(training: Training) {
 export function getBgClassByType(type: string) {
     return "action-background-" + type;
 }
+
+export function getClassByType(type: string) {
+    switch (type) {
+        case 'warmup':
+            return "cui-text-success";
+        case 'break':
+            return "cui-text-error";
+        case 'exercise':
+            return "cui-text-accent";
+        case 'cooldown':
+            return "cui-text-secondar";
+        default:
+            return "";
+    }
+}
