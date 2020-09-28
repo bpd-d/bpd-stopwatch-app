@@ -71,7 +71,7 @@ export function StopwatchActionsComponent() {
         if (!is(filter)) {
             return true;
         }
-        let match = name.match(filter);
+        let match = name.toLowerCase().match(filter.toLowerCase());
         return is(match);
     }
 

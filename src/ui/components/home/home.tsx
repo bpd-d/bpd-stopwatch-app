@@ -4,6 +4,7 @@ import { TrainingList } from "./list";
 import { Training, WarmUp, CoolDown, Exercise } from "../../../core/models";
 import { FlowTask } from "../../../../node_modules/bpd-flow/dist/index";
 import { showMessage } from "../../../core/helpers";
+import { MAPPIGNS } from "../../routes";
 
 export interface HomeProps {
     site?: string;
@@ -91,7 +92,7 @@ export class Home extends React.Component<any, HomeState> {
                 </div>
             </div>
             <div className="cui-position-float cui-position-bottom cui-position-right cui-margin cui-margin-large--l z-index-100">
-                <Link to="/trainings/edit/new" className="cui-button cui-icon cui-icon-margin cui-background-default cui-box-shadow cui-rounded" cui-icon="plus">Add New</Link>
+                <Link to={MAPPIGNS.renderUrl("newTraining")} className="cui-button cui-icon cui-icon-margin cui-background-default cui-box-shadow cui-rounded" cui-icon="plus">Add New</Link>
             </div>
         </div>;
     }
@@ -99,6 +100,6 @@ export class Home extends React.Component<any, HomeState> {
 
 export function NoTrainings() {
     return <div className="cui-container cui-center">
-        <p className="cui-text-muted cui-text-center">There are no trainings recorded. <Link className="cui-link cui-accent" to="/trainings/edit/new">Add new</Link> training to start your execises!</p>
+        <p className="cui-text-muted cui-text-center">There are no trainings recorded. <Link className="cui-link cui-accent" to={MAPPIGNS.renderUrl("newTraining")}>Add new</Link> training to start your execises!</p>
     </div>;
 }

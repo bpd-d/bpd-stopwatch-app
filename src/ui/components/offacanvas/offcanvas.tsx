@@ -1,5 +1,6 @@
 import * as React from "react";
 import { ElementManager } from "../../../../node_modules/cui-light/dist/index";
+import { MAPPIGNS } from "../../routes";
 import { NavbarLink } from "../common/NavbarLink";
 
 export interface OffCanvasProps {
@@ -23,10 +24,10 @@ export class OffCanvas extends React.Component<OffCanvasProps, {}> {
                     <div className="cui-width-1-1">
                         <h3 className="cui-h3">Menu</h3>
                         <ul className="cui-list cui-interactive cui-margin-top">
-                            <li><NavbarLink url="/" name="Home" shouldClose={true} /></li>
-                            <li><NavbarLink url="/actions" name="Actions" shouldClose={true} /></li>
-                            <li><NavbarLink url="/settings" name="Settings" shouldClose={true} /></li>
-                            <li><NavbarLink url="/about" name="About" shouldClose={true} /></li>
+                            <li><NavbarLink url={MAPPIGNS.renderUrl("home")} name={MAPPIGNS.getName("home")} shouldClose={true} /></li>
+                            <li><NavbarLink url={MAPPIGNS.renderUrl("actions")} name={MAPPIGNS.getName("actions")} shouldClose={true} /></li>
+                            <li><NavbarLink url={MAPPIGNS.renderUrl("settings")} name={MAPPIGNS.getName("settings")} shouldClose={true} /></li>
+                            <li><NavbarLink url={MAPPIGNS.renderUrl("about")} name={MAPPIGNS.getName("about")} shouldClose={true} /></li>
                         </ul>
                     </div>
                 </div>

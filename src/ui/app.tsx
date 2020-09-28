@@ -14,6 +14,7 @@ import { SETTINGS_FLOW_ACTIONS } from "../app/flow/settings";
 import { setDarkMode } from "../core/helpers";
 import { About } from "./components/about/About";
 import { Footer } from "./components/footer/Footer";
+import { MAPPIGNS } from "./routes";
 
 export interface AppProps {
 }
@@ -54,21 +55,21 @@ export class App extends React.Component<AppProps, AppState> {
                 <Navbar />
                 <div className="stopwatch-layout-content cui-overflow-y-auto">
                     <Switch>
-                        <Route path="/trainings/perform/:id" component={PerfromTraining}></Route>
-                        <Route path="/trainings/edit/new" component={EditTraining}></Route>
-                        <Route path="/trainings/edit/:id" component={EditTraining}></Route>
-                        <Route path="/actions" component={StopwatchActionsComponent}></Route>
-                        <Route path="/settings" component={StopwatchSettings}></Route>
-                        <Route path="/about" component={About}></Route>
-                        <Route path="/" component={Home}></Route>
+                        <Route path={MAPPIGNS.getUrl("perform")} component={PerfromTraining}></Route>
+                        <Route path={MAPPIGNS.getUrl("newTraining")} component={EditTraining}></Route>
+                        <Route path={MAPPIGNS.getUrl("editTraining")} component={EditTraining}></Route>
+                        <Route path={MAPPIGNS.getUrl("actions")} component={StopwatchActionsComponent}></Route>
+                        <Route path={MAPPIGNS.getUrl("settings")} component={StopwatchSettings}></Route>
+                        <Route path={MAPPIGNS.getUrl("about")} component={About}></Route>
+                        <Route path={MAPPIGNS.getUrl("home")} component={Home}></Route>
                         <Route>
                             <ErrorRoute />
                         </Route>
                     </Switch>
                 </div>
                 <Footer />
-                
+
                 <OffCanvas />
-            </div></BrowserRouter>;
+            </div></BrowserRouter >;
     }
 }

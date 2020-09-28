@@ -6,6 +6,7 @@ import { showMessage } from '../../../core/helpers';
 import { Round, StopwatchAction, Training } from '../../../core/models';
 import { DefaultActions } from '../../../core/statics';
 import { TrainingValidator } from '../../../core/validators';
+import { MAPPIGNS } from '../../routes';
 import { deleteRoundConfirmDialog, onDeleteTrainingDialog } from '../common/Dialogs';
 import { NotFound } from '../common/NotFound';
 import { PageHeader } from '../common/PageHeader';
@@ -59,13 +60,11 @@ function EditTraining(props: EditTrainingProps) {
         if (!result) {
             showMessage("Fail", "Training was not saved")
         } else {
-            if (props.history) {
-                props.history.goBack();
-            }
+            goBack();
         }
     }
 
-    function onCancel() {
+    function goBack() {
         if (props.history) {
             props.history.goBack();
         }
@@ -107,7 +106,7 @@ function EditTraining(props: EditTrainingProps) {
         </div>
         <div className="">
             {state.training ?
-                <EditTrainingSection training={state.training} onSave={saveTraining} onCancel={onCancel} /> :
+                <EditTrainingSection training={state.training} onSave={saveTraining} onCancel={goBack} /> :
                 <NotFound message="The training you looking for could not be found" classes="" />}
         </div>
     </>);
@@ -231,7 +230,7 @@ function EditTrainingSection(props: EditTrainingSectionProps) {
     return (<>
         {state.training.id > -1 && <div className="cui-container cui-flex cui-right cui-middle stopwatch-content-width">
             <ul className="cui-list cui-inline">
-                <li className="cui-padding-remove"><Link to={`/trainings/perform/${state.training.id}`} className="cui-icon cui-accent cui-icon-margin cui-margin-right" cui-icon="media_play">Run</Link></li>
+                <li className="cui-padding-remove"><Link to={MAPPIGNS.renderUrl('perform', { id: state.training.id })} className="cui-icon cui-accent cui-icon-margin cui-margin-right" cui-icon="media_play">Run</Link></li>
                 <li className="cui-padding-remove"><a className="cui-icon cui-icon-margin" cui-icon="trash" onClick={onDeleteTraining}>Delete</a></li>
             </ul>
         </div>}

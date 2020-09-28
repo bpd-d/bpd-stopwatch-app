@@ -2,6 +2,7 @@ import * as React from "react";
 import { Round, Training } from "../../../core/models";
 import { Link, useHistory } from "react-router-dom";
 import { calculateDuration } from "../../../core/helpers";
+import { MAPPIGNS } from "../../routes";
 
 export interface TrainingListProps {
     list: Training[];
@@ -36,8 +37,8 @@ export function TrainingListItem(props: TrainingListItemProps) {
         return `${duration} seconds`;
     }
 
-    function onItemClick(id: number) {
-        history.push(`/trainings/perform/${props.data.id}`)
+    function onItemClick() {
+        history.push(MAPPIGNS.renderUrl("perform", { id: props.data.id }))
     }
 
     React.useEffect(() => {
@@ -51,9 +52,7 @@ export function TrainingListItem(props: TrainingListItemProps) {
     })
 
     return <div className="cui-flex cui-animation-fade-in cui-padding-bottom cui-padding-top">
-        <div className="cui-flex-grow" onClick={() => {
-            onItemClick(props.data.id)
-        }}>
+        <div className="cui-flex-grow" onClick={onItemClick}>
             <div className="cui-flex cui-middle cui-nowrap">
                 <div className="training-list-item-icon">
                     <span className="cui-text-bold">{props.data.name[0].toUpperCase()}</span>
@@ -67,7 +66,7 @@ export function TrainingListItem(props: TrainingListItemProps) {
         </div>
         <div className="cui-flex-shrink">
             <div>
-                <Link to={`/trainings/edit/${props.data.id}`} className="cui-icon-button" cui-icon="edit"></Link>
+                <Link to={MAPPIGNS.renderUrl("editTraining", { "id": props.data.id })} className="cui-icon-button" cui-icon="edit"></Link>
             </div>
         </div>
     </div>
