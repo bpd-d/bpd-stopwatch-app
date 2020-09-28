@@ -314,7 +314,7 @@ export function PerfromTraining() {
                             </div>
                             <p className="cui-text-muted">{state.training.description}</p>
                             <div className="">
-                                {is(errorMessage) && <span className="cui-icon cui-error cui-tooltip" cui-icon="ban" data-tooltip="error"></span>}
+                                {is(errorMessage) && <span className="cui-icon cui-error cui-tooltip" cui-icon="ban" data-tooltip={errorMessage}></span>}
                             </div>
                         </div>
                     </div>
