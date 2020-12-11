@@ -39,6 +39,44 @@ export class WakeLockScreen implements KeepScreenToggle {
     }
 }
 
+export class LoopLockScreen implements KeepScreenToggle {
+    element: Element | undefined;
+
+    constructor() {
+        this.element = undefined;
+    }
+
+    activate(): void {
+        if (this.element) {
+            return;
+        }
+        this.element = this.createElement("/static/video/Screen.mp4");
+        document.body.appendChild(this.element);
+    }
+
+    release(): void {
+        if (!this.element) {
+            return;
+        }
+        this.element.remove();
+        this.element = undefined;
+    }
+
+    private createElement(src: string): Element {
+        let newEl = document.createElement("video");
+        newEl.autoplay = true;
+        newEl.muted = true;
+        newEl.src = src;
+        newEl.loop = true;
+        newEl.width = 1;
+        newEl.height = 1;
+        newEl.classList.add('loop-screen')
+        newEl.textContent = "Not Supported";
+        return newEl;
+    }
+
+}
+
 export class KeepScreenAwakeFeature {
     #toggle: KeepScreenToggle;
 
@@ -55,7 +93,8 @@ export class KeepScreenAwakeFeature {
         if ('keepAwake' in screen) {
             return new KeepAwakeToggle();
         } else {
-            return new WakeLockScreen();
+            return new LoopLockScreen();
+            //return new WakeLockScreen();
         }
     }
 }
