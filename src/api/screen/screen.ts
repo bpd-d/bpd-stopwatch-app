@@ -68,8 +68,7 @@ export class LoopLockScreen implements KeepScreenToggle {
         newEl.muted = true;
         newEl.src = src;
         newEl.loop = true;
-        newEl.width = 1;
-        newEl.height = 1;
+
         newEl.classList.add('loop-screen')
         newEl.textContent = "Not Supported";
         return newEl;
