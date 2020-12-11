@@ -66,9 +66,8 @@ export class LoopLockScreen implements KeepScreenToggle {
         let newEl = document.createElement("video");
         newEl.autoplay = true;
         newEl.muted = true;
-        newEl.src = src;
         newEl.loop = true;
-
+        newEl.src = src;
         newEl.classList.add('loop-screen')
         newEl.textContent = "Not Supported";
         return newEl;

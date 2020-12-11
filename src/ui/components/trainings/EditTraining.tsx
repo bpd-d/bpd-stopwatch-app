@@ -1,8 +1,8 @@
 import * as React from 'react'
 import { Link, useParams, withRouter } from 'react-router-dom';
-import { is } from '../../../../node_modules/bpd-toolkit/dist/esm/index';
+import { clone, is } from '../../../../node_modules/bpd-toolkit/dist/esm/index';
 import { ACTIONS_FLOW_ACTIONS } from '../../../app/flow/actions';
-import { showMessage } from '../../../core/helpers';
+import { insert, move, showMessage } from '../../../core/helpers';
 import { Round, StopwatchAction, Training } from '../../../core/models';
 import { DefaultActions } from '../../../core/statics';
 import { TrainingValidator } from '../../../core/validators';
@@ -142,6 +142,23 @@ function EditTrainingSection(props: EditTrainingSectionProps) {
         })
     }
 
+    function onRoundDown(round: Round, index: number) {
+        updateRoundsState(move(state.training.rounds, index, index + 1))
+    }
+
+
+    function onRoundUp(round: Round, index: number) {
+        updateRoundsState(move(state.training.rounds, index, index - 1))
+    }
+
+
+    function onRoundClone(round: Round, index: number) {
+        let idx = index + 1;
+        let cloned = clone(round);
+        updateRoundsState(insert(state.training.rounds, idx, cloned))
+    }
+
+
     function onTrainingSave() {
         if (props.onSave) {
             let validaton = new TrainingValidator().validate(state.training);
@@ -249,8 +266,18 @@ function EditTrainingSection(props: EditTrainingSectionProps) {
             <div className="cui-padding-small-left">
                 <h3 className="cui-h3 cui-text-muted">Rounds (total count: {state.training.rounds.length})</h3>
                 <ul className="cui-list">
-                    {state.training && state.training.rounds.map((round: Round, index: number) => {
-                        return <li key={index} className="animation-fade-in"><EditRoundListItem index={index} round={round} onEdit={onRoundEdit} onDelete={onRoundDelete} /></li>
+                    {state.training && state.training.rounds.map((round: Round, index: number, arr: Round[]) => {
+                        return <li key={index} className="animation-fade-in"><EditRoundListItem
+                            index={index}
+                            round={round}
+                            onEdit={onRoundEdit}
+                            onDelete={onRoundDelete}
+                            onMoveUp={onRoundUp}
+                            onMoveDown={onRoundDown}
+                            onClone={onRoundClone}
+                            isFirst={index === 0}
+                            isLast={index === arr.length - 1} />
+                        </li>
                     })}
                     <li>
                         <button className="cui-button cui-icon cui-icon-margin cui-width-1-1" cui-icon="plus" onClick={() => {
