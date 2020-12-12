@@ -22,6 +22,7 @@ export interface StopwatchAction {
 export interface Round {
     actions: StopwatchAction[];
     break?: number;
+    
 }
 
 export interface Training {

@@ -20,7 +20,7 @@ export function EditRoundListItem(props: RoundListItemProps) {
         <div className="cui-flex cui-middle cui-nowrap">
             <div className="cui-flex-grow">
                 <div><span className="cui-text-bold">Round {props.index}</span></div>
-                <div className="cui-text-muted"><span >{props.round.actions.length} actions, {calculateDuration(props.round.actions)} seconds of total length</span></div>
+                <div className="cui-text-muted cui-text-small"><span >{props.round.actions.length} actions, {calculateDuration(props.round.actions)} seconds of total length</span></div>
 
             </div>
 

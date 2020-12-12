@@ -15,6 +15,7 @@ export interface EditRoundDialogProps {
 }
 
 export interface EditRoundDialogState {
+    name: string;
     actions?: StopwatchAction[];
     selected: StopwatchAction;
     errors: string[];
@@ -24,7 +25,8 @@ export function EditRoundDialog(props: EditRoundDialogProps) {
     const [state, setState] = useState<EditRoundDialogState>({
         actions: [],
         selected: null,
-        errors: []
+        errors: [],
+        name: ""
     })
 
     function onSave() {
@@ -68,7 +70,8 @@ export function EditRoundDialog(props: EditRoundDialogProps) {
         setState({
             actions: actions,
             selected: props.definedActions[0],
-            errors: []
+            errors: [],
+            name: ""
         })
     }
     React.useEffect(() => {
@@ -82,7 +85,12 @@ export function EditRoundDialog(props: EditRoundDialogProps) {
         title="Edit Round"
         body={<>
             <div className="edit-round-dialog-body">
-                <ul className="cui-list">
+                <div className="cui-form">
+                    <label htmlFor="" className="cui-form-label">Round name</label>
+                    <input type="text" className="cui-input" placeholder="Round name" />
+                </div>
+                <ul className="cui-list cui-margin-top">
+                    <div>Actions</div>
                     {state.actions && state.actions.map((item: StopwatchAction, index: number) => {
                         return <li key={index} className="animation-fade-in" >
                             <div className="cui-flex cui-middle">
@@ -107,7 +115,7 @@ export function EditRoundDialog(props: EditRoundDialogProps) {
                     <li>
                         <div className="cui-flex cui-middle cui-nowrap">
                             <div className="cui-flex-grow">
-                                <ActionsSelect id="round-action-select" className="cui-width-1-1 cui-width-1-2--s" name="action" value={state.selected?.name} actions={props.definedActions} onSelect={onActionSelectChange} />
+                                <ActionsSelect id="round-action-select" className="cui-width-1-1 cui-width-5-6--s" name="action" value={state.selected?.name} actions={props.definedActions} onSelect={onActionSelectChange} />
                             </div>
                             <div className="">
                                 <a cui-icon="plus" className="cui-icon-button" onClick={onAddAction}></a>
