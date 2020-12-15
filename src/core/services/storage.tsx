@@ -22,11 +22,11 @@ export class TrainingsStorageService implements ITrainingsService {
 
     addTraining(training: Training): boolean {
         let result = false;
+
         if (this.validate(training)) {
             this.onAction((t: Training[]) => {
-                let len = t.length
-                if (!training.id) {
-                    training.id = len > 0 ? t[len - 1].id + 1 : 0;
+                if (!is(training.id)) {
+                    training.id = "00" + this.getNextIndex();
                     t.push(training)
                     result = true;
                     return t;
@@ -34,14 +34,15 @@ export class TrainingsStorageService implements ITrainingsService {
                 return null;
             })
         }
-
         return result;
     }
 
     updateTraining(training: Training): boolean {
         let result = false;
+
         if (this.validate(training)) {
-            if (!training.id || training.id < 0) {
+            if (!is(training.id)) {
+                console.log(training)
                 result = this.addTraining(training)
             } else {
                 this.onAction((t: Training[]) => {
@@ -62,9 +63,9 @@ export class TrainingsStorageService implements ITrainingsService {
      * Removes training from storage
      * @param id Id of training
      */
-    deleteTraining(id: number): boolean {
+    deleteTraining(id: string): boolean {
         let result = false;
-        if (id < 0) {
+        if (!is(id)) {
             return false;
         }
         this.onAction((t: Training[]) => {
@@ -79,12 +80,14 @@ export class TrainingsStorageService implements ITrainingsService {
         return result;
     }
 
-    getTraining(id: number): Training {
+    getTraining(id: string): Training {
+        console.log(id)
         let training = undefined;
         this.onAction((t) => {
-            training = t.find(item => { return item.id == id });
+            training = t.find(item => { return item.id === id });
             return null;
         })
+        console.log(training)
         return training;
     }
 
@@ -117,6 +120,16 @@ export class TrainingsStorageService implements ITrainingsService {
         this.#storage.setAny(this.#STORAGE_NAME, t);
     }
 
+    private getNextIndex(): number {
+        let idx = this.#storage.getNumber("TRAININGS_INDEX");
+        if (!idx || idx === NaN) {
+            idx = 1;
+        } else {
+            idx += 1;
+        }
+        this.#storage.setNumber("TRAININGS_INDEX", idx);
+        return idx;
+    }
 
     private validate(training: Training): boolean {
         return this.#validator.validate(training).status;

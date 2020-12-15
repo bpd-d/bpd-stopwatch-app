@@ -107,7 +107,7 @@ export function EditRoundDialog(props: EditRoundDialogProps) {
 
         return () => {
         }
-    }, [props.round, props.definedActions])
+    }, [props.round, props.definedActions, props.currentCount])
     return (<BpdDialog
         id="edit-round-dialog"
         title="Edit Round"

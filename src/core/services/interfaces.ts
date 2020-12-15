@@ -4,10 +4,10 @@ export interface ITrainingsService {
     getAllTrainings(): Training[];
     addTraining(training: Training): boolean;
     updateTraining(training: Training): boolean;
-    deleteTraining(id: number): boolean;
+    deleteTraining(id: string): boolean;
     getCurrentTraining(): Training;
     setCurrentTraining(training: Training): void;
-    getTraining(id: number): Training;
+    getTraining(id: string): Training;
     clearTrainings(): void;
 }
 

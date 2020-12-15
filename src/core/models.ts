@@ -30,7 +30,7 @@ export interface Round {
 export interface Training {
     name: string;
     description?: string;
-    id?: number;
+    id?: string;
     rounds: Round[];
 }
 

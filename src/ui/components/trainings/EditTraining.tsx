@@ -248,7 +248,7 @@ function EditTrainingSection(props: EditTrainingSectionProps) {
     }, [props.training])
 
     return (<>
-        {state.training.id > -1 && <div className="cui-container cui-flex cui-right cui-middle stopwatch-content-width">
+        {is(state.training.id) && <div className="cui-container cui-flex cui-right cui-middle stopwatch-content-width">
             <ul className="cui-list cui-inline">
                 <li className="cui-padding-remove"><Link to={MAPPIGNS.renderUrl('perform', { id: state.training.id })} className="cui-icon cui-accent cui-icon-margin cui-margin-right" cui-icon="media_play">Run</Link></li>
                 <li className="cui-padding-remove"><a className="cui-icon cui-icon-margin" cui-icon="trash" onClick={onDeleteTraining}>Delete</a></li>
