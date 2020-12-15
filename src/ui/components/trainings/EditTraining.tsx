@@ -142,8 +142,8 @@ function EditTraining(props: EditTrainingProps) {
                 <div className="cui-container stopwatch-content-width cui-flex cui-middle cui-center cui-right--m">
                     <ul className="cui-list cui-inline">
                         <li className="cui-padding-remove"><a className="cui-icon cui-icon-margin cui-margin-right" cui-icon="close" onClick={() => { goBack() }}>Cancel</a></li>
-                        <li className="cui-padding-remove"><Link to={MAPPIGNS.renderUrl('perform', { id: state.training.id })} className="cui-icon cui-accent cui-icon-margin cui-margin-right" cui-icon="media_play">Run</Link></li>
-                        <li className="cui-padding-remove"><a className="cui-icon cui-error cui-icon-margin cui-margin-right" cui-icon="trash" onClick={() => { onDeleteTraining() }}>Delete</a></li>
+                        <li className="cui-padding-remove"><Link to={MAPPIGNS.renderUrl('perform', { id: state.training.id })} className="cui-icon cui-icon-margin cui-margin-right" cui-icon="media_play">Run</Link></li>
+                        <li className="cui-padding-remove"><a className="cui-icon cui-icon-margin cui-margin-right" cui-icon="trash" onClick={() => { onDeleteTraining() }}>Delete</a></li>
                         <li className="cui-padding-remove"><a className="cui-icon cui-success cui-icon-margin" cui-icon="checkmark" onClick={onTrainingSave}>Save</a></li>
                     </ul>
                 </div>

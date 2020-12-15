@@ -19,6 +19,7 @@ import { ElementManager } from "cui-light/dist/esm/managers/element";
 import { is } from "bpd-toolkit/dist/esm/index";
 import { BpdDialog } from "./components/common/BpdDialog";
 import { sleep } from "node_modules/bpd-toolkit/dist/esm/index";
+import { TutorialDialog } from "./components/tutorial/TutorialDialog";
 
 export interface AppProps {
 }
@@ -80,7 +81,7 @@ export class App extends React.Component<AppProps, AppState> {
     }
 
     onWelcomeDialogClose() {
-        
+
         window.$settingsFlow.perform(SETTINGS_FLOW_ACTIONS.SET_IS_WELCOME, true);
     }
 
@@ -107,7 +108,7 @@ export class App extends React.Component<AppProps, AppState> {
                 <Footer />
 
                 <OffCanvas />
-                <BpdDialog id="welcome-dialog" title="Welcome" />
+                <TutorialDialog />
             </div></BrowserRouter >;
     }
 }

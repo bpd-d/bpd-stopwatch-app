@@ -28,10 +28,14 @@ export function SettingsDevTools() {
     }, [])
     return (<div className="cui-section">
         <h3 className="cui-h3">Dev tools</h3>
-        <div className="cui-flex">
-            <button className="cui-button cui-margin-small cui-default" onClick={() => { window.$actionsFlow.perform(ACTIONS_FLOW_ACTIONS.CLEAR_ACTIONS) }}>Clear actions only</button>
+        <div className="">
+            <div></div>
+            <button className="cui-button cui-margin-small cui-default " onClick={() => { window.$actionsFlow.perform(ACTIONS_FLOW_ACTIONS.CLEAR_ACTIONS) }}>Clear actions only</button>
+        </div><div>
             <button className="cui-button cui-margin-small cui-default" onClick={() => { window.$flow.perform(ACTIONS.CLEAR_TRAININGS) }}>Clear trainings only</button>
+        </div><div>
             <button className="cui-button cui-margin-small cui-default" onClick={() => { window.$settingsFlow.perform(SETTINGS_FLOW_ACTIONS.CLEAR_SETTINGS) }}>Clear settings only</button>
+        </div><div>
             <button className="cui-button cui-margin-small cui-error" onClick={() => {
                 window.$actionsFlow.perform(ACTIONS_FLOW_ACTIONS.CLEAR_ACTIONS)
                 window.$flow.perform(ACTIONS.CLEAR_TRAININGS)

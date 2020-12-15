@@ -1,6 +1,7 @@
 import { Round, StopwatchAction, Training } from "./models";
 import { ERROR_CODES } from "./statics";
 import { is } from '../../node_modules/bpd-toolkit/dist/esm/index';
+import { Footer } from "src/ui/components/footer/Footer";
 
 export interface ValidationResult {
     status: boolean;
@@ -89,9 +90,60 @@ export class ActionValidator extends ValidatorBase<StopwatchAction> {
         if (!is(t.type)) {
             errors.push(ERROR_CODES.e0302)
         }
-        if (t.duration < 0) {
+        if (!is(t.duration)) {
             errors.push(ERROR_CODES.e0303)
         }
         return errors;
     }
+}
+
+export class CompleteTrainingValidator extends ValidatorBase<Training> {
+    #trainingValidator: TrainingValidator;
+    #actionValidator: ActionValidator;
+    #roundValidator: RoundValidator;
+    constructor() {
+        super();
+        this.#trainingValidator = new TrainingValidator();
+        this.#roundValidator = new RoundValidator();
+        this.#actionValidator = new ActionValidator();
+    }
+    protected performValidation(t: Training): string[] {
+        let err = this.#trainingValidator.validate(t);
+        if (err.status) {
+            try {
+                err = this.validateRounds(t.rounds);
+            } catch (e) {
+                return [ERROR_CODES.e0001]
+            }
+        }
+        return err.errors;
+    }
+
+    private validateRounds(rounds: Round[]): ValidationResult {
+        let err: ValidationResult = null;
+        let len = rounds.length;
+        for (let i = 0; i < len; i++) {
+            err = this.#roundValidator.validate(rounds[i]);
+            if (err.status) {
+                err = this.validateActions(rounds[i].actions)
+                if (!err.status) {
+                    break;
+                }
+            }
+        }
+        return err;
+    }
+
+    private validateActions(actions: StopwatchAction[]): ValidationResult {
+        let err: ValidationResult = null;
+        let len = actions.length;
+        for (let i = 0; i < len; i++) {
+            err = this.#actionValidator.validate(actions[i]);
+            if (!err.status) {
+                return;
+            }
+        }
+        return err;
+    }
+
 }

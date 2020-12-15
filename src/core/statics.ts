@@ -1,29 +1,33 @@
 import { StopwatchAction, StopwatchActionType } from "./models";
 
 export const DefaultActions: StopwatchAction[] = [{
+    id: "9996",
     name: "Warmup",
-    duration: 5,
+    duration: "",
     type: StopwatchActionType.WARMUP,
     removable: false,
     editable: false
 },
 {
+    id: "9997",
     name: "Exercise",
-    duration: 30,
+    duration: "30",
     type: StopwatchActionType.EXERCISE,
     removable: false,
     editable: false
 },
 {
+    id: "9998",
     name: "Break",
-    duration: 60,
+    duration: "60",
     type: StopwatchActionType.BREAK,
     removable: false,
     editable: false
 },
 {
+    id: "9999",
     name: "Cooldown",
-    duration: 90,
+    duration: "90",
     type: StopwatchActionType.WARMUP,
     removable: false,
     editable: false
@@ -31,6 +35,7 @@ export const DefaultActions: StopwatchAction[] = [{
 
 export const ERROR_CODES = {
     e0000: "OK",
+    e0001: "An error occured",
     e0100: "Training is empty",
     e0101: "Training name is not provided",
     e0102: "Training has no rounds",

@@ -68,6 +68,11 @@ export function StopwatchSettings() {
                 </li>
                 <li>Welcome screen status: {settings.isWelcome ? "Yes" : "No"}</li>
             </ul>
+            <div className="cui-section">
+                <button className="cui-button cui-default" onClick={() => {
+                    window.$cui.get("#welcome-dialog").emit("open");
+                }}>Show tutorial dialog</button>
+            </div>
         </div>
         <SettingsDevTools />
     </div></>);

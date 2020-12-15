@@ -6,7 +6,7 @@ import { StopWatch, StopWatchState, StopWatchStateOptions } from '../../../api/s
 import { SETTINGS_FLOW_ACTIONS } from '../../../app/flow/settings';
 import { calcDisplayTimer, calculateDuration, calculateProgress, getBgClassByType, getTotalDuration, showMessage, getClassByType } from '../../../core/helpers';
 import { Round, StopwatchAction, Training } from '../../../core/models';
-import { ActionValidator, RoundValidator, TrainingValidator } from '../../../core/validators';
+import { CompleteTrainingValidator } from '../../../core/validators';
 import { NotFound } from '../common/NotFound'; import { CountDownTimer } from './CountDownTimer';
 ;
 
@@ -77,24 +77,17 @@ export function PerfromTraining() {
     currentRef.current = current;
     const trainingRef = React.useRef(state.training);
     trainingRef.current = state.training;
+    const canPlayRef = React.useRef(canPlay)
+
+    canPlayRef.current = canPlay;
 
     const countdownSound = React.useRef(null);
     const endSound = React.useRef(null);
 
     function onGetTraining(training: Training) {
-        let validation = new TrainingValidator().validate(training);
+        let validation = new CompleteTrainingValidator().validate(training);
         if (!validation.status) {
             showMessage("Incorrect training", `Training is not correct: ${validation.errors.join(", ")}`)
-            return;
-        }
-        let roundValidator = new RoundValidator().validate(training.rounds[0]);
-        if (!roundValidator.status) {
-            showMessage("Incorrect training", `Training is not correct: ${roundValidator.errors.join(", ")}`)
-            return;
-        }
-        let actionValidator = new ActionValidator().validate(training.rounds[0].actions[0]);
-        if (!actionValidator.status) {
-            showMessage("Incorrect training", `Training is not correct: ${actionValidator.errors.join(", ")}`)
             return;
         }
         setState({
@@ -151,8 +144,9 @@ export function PerfromTraining() {
     }
 
     function onStopwatchTick(currentTime: number, total: number, stopwatch: StopWatch): boolean {
-        let ct = currentRef.current.action.duration - currentTime;
-        let progress = calculateProgress(currentTime, currentRef.current.action.duration)
+        let actionDuration = parseInt(currentRef.current.action.duration)
+        let ct = actionDuration - currentTime;
+        let progress = calculateProgress(currentTime, actionDuration)
         if (ct > 0) {
             // Normal ticl
             setStopWatchState(stopwatch.getState(), {
@@ -224,7 +218,7 @@ export function PerfromTraining() {
     function calculateRoundCurrentTime(ct: number) {
         return currentRef.current.round.actions.reduce<number>((result: number, act: StopwatchAction, idx: number) => {
             if (idx < currentRef.current.actionIdx) {
-                return result + act.duration;
+                return result + parseInt(act.duration);
             }
             return result;
         }, 0) + ct;
@@ -239,6 +233,9 @@ export function PerfromTraining() {
     }
 
     function play(type: string) {
+        if (!canPlayRef.current) {
+            return
+        }
         let element = undefined;
         switch (type) {
             case "countdown":
@@ -271,6 +268,7 @@ export function PerfromTraining() {
     }
 
     React.useEffect(() => {
+        console.log("Perfrom init")
         const getTrainingSubscription = window.$flow.subscribe("GET_TRAINING", { finish: onGetTraining })
         const settingsPlaySound = window.$settingsFlow.subscribe(SETTINGS_FLOW_ACTIONS.GET_SOUND_ENABLED, {
             finish: onGetPlaySound
@@ -290,10 +288,14 @@ export function PerfromTraining() {
 
         }
         return () => {
+            console.log("Perfrom restart")
             window.$flow.unsubscribe("GET_TRAINING", getTrainingSubscription.id)
             window.$settingsFlow.unsubscribe(SETTINGS_FLOW_ACTIONS.GET_SOUND_ENABLED, settingsPlaySound.id);
-            if (stopwatch)
+            if (stopwatch) {
+                console.log("StopWatch stop")
                 stopwatch.stop();
+            }
+
             wakeLock.release();
         }
     }, [id, canPlay])
@@ -318,6 +320,10 @@ export function PerfromTraining() {
                             <p className="cui-text-muted">{state.training.description}</p>
                             <div className="">
                                 {is(errorMessage) && <span className="cui-icon cui-error cui-tooltip" cui-icon="ban" data-tooltip={errorMessage}></span>}
+                                <a className="cui-icon-button cui-default" cui-icon={canPlay ? "speaker" : "volume_muted"} onClick={() => {
+                                    window.$settingsFlow.perform(SETTINGS_FLOW_ACTIONS.SET_SOUND_ENABLED, !canPlay)
+                                    window.$settingsFlow.perform(SETTINGS_FLOW_ACTIONS.GET_SOUND_ENABLED)
+                                }}></a>
                             </div>
                         </div>
                     </div>
