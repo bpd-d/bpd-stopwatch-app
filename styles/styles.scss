@@ -300,6 +300,22 @@ $countdown-stroke-width : 6px;
         height  : 10px;
     }
 
+    .edit-container {
+        display       : flex;
+        flex-direction: column;
+        height        : 100%;
+
+        .edit-container-bottom {
+            flex : 0 0 auto;
+            order: 2;
+        }
+
+        .edit-container-content {
+            flex : 1 1 auto;
+            order: 1;
+        }
+    }
+
     @keyframes timerPulse {
         0% {
             opacity: 1;

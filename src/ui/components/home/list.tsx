@@ -66,7 +66,7 @@ export function TrainingListItem(props: TrainingListItemProps) {
         </div>
         <div className="cui-flex-shrink">
             <div>
-                <Link to={MAPPIGNS.renderUrl("editTraining", { "id": props.data.id })} className="cui-icon-button" cui-icon="edit"></Link>
+                <Link to={MAPPIGNS.renderUrl("editTraining", { "id": props.data.id })} className="cui-icon-button" cui-icon="edit" cui-tooltip="Edit training"></Link>
             </div>
         </div>
     </div>
