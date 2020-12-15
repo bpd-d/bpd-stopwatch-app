@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { calculateDuration } from '../../../core/helpers';
 import { Round } from "../../../core/models";
+import { getDefaultRoundName } from '../../../core/statics';
 
 interface RoundListItemProps {
     round: Round;
@@ -19,7 +20,7 @@ export function EditRoundListItem(props: RoundListItemProps) {
     return (
         <div className="cui-flex cui-middle cui-nowrap">
             <div className="cui-flex-grow">
-                <div><span className="cui-text-bold">Round {props.index}</span></div>
+                <div><span className="cui-text-bold">{props.round.name}</span></div>
                 <div className="cui-text-muted cui-text-small"><span >{props.round.actions.length} actions, {calculateDuration(props.round.actions)} seconds of total length</span></div>
 
             </div>

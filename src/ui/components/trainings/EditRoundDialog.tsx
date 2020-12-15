@@ -1,7 +1,9 @@
 import * as React from "react";
 import { useState } from "react";
+import { is } from "../../../../node_modules/bpd-toolkit/dist/esm/index";
 import { ACTIONS_FLOW_ACTIONS } from "../../../app/flow/actions";
 import { Round, StopwatchAction } from "../../../core/models";
+import { getDefaultRoundName } from "../../../core/statics";
 import { RoundValidator } from "../../../core/validators";
 import { ActionsSelect } from "../actions/ActionsSelect";
 import { BpdActionIcon } from "../common/BpdActionIcon";
@@ -12,6 +14,7 @@ export interface EditRoundDialogProps {
     definedActions: StopwatchAction[];
     round: Round;
     index: number;
+    currentCount: number;
 }
 
 export interface EditRoundDialogState {
@@ -31,10 +34,19 @@ export function EditRoundDialog(props: EditRoundDialogProps) {
 
     function onSave() {
         if (props.onSave) {
-            let round: Round = { actions: [...state.actions] }
+            let round: Round = {
+                actions: [...state.actions],
+                name: state.name
+            }
             let validation = new RoundValidator().validate(round);
             if (validation.status) {
                 props.onSave(round, props.index);
+                setState({
+                    ...state,
+                    name: getDefaultRoundName(props.currentCount + 1),
+                    selected: null,
+                    actions: []
+                })
                 return;
             }
             setState({
@@ -56,26 +68,42 @@ export function EditRoundDialog(props: EditRoundDialogProps) {
 
     function onAddAction() {
         if (state.selected) {
-            setActions([...state.actions, state.selected])
+            setStateRoundData([...state.actions, state.selected])
         }
     }
 
     function onDeleteAction(index: number) {
         let newActions = [...state.actions];
         newActions.splice(index, 1);
-        setActions(newActions)
+        setStateRoundData(newActions)
     }
 
-    function setActions(actions: StopwatchAction[]) {
+    function setStateRoundData(actions: StopwatchAction[], name?: string) {
         setState({
             actions: actions,
             selected: props.definedActions[0],
             errors: [],
-            name: ""
+            name: name ? name : state.name
         })
     }
+
+    function roundNameUpdate(ev: any) {
+        let name = ev.target.value;
+        let errors = [];
+        if (!is(name)) {
+            errors.push("Name cannot be empty")
+        }
+        setState({
+            ...state,
+            errors: errors,
+            name: name
+        })
+    }
+
     React.useEffect(() => {
-        setActions(props.round && props.round !== null ? props.round.actions : []);
+        let name = props.round && props.round.name ? props.round.name : getDefaultRoundName(props.currentCount);
+        let actions = is(props.round) ? props.round.actions : [];
+        setStateRoundData(actions, name);
 
         return () => {
         }
@@ -87,7 +115,7 @@ export function EditRoundDialog(props: EditRoundDialogProps) {
             <div className="edit-round-dialog-body">
                 <div className="cui-form">
                     <label htmlFor="" className="cui-form-label">Round name</label>
-                    <input type="text" className="cui-input" placeholder="Round name" />
+                    <input type="text" className="cui-input" placeholder="Round name" value={state.name} onChange={roundNameUpdate} />
                 </div>
                 <ul className="cui-list cui-margin-top">
                     <div>Actions</div>

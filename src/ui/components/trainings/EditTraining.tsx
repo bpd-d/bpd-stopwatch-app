@@ -33,6 +33,7 @@ interface EditTrainingSectionState {
 
     currentIndex: number;
     currentRound: Round;
+    currentCount: number;
 }
 
 interface EditTrainingDefinedActions {
@@ -117,6 +118,7 @@ function EditTrainingSection(props: EditTrainingSectionProps) {
     const [state, setState] = React.useState<EditTrainingSectionState>({
         training: props.training,
         currentIndex: -1,
+        currentCount: 0,
         currentRound: null
     })
 
@@ -129,7 +131,8 @@ function EditTrainingSection(props: EditTrainingSectionProps) {
         setState({
             ...state,
             currentIndex: index,
-            currentRound: round
+            currentRound: round,
+            currentCount: state.training && state.training.rounds ? state.training.rounds.length : 0
         })
         window.$cui.get("#edit-round-dialog").emit("open")
     }
@@ -291,7 +294,7 @@ function EditTrainingSection(props: EditTrainingSectionProps) {
             <button className="cui-button cui-margin-small-right" onClick={() => { props.onCancel() }}>Cancel</button>
             <button className="cui-button cui-accent" onClick={onTrainingSave}>Save</button>
         </div>
-        <EditRoundDialog index={state.currentIndex} round={state.currentRound} onSave={onRoundSave} definedActions={definedActions.actions} />
+        <EditRoundDialog index={state.currentIndex} round={state.currentRound} onSave={onRoundSave} currentCount={state.currentCount} definedActions={definedActions.actions} />
     </>);
 }
 

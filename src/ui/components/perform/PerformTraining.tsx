@@ -153,14 +153,15 @@ export function PerfromTraining() {
     function onStopwatchTick(currentTime: number, total: number, stopwatch: StopWatch): boolean {
         let ct = currentRef.current.action.duration - currentTime;
         let progress = calculateProgress(currentTime, currentRef.current.action.duration)
-        console.log(total)
         if (ct > 0) {
+            // Normal ticl
             setStopWatchState(stopwatch.getState(), {
                 time: ct,
                 progress: 100 - progress,
                 ct: currentTime,
                 total: total
             })
+            // Start round end countdown
             if (ct > 0 && ct <= 3) {
                 play("countdown");
             }
@@ -168,13 +169,14 @@ export function PerfromTraining() {
         } else {
             play("end");
             stopwatch.reset();
-            setStopWatchState(StopWatchStateOptions.RUNNING, { time: 0, progress: 100, ct: currentTime, total: total })
             if (!setNextAction()) {
+
                 setStopWatchState(StopWatchStateOptions.STOPPED, {
                     time: 0, progress: 100, ct: 0, total: 0
                 })
                 return false;
             }
+            //setStopWatchState(StopWatchStateOptions.RUNNING, { time: 0, progress: 100, ct: currentTime, total: total })
             return true;
         }
     }
@@ -302,6 +304,7 @@ export function PerfromTraining() {
                 <div className="stopwatch-content-width perform-layout cui-text-center animation-fade-in">
                     <div className="perform-main-controls">
                         <h2 className="cui-h2 cui-margin-remove">{state.training.name}</h2>
+                        <p className="cui-margin-remove">{state?.training?.rounds[current.roundIdx]?.name}</p>
                         <p className="cui-text-muted cui-text-small cui-margin-remove">Round {current.roundIdx + 1} of {state.training.rounds.length}</p>
                         <CountDownTimer actionIdx={current.actionIdx} watchState={watchState} />
                     </div>

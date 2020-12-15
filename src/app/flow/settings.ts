@@ -8,7 +8,10 @@ export const SETTINGS_FLOW_ACTIONS = {
     GET_SOUND_ENABLED: "GET_SOUND_ENABLED",
     SET_SOUND_ENABLED: "SET_SOUND_ENABLED",
     SET_SETTINGS: "SET_SETTINGS",
-    GET_SETTINGS: "GET_SETTINGS"
+    GET_SETTINGS: "GET_SETTINGS",
+    GET_IS_WELCOME: "GET_IS_WELCOME",
+    SET_IS_WELCOME: "SET_IS_WELCOME",
+    CLEAR_SETTINGS: "CLEAR_SETTINGS"
 }
 
 export type SettingsFlowInput = Settings | boolean;
@@ -37,8 +40,17 @@ export class SettingsFlow {
                 this.#service.setSettings(value);
             },
             [SETTINGS_FLOW_ACTIONS.GET_SETTINGS]: () => {
-                console.log("getSettings")
                 return this.#service.getSettings();
+            },
+            [SETTINGS_FLOW_ACTIONS.GET_IS_WELCOME]: () => {
+                return this.#service.isWelcomeSet();
+            },
+            [SETTINGS_FLOW_ACTIONS.SET_IS_WELCOME]: (flag: boolean) => {
+                this.#service.setIsWelcome(flag);
+            },
+            [SETTINGS_FLOW_ACTIONS.CLEAR_SETTINGS]: () => {
+                this.#service.clearSettings();
+                return true;
             }
         }
     }

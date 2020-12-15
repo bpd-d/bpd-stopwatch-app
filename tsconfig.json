@@ -8,13 +8,14 @@
         "jsx": "preserve",
         "allowJs": true,
         "experimentalDecorators": true,
-        "declaration": true
-    },
-    "baseUrl": ".",
-    "paths": {
-        "node_modules": [
-            "node_modules/*"
-        ]
+        "declaration": true,
+        "baseUrl": ".",
+        "paths": {
+            "bpd-cui-icons*": [
+                "node_modules/bpd-cui-icons*",
+                "node_modules/bpd-cui-icons"
+            ]
+        }
     },
     "include": [
         "src/**/*"

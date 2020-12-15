@@ -2,6 +2,7 @@ import { ITrainingsService, IActionsService, ISettingsService } from "./interfac
 import { Training, StopwatchAction, Settings } from "../models";
 import { BpdStorage } from "../../../node_modules/bpd-storage/dist/index";
 import { ActionValidator, TrainingValidator } from "../validators";
+import { is } from "bpd-toolkit/dist/esm/index";
 
 export class TrainingsStorageService implements ITrainingsService {
     #storage: BpdStorage;
@@ -15,9 +16,7 @@ export class TrainingsStorageService implements ITrainingsService {
         this.#validator = new TrainingValidator();
     }
 
-
     getAllTrainings(): Training[] {
-        console.log("Get All")
         return this.getTrainings();
     }
 
@@ -29,10 +28,10 @@ export class TrainingsStorageService implements ITrainingsService {
                 if (!training.id) {
                     training.id = len > 0 ? t[len - 1].id + 1 : 0;
                     t.push(training)
-
                     result = true;
+                    return t;
                 }
-                return result;
+                return null;
             })
         }
 
@@ -50,14 +49,19 @@ export class TrainingsStorageService implements ITrainingsService {
                     if (idx > -1) {
                         t[idx] = training;
                         result = true;
+                        return t;
                     }
-                    return result;
+                    return null;
                 })
             }
         }
         return result;
     }
 
+    /**
+     * Removes training from storage
+     * @param id Id of training
+     */
     deleteTraining(id: number): boolean {
         let result = false;
         if (id < 0) {
@@ -68,8 +72,9 @@ export class TrainingsStorageService implements ITrainingsService {
             if (idx > -1) {
                 t.splice(idx, 1);
                 result = true;
+                return t;
             }
-            return result;
+            return null;
         })
         return result;
     }
@@ -78,9 +83,18 @@ export class TrainingsStorageService implements ITrainingsService {
         let training = undefined;
         this.onAction((t) => {
             training = t.find(item => { return item.id == id });
-            return false;
+            return null;
         })
         return training;
+    }
+
+    /**
+     * Removes all trainings from storage
+     */
+    clearTrainings(): void {
+        this.onAction((trainings: Training[]) => {
+            return [];
+        })
     }
 
     getCurrentTraining(): Training {
@@ -108,11 +122,11 @@ export class TrainingsStorageService implements ITrainingsService {
         return this.#validator.validate(training).status;
     }
 
-    private onAction(callback: (t: Training[]) => boolean) {
+    private onAction(callback: (t: Training[]) => Training[] | null) {
         let t = this.getTrainings();
-        if (callback(t)) {
-            console.log(t)
-            this.setTrainings(t);
+        let result = callback(t)
+        if (result !== null) {
+            this.setTrainings(result);
         }
     }
 }
@@ -127,6 +141,7 @@ export class ActionStorageService implements IActionsService {
         this.#validator = new ActionValidator();
         this.getActionsFromStorage();
     }
+
     getAllActions(): StopwatchAction[] {
         return [...this.#actions];
     }
@@ -135,34 +150,55 @@ export class ActionStorageService implements IActionsService {
         if (!this.#validator.validate(action).status) {
             return false;
         }
+        if (!is(action.id)) {
+            action.id = "000" + this.getNextIndex();
+            this.#actions.push(action);
+        }
         let existingIndex = this.getIndex(action);
         if (existingIndex > -1) {
             this.#actions[existingIndex] = action;
-        } else {
-            this.#actions.push(action)
+            this.setActionsToStorage();
+            return true;
         }
-        this.setActionsToStorage();
-        return true;
+        console.log("Unknown action id: " + action.id);
+        return false;
     }
 
     removeAction(action: StopwatchAction): boolean {
         if (!this.#validator.validate(action).status) {
             return false;
         }
-
         let existingIndex = this.getIndex(action);
         if (existingIndex < 0) {
+            console.log("Unknown action id: " + action.id);
             return false;
         }
         this.#actions.splice(existingIndex, 1);
         this.setActionsToStorage();
         return true;
+    }
 
+    clearActions(): void {
+        this.#actions = [];
+        this.setActionsToStorage();
+    }
+
+    getActionsById(...id: string[]): StopwatchAction[] | undefined {
+        if (!is(id)) {
+            return undefined;
+        }
+        return this.#actions.reduce((result: StopwatchAction[], action: StopwatchAction, index: number) => {
+            if (id.includes(action.id)) {
+                result.push(action);
+            }
+            return result;
+        }, []);
     }
 
     private getIndex(action: StopwatchAction): number {
-        return this.#actions.findIndex(item => item.name === action.name);
+        return this.#actions.findIndex(item => item.id === action.id);
     }
+
     private getActionsFromStorage() {
         let val = this.#storage.getAny("ACTIONS");
         this.#actions = val ?? [];
@@ -171,6 +207,18 @@ export class ActionStorageService implements IActionsService {
     private setActionsToStorage() {
         this.#storage.setAny("ACTIONS", this.#actions);
     }
+
+    private getNextIndex() {
+        let item = this.#storage.getNumber("ACTION_INDEX");
+        if (!item) {
+            item = 5;
+        } else {
+            item = item + 1;
+        }
+        this.#storage.setNumber("ACTION_INDEX", item);
+        return item;
+    }
+
 }
 
 export class SettingsService implements ISettingsService {
@@ -179,6 +227,7 @@ export class SettingsService implements ISettingsService {
         this.#storage = new BpdStorage("local", "BPD_SETTINGS");
 
     }
+
 
     setSettings(value: Settings): boolean {
         this.#storage.setAny("SETTINGS", value);
@@ -214,5 +263,25 @@ export class SettingsService implements ISettingsService {
 
     isDarkMode(): boolean {
         return this.getSettings()?.darkMode;
+    }
+
+    isWelcomeSet(): boolean {
+        return this.getSettings()?.isWelcome;
+    }
+
+    setIsWelcome(flag: boolean) {
+        let settings = this.getSettings();
+        if (flag !== settings.isWelcome) {
+            settings.isWelcome = flag;
+            this.setSettings(settings)
+        }
+    }
+
+    clearSettings(): void {
+        this.setSettings({
+            darkMode: false,
+            soundEnabled: false,
+            isWelcome: false
+        })
     }
 }

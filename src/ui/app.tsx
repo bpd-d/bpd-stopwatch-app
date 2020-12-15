@@ -15,6 +15,10 @@ import { setDarkMode } from "../core/helpers";
 import { About } from "./components/about/About";
 import { Footer } from "./components/footer/Footer";
 import { MAPPIGNS } from "./routes";
+import { ElementManager } from "cui-light/dist/esm/managers/element";
+import { is } from "bpd-toolkit/dist/esm/index";
+import { BpdDialog } from "./components/common/BpdDialog";
+import { sleep } from "node_modules/bpd-toolkit/dist/esm/index";
 
 export interface AppProps {
 }
@@ -26,12 +30,19 @@ export interface AppState {
 // State is never set so we use the '{}' type.
 export class App extends React.Component<AppProps, AppState> {
     darkModeSub: FlowTask<any>;
+    welcomeScreenGetSub: FlowTask<any>;
+    welcomeDialogHandle: ElementManager;
+    welcomeDialogCloseEventIds: string[];
     constructor(props: AppProps) {
         super(props);
         this.state = {
             currentSite: ""
         }
         this.darkModeSub = window.$settingsFlow.subscribe(SETTINGS_FLOW_ACTIONS.GET_DARK_MODE, { finish: this.onDarkMode.bind(this) });
+        this.welcomeScreenGetSub = window.$settingsFlow.subscribe(SETTINGS_FLOW_ACTIONS.GET_IS_WELCOME, { finish: this.onWelcomeScreen.bind(this) });
+        this.welcomeDialogHandle = window.$cui.get("#welcome-dialog");
+        this.welcomeDialogCloseEventIds = this.welcomeDialogHandle.on("close", this.onWelcomeDialogClose.bind(this));
+        window.$settingsFlow.perform(SETTINGS_FLOW_ACTIONS.GET_IS_WELCOME);
         window.$settingsFlow.perform(SETTINGS_FLOW_ACTIONS.GET_DARK_MODE);
     }
 
@@ -43,11 +54,37 @@ export class App extends React.Component<AppProps, AppState> {
         if (this.darkModeSub) {
             window.$settingsFlow.unsubscribe(SETTINGS_FLOW_ACTIONS.GET_DARK_MODE, this.darkModeSub.id);
         }
+        if (this.welcomeScreenGetSub) {
+            window.$settingsFlow.unsubscribe(SETTINGS_FLOW_ACTIONS.GET_IS_WELCOME, this.welcomeScreenGetSub.id);
+        }
+        if (is(this.welcomeDialogCloseEventIds)) {
+            this.welcomeDialogCloseEventIds.forEach(id => {
+                this.welcomeDialogHandle.detach("close", id);
+            })
+        }
     }
 
     onDarkMode(flag: boolean) {
         setDarkMode(flag);
     }
+
+    onWelcomeScreen(flag: boolean) {
+        if (!flag) {
+            setTimeout(() => {
+                this.welcomeDialogHandle = window.$cui.get("#welcome-dialog");
+                this.welcomeDialogCloseEventIds = this.welcomeDialogHandle.on("close", this.onWelcomeDialogClose.bind(this));
+                window.$cui.get("#welcome-dialog").emit("open");
+            }, 100)
+
+        }
+    }
+
+    onWelcomeDialogClose() {
+        
+        window.$settingsFlow.perform(SETTINGS_FLOW_ACTIONS.SET_IS_WELCOME, true);
+    }
+
+
 
     render() {
         return <BrowserRouter>
@@ -70,6 +107,7 @@ export class App extends React.Component<AppProps, AppState> {
                 <Footer />
 
                 <OffCanvas />
+                <BpdDialog id="welcome-dialog" title="Welcome" />
             </div></BrowserRouter >;
     }
 }

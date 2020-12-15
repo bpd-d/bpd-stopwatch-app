@@ -64,8 +64,12 @@ export class RoundValidator extends ValidatorBase<Round> {
         if (!is(t)) {
             return ([ERROR_CODES.e0200]);
         }
+        let errors = []
+        if (!is(t.name))
+            errors.push(ERROR_CODES.e0202);
         if (!is(t.actions))
-            return [ERROR_CODES.e0201]
+            errors.push(ERROR_CODES.e0201)
+        return errors;
     }
 }
 

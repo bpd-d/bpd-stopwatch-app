@@ -8,11 +8,13 @@ export const StopwatchActionType = {
 export interface Settings {
     darkMode: boolean;
     soundEnabled: boolean;
+    isWelcome: boolean;
 }
 
 export interface StopwatchAction {
+    id: string;
     name: string;
-    duration: number;
+    duration: string;
     type?: string;
     color?: string;
     removable?: boolean;
@@ -22,7 +24,7 @@ export interface StopwatchAction {
 export interface Round {
     actions: StopwatchAction[];
     break?: number;
-    
+    name?: string;
 }
 
 export interface Training {
@@ -33,35 +35,41 @@ export interface Training {
 }
 
 export class Exercise implements StopwatchAction {
+    id: string;
     name: string;
-    duration: number;
+    duration: string;
     type: string = StopwatchActionType.EXERCISE;
     removable: false;
     constructor(duration: number, name?: string) {
-        this.duration = duration;
+        this.id = "00001";
+        this.duration = "" + duration;
         this.name = name ? name : 'Exercise';
     }
 }
 
 export class WarmUp implements StopwatchAction {
+    id: string;
     name: string;
-    duration: number;
+    duration: string;
     type: string = StopwatchActionType.WARMUP;
     removable: boolean = false;
 
     constructor(duration: number) {
-        this.duration = duration;
+        this.id = "00002";
+        this.duration = "" + duration;
         this.name = "Warm Up"
     }
 }
 
 export class CoolDown implements StopwatchAction {
+    id: string;
     name: string;
-    duration: number;
+    duration: string;
     type: string = StopwatchActionType.COOLDOWN;
     removable: false;
     constructor(duration: number, name?: string) {
-        this.duration = duration;
+        this.id = "00003";
+        this.duration = "" + duration;
         this.name = name ? name : "Cooldown";
     }
 }

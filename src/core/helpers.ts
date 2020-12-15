@@ -1,4 +1,4 @@
-import { is } from "../../node_modules/bpd-toolkit/dist/esm/index";
+import { is } from "bpd-toolkit/dist/esm/index";
 import { Round, StopwatchAction, Training } from "./models";
 
 export function showMessage(title: string, message: string) {
@@ -10,7 +10,7 @@ export function showMessage(title: string, message: string) {
 
 export function calculateDuration(actions: StopwatchAction[]) {
     return is(actions) ? actions.reduce<number>((result: number, value: StopwatchAction) => {
-        return result + value.duration;
+        return result + Number.parseInt(value.duration);
     }, 0) : 0
 }
 

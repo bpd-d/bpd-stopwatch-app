@@ -1,520 +1,493 @@
-$prefix                                                                    : 'cui' !default;
-$navbar-height                                                             : 60px;
-$footer-height                                                             : 36px;
-$countdown-stroke-width                                                    : 6px;
-@use "../node_modules/cui-styles/styles/variables"as variables with($prefix: $prefix);
-@use "../node_modules/cui-styles/styles/root"as root with($prefix          : $prefix);
-@use '../node_modules/cui-styles/styles/core/head'as head;
-@use '../node_modules/cui-styles/styles/core/body'as body;
-@use '../node_modules/cui-styles/styles/dark'as dark;
-@use '../node_modules/cui-styles/styles/components/print'as print;
-@use '../node_modules/cui-styles/styles/commons'as commons;
-@use '../node_modules/cui-styles/styles/base'as base;
-@use '../node_modules/cui-styles/styles/components'as components;
+$prefix                 : 'cui' !default;
+$navbar-height          : 60px;
+$footer-height          : 36px;
+$countdown-stroke-width : 6px;
+
+@use "../node_modules/cui-styles/styles/variables"as variables with($prefix : $prefix);
 @use "../node_modules/cui-styles/styles/mixins"as mixins;
+@use "../node_modules/cui-styles/styles/build"as build;
 
-:root {
-    @include root.variables;
-}
+@include build.wrapper() {
 
-html {
-    @include head.html;
-    height: 100%;
-}
+    #root {
+        height: 100vh;
+    }
 
 
-body {
-    @include body.main-body;
-    height: 100%;
-}
 
-#root {
-    height: 100vh;
-}
+    .stopwatch-layout-navigation {
+        height: $navbar-height;
 
-* {
-    box-sizing: border-box;
-}
+    }
 
-.stopwatch-layout-navigation {
-    height: $navbar-height;
+    .stopwatch-layout-main {
+        height: 100vh;
+    }
 
-}
+    .stopwatch-layout-content {
+        height : calc(100vh - #{$navbar-height} - #{$footer-height});
+        z-index: 10;
+    }
 
-.stopwatch-layout-main {
-    height: 100vh;
-}
+    .stopwatch-footer {
+        height: $footer-height;
+    }
 
-.stopwatch-layout-content {
-    height : calc(100vh - #{$navbar-height} - #{$footer-height});
-    z-index: 10;
-}
-
-.stopwatch-footer {
-    height: $footer-height;
-}
-
-.stopwatch-page-layout {
-    height  : 100%;
-    overflow: hidden;
-
-    .stopwatch-page-top {
-        height  : 55%;
+    .stopwatch-page-layout {
+        height  : 100%;
         overflow: hidden;
-    }
-
-    .stopwatch-page-bottom {
-        height                 : 45%;
-        border-top-right-radius: 12px;
-        border-top-left-radius : 12px;
-        transition             : transform 300ms ease-in;
-    }
-}
-
-.edit-round-dialog-body {
-    max-height: 400px;
-    overflow-y: auto;
-}
-
-.stopwatch-home-list {
-    height: 100%;
-}
-
-.stopwatch-page-header {
-    height: 40vh;
-}
-
-.training-list-item-icon {
-    width   : 40px;
-    height  : 40px;
-    position: relative;
-
-    &:before {
-        content         : "";
-        position        : absolute;
-        top             : 50%;
-        left            : 50%;
-        transform       : translate(-50%, -50%);
-        width           : 40px;
-        height          : 40px;
-        background-color: variables.$component-background-accent-shade;
-        border-radius   : 50%
-    }
-
-    span,
-    a {
-        position : absolute;
-        top      : 50%;
-        left     : 50%;
-        transform: translate(-50%, -50%);
-    }
-}
-
-.stopwatch-icon {
-    height: 170px;
-    width : 170px;
-
-    svg {
-        path {
-            &.outer-border {
-                stroke-width: 2px;
-            }
-
-            &.center {
-                fill: variables.$component-background-accent;
-            }
-
-            &.tick {
-                stroke              : variables.$component-background-accent;
-                stroke-width        : 2px;
-                stroke-dasharray    : 12;
-                // stroke-dashoffset: 12;
-                animation           : tickFrames 300ms linear forwards;
-            }
-
-            &.minutes {
-                transform-origin: center center;
-                animation       : stopTickWatch 300ms ease-out forwards;
-            }
-
-            &.hours {
-                transform-origin: center center;
-                animation       : stopTickWatch 500ms ease-out forwards;
-            }
-        }
-    }
-}
-
-.stopwatch-content-width {
-    width : 100%;
-    margin: 0 auto;
-}
-
-.actions-add-new-button {
-    height: 110px;
-}
-
-
-.stopwatch-title {
-    background             : linear-gradient(180deg, variables.$component-background-accent 0%, variables.$component-background-secondary 100%);
-    -webkit-background-clip: text;
-    background-clip        : text;
-    -webkit-text-fill-color: transparent;
-}
-
-
-.stopwatch-warmup {
-    background-color: variables.$component-background-success;
-}
-
-.stopwatch-break {
-    background-color: variables.$component-background-secondary;
-}
-
-.stopwatch-cooldown {
-    background-color: variables.$component-background-shade;
-}
-
-.stopwatch-exercise {
-    background-color: variables.$component-background-accent;
-}
-
-
-.action-background-warmup {
-    background-color: variables.$component-background-success-shade !important;
-}
-
-.action-background-break {
-    background-color: variables.$component-background-secondary-shade !important;
-}
-
-.action-background-cooldown {
-    background-color: variables.$component-background-shade !important;
-}
-
-.action-background-exercise {
-    background-color: variables.$component-background-accent-shade !important;
-}
-
-.transition-toggle {
-    opacity: 0;
-}
-
-.timer-blink-animation {
-    animation: timerPulse 1s linear infinite;
-}
-
-.stopwatch-input-width {
-    width: 100%;
-}
-
-.stopwatch-text-area {
-    resize: none;
-}
-
-.perform-layout {
-    display: block;
-
-    .perform-buttons {
-        margin-top: variables.$margin-global-large;
-    }
-}
-
-.z-index-100 {
-    z-index: 100;
-}
-
-.action-card-height {
-    height: 60px;
-}
-
-.total-circle-progress {
-    display : block;
-    position: relative;
-    width   : 176px;
-    height  : 176px;
-
-    svg {
-        position: absolute;
-        width   : 174px;
-        height  : 174px;
-        top     : 0px;
-        left    : 0px;
-
-        path {
-            stroke      : variables.$component-background-success;
-            stroke-width: $countdown-stroke-width;
-        }
-    }
-
-    >div {
-        position : absolute;
-        top      : 50%;
-        left     : 50%;
-        transform: translate(-50%, -50%);
-
-    }
-}
-
-.current-circle-progress {
-    display : block;
-    position: relative;
-    width   : 150px;
-    height  : 150px;
-
-    svg {
-        position: absolute;
-        width   : 148px;
-        height  : 148px;
-        top     : 0px;
-        left    : 0px;
-
-        path {
-            stroke      : variables.$component-background-secondary;
-            stroke-width: $countdown-stroke-width;
-        }
-    }
-
-    >div {
-        position : absolute;
-        top      : 50%;
-        left     : 50%;
-        transform: translate(-50%, -50%);
-
-    }
-}
-
-.countdown-circle-progress {
-    display : block;
-    position: relative;
-    width   : 128px;
-    height  : 128px;
-
-    svg {
-        position: absolute;
-        width   : 126px;
-        height  : 126px;
-        top     : 0px;
-        left    : 0px;
-
-        path {
-            stroke      : variables.$component-background-accent;
-            stroke-width: $countdown-stroke-width;
-        }
-    }
-
-    >div {
-        position : absolute;
-        top      : 50%;
-        left     : 50%;
-        transform: translate(-50%, -70%);
-
-    }
-}
-
-.loop-screen {
-    display : inline;
-    position: absolute;
-    top     : 0;
-    left    : 0;
-    width   : 10px;
-    height  : 10px;
-}
-
-@keyframes timerPulse {
-    0% {
-        opacity: 1;
-    }
-
-    50% {
-        opacity: 0.2;
-    }
-
-    100% {
-        opacity: 1
-    }
-}
-
-@keyframes fadeIn {
-    0% {
-        opacity: 0;
-    }
-
-    100% {
-        opacity: 1;
-    }
-}
-
-@keyframes stopTickWatch {
-    0% {
-        transform: rotate(-120deg);
-    }
-
-    100% {
-        transform: rotate(0deg);
-    }
-}
-
-@keyframes tickFrames {
-    0% {
-        opacity: 0;
-    }
-
-    100% {
-        opacity: 1;
-    }
-}
-
-@include mixins.media-screen-min-small-landscape {
-    .stopwatch-page-layout {
-        display: flex;
 
         .stopwatch-page-top {
-            height  : 100%;
+            height  : 55%;
             overflow: hidden;
-            width   : 40%;
         }
 
         .stopwatch-page-bottom {
-            height: 100%;
-            width : 60%;
+            height                 : 45%;
+            border-top-right-radius: 12px;
+            border-top-left-radius : 12px;
+            transition             : transform 300ms ease-in;
         }
     }
 
-    .perform-layout {
-        display: flex;
-
-        .perform-main-controls {
-            height: 100%;
-            width : 50%;
-        }
-
-        .perform-buttons {
-            margin-top     : 0px;
-            width          : 50%;
-            display        : flex;
-            align-items    : center;
-            justify-content: center;
-        }
+    .edit-round-dialog-body {
+        max-height: 400px;
+        overflow-y: auto;
     }
-}
 
-@include mixins.media-screen-min-large-landscape {
-    .stopwatch-content-width {
-        width: 1000px !important;
+    .stopwatch-home-list {
+        height: 100%;
     }
 
     .stopwatch-page-header {
-        height: 20vh;
-
+        height: 40vh;
     }
 
-    .stopwatch-page-content {
-        height: calc(100vh - #{$navbar-height} - #{$footer-height} - 20vh);
-    }
-
-    .stopwatch-input-width {
-        width: 300px !important;
-    }
-
-    .stopwatch-page-layout {
-        display: block;
-
-        .stopwatch-page-top {
-            height  : 40%;
-            overflow: hidden;
-            width   : 100%;
-        }
-
-        .stopwatch-page-bottom {
-            height: 60%;
-            width : 100%;
-        }
-    }
-
-    .perform-layout {
-        display: block;
-
-        .perform-main-controls {
-
-            width: 100%;
-        }
-
-        .perform-buttons {
-
-            // height: 100%;
-            width: 100%;
-        }
-    }
-}
-
-@include mixins.media-screen-min-xlarge-landscape {
-    .stopwatch-content-width {
-        width: 1200px !important;
-    }
-
-    .stopwatch-page-header {
-        height: 20vh;
-    }
-
-    .stopwatch-page-content {
-        height: calc(100vh - #{$navbar-height} - #{$footer-height} - 20vh);
-    }
-}
-
-// Commons
-@include commons.definitions;
-@include base.definitions;
-@include components.definitions;
-@include dark.definitions;
-@include print.definitions;
-
-
-@include mixins.mode-dark {
     .training-list-item-icon {
+        width   : 40px;
+        height  : 40px;
+        position: relative;
+
         &:before {
-            background-color: variables.$component-background-shade-dark;
+            content         : "";
+            position        : absolute;
+            top             : 50%;
+            left            : 50%;
+            transform       : translate(-50%, -50%);
+            width           : 40px;
+            height          : 40px;
+            background-color: variables.$component-background-accent-shade;
+            border-radius   : 50%
+        }
+
+        span,
+        a {
+            position : absolute;
+            top      : 50%;
+            left     : 50%;
+            transform: translate(-50%, -50%);
         }
     }
+
+    .stopwatch-icon {
+        height: 170px;
+        width : 170px;
+
+        svg {
+            path {
+                &.outer-border {
+                    stroke-width: 2px;
+                }
+
+                &.center {
+                    fill: variables.$component-background-accent;
+                }
+
+                &.tick {
+                    stroke              : variables.$component-background-accent;
+                    stroke-width        : 2px;
+                    stroke-dasharray    : 12;
+                    // stroke-dashoffset: 12;
+                    animation           : tickFrames 300ms linear forwards;
+                }
+
+                &.minutes {
+                    transform-origin: center center;
+                    animation       : stopTickWatch 300ms ease-out forwards;
+                }
+
+                &.hours {
+                    transform-origin: center center;
+                    animation       : stopTickWatch 500ms ease-out forwards;
+                }
+            }
+        }
+    }
+
+    .stopwatch-content-width {
+        width : 100%;
+        margin: 0 auto;
+    }
+
+    .actions-add-new-button {
+        height: 110px;
+    }
+
+
+    .stopwatch-title {
+        background             : linear-gradient(180deg, variables.$component-background-accent 0%, variables.$component-background-secondary 100%);
+        -webkit-background-clip: text;
+        background-clip        : text;
+        -webkit-text-fill-color: transparent;
+    }
+
+
+    .stopwatch-warmup {
+        background-color: variables.$component-background-success;
+    }
+
+    .stopwatch-break {
+        background-color: variables.$component-background-secondary;
+    }
+
+    .stopwatch-cooldown {
+        background-color: variables.$component-background-shade;
+    }
+
+    .stopwatch-exercise {
+        background-color: variables.$component-background-accent;
+    }
+
 
     .action-background-warmup {
-        background-color: variables.$component-background-success-shade-dark !important;
+        background-color: variables.$component-background-success-shade !important;
     }
 
     .action-background-break {
-        background-color: variables.$component-background-secondary-shade-dark !important;
+        background-color: variables.$component-background-secondary-shade !important;
     }
 
     .action-background-cooldown {
-        background-color: variables.$component-background-shade-dark !important;
+        background-color: variables.$component-background-shade !important;
     }
 
     .action-background-exercise {
-        background-color: variables.$component-background-accent-shade-dark !important;
+        background-color: variables.$component-background-accent-shade !important;
+    }
+
+    .transition-toggle {
+        opacity: 0;
+    }
+
+    .timer-blink-animation {
+        animation: timerPulse 1s linear infinite;
+    }
+
+    .stopwatch-input-width {
+        width: 100%;
+    }
+
+    .stopwatch-text-area {
+        resize: none;
+    }
+
+    .perform-layout {
+        display: block;
+
+        .perform-buttons {
+            margin-top: variables.$margin-global-large;
+        }
+    }
+
+    .z-index-100 {
+        z-index: 100;
+    }
+
+    .action-card-height {
+        height: 60px;
     }
 
     .total-circle-progress {
+        display : block;
+        position: relative;
+        width   : 176px;
+        height  : 176px;
+
         svg {
+            position: absolute;
+            width   : 174px;
+            height  : 174px;
+            top     : 0px;
+            left    : 0px;
+
             path {
-                stroke: variables.$component-background-success !important;
+                stroke      : variables.$component-background-success;
+                stroke-width: $countdown-stroke-width;
             }
+        }
+
+        >div {
+            position : absolute;
+            top      : 50%;
+            left     : 50%;
+            transform: translate(-50%, -50%);
 
         }
     }
 
     .current-circle-progress {
+        display : block;
+        position: relative;
+        width   : 150px;
+        height  : 150px;
+
         svg {
+            position: absolute;
+            width   : 148px;
+            height  : 148px;
+            top     : 0px;
+            left    : 0px;
+
             path {
-                stroke: variables.$component-background-secondary !important;
+                stroke      : variables.$component-background-secondary;
+                stroke-width: $countdown-stroke-width;
             }
+        }
+
+        >div {
+            position : absolute;
+            top      : 50%;
+            left     : 50%;
+            transform: translate(-50%, -50%);
+
         }
     }
 
     .countdown-circle-progress {
+        display : block;
+        position: relative;
+        width   : 128px;
+        height  : 128px;
+
         svg {
+            position: absolute;
+            width   : 126px;
+            height  : 126px;
+            top     : 0px;
+            left    : 0px;
+
             path {
-                stroke: variables.$component-background-accent !important;
+                stroke      : variables.$component-background-accent;
+                stroke-width: $countdown-stroke-width;
+            }
+        }
+
+        >div {
+            position : absolute;
+            top      : 50%;
+            left     : 50%;
+            transform: translate(-50%, -70%);
+
+        }
+    }
+
+    .loop-screen {
+        display : inline;
+        position: absolute;
+        top     : 0;
+        left    : 0;
+        width   : 10px;
+        height  : 10px;
+    }
+
+    @keyframes timerPulse {
+        0% {
+            opacity: 1;
+        }
+
+        50% {
+            opacity: 0.2;
+        }
+
+        100% {
+            opacity: 1
+        }
+    }
+
+    @keyframes fadeIn {
+        0% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
+
+    @keyframes stopTickWatch {
+        0% {
+            transform: rotate(-120deg);
+        }
+
+        100% {
+            transform: rotate(0deg);
+        }
+    }
+
+    @keyframes tickFrames {
+        0% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
+
+    @include mixins.media-screen-min-small-landscape {
+        .stopwatch-page-layout {
+            display: flex;
+
+            .stopwatch-page-top {
+                height  : 100%;
+                overflow: hidden;
+                width   : 40%;
+            }
+
+            .stopwatch-page-bottom {
+                height: 100%;
+                width : 60%;
+            }
+        }
+
+        .perform-layout {
+            display: flex;
+
+            .perform-main-controls {
+                height: 100%;
+                width : 50%;
+            }
+
+            .perform-buttons {
+                margin-top     : 0px;
+                width          : 50%;
+                display        : flex;
+                align-items    : center;
+                justify-content: center;
             }
         }
     }
+
+    @include mixins.media-screen-min-large-landscape {
+        .stopwatch-content-width {
+            width: 1000px !important;
+        }
+
+        .stopwatch-page-header {
+            height: 20vh;
+
+        }
+
+        .stopwatch-page-content {
+            height: calc(100vh - #{$navbar-height} - #{$footer-height} - 20vh);
+        }
+
+        .stopwatch-input-width {
+            width: 300px !important;
+        }
+
+        .stopwatch-page-layout {
+            display: block;
+
+            .stopwatch-page-top {
+                height  : 40%;
+                overflow: hidden;
+                width   : 100%;
+            }
+
+            .stopwatch-page-bottom {
+                height: 60%;
+                width : 100%;
+            }
+        }
+
+        .perform-layout {
+            display: block;
+
+            .perform-main-controls {
+
+                width: 100%;
+            }
+
+            .perform-buttons {
+
+                // height: 100%;
+                width: 100%;
+            }
+        }
+    }
+
+    @include mixins.media-screen-min-xlarge-landscape {
+        .stopwatch-content-width {
+            width: 1200px !important;
+        }
+
+        .stopwatch-page-header {
+            height: 20vh;
+        }
+
+        .stopwatch-page-content {
+            height: calc(100vh - #{$navbar-height} - #{$footer-height} - 20vh);
+        }
+    }
+
+    @include mixins.mode-dark {
+        .training-list-item-icon {
+            &:before {
+                background-color: variables.$component-background-shade-dark;
+            }
+        }
+
+        .action-background-warmup {
+            background-color: variables.$component-background-success-shade-dark !important;
+        }
+
+        .action-background-break {
+            background-color: variables.$component-background-secondary-shade-dark !important;
+        }
+
+        .action-background-cooldown {
+            background-color: variables.$component-background-shade-dark !important;
+        }
+
+        .action-background-exercise {
+            background-color: variables.$component-background-accent-shade-dark !important;
+        }
+
+        .total-circle-progress {
+            svg {
+                path {
+                    stroke: variables.$component-background-success !important;
+                }
+
+            }
+        }
+
+        .current-circle-progress {
+            svg {
+                path {
+                    stroke: variables.$component-background-secondary !important;
+                }
+            }
+        }
+
+        .countdown-circle-progress {
+            svg {
+                path {
+                    stroke: variables.$component-background-accent !important;
+                }
+            }
+        }
+    }
+
 }

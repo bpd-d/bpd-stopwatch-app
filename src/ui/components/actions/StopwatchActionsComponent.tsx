@@ -7,14 +7,14 @@ import { AddActionDialog } from './AddActionDialog';
 import { PageHeader } from '../common/PageHeader';
 import { deleteActionConfirmDialog } from '../common/Dialogs';
 import { getBgClassByType } from '../../../core/helpers';
-import { ICONS } from '../../../../node_modules/cui-light/dist/index';
 import { is } from '../../../../node_modules/bpd-toolkit/dist/esm/index';
 import { ClearableInput } from '../common/ClearableInput';
 
 const defaultAction: StopwatchAction = {
+    id: undefined,
     name: "",
     type: "exercise",
-    duration: 5,
+    duration: "5",
     removable: true,
     editable: true
 }
@@ -96,7 +96,7 @@ export function StopwatchActionsComponent() {
             {is(state.actions) && state.actions.map((action: StopwatchAction, index: number) => {
                 return (matchesName(action.name) &&
                     <div key={index} className="cui-animation-fade-in">
-                        <div className={"cui-card cui-default cui-hover " + getBgClassByType(action.type)} onClick={() => { if (action.editable) { onAddOrEditClick(action) } }}>
+                        <div className={"cui-card cui-default cui-hover " + getBgClassByType(action.type)} onClick={(ev) => { if (action.editable) { onAddOrEditClick(action); ev.preventDefault(); } }}>
                             <div className="cui-card-header cui-flex cui-between cui-nowrap">
                                 <span className="cui-card-title cui-text-truncate cui-overflow-hidden">{action.name}</span>
                                 <BpdActionIcon type={action.type} />
@@ -107,7 +107,7 @@ export function StopwatchActionsComponent() {
                                 </div>
                                 <div className="cui-flex-shrink">
                                     <ul className="cui-icon-nav">
-                                        {action.removable && <li><a className="cui-icon" cui-icon="trash" onClick={() => onDelete(action)}></a></li>}
+                                        {action.removable && <li><a className="cui-icon" cui-icon="trash" onClick={() => { if (action.editable) { onDelete(action) } }}></a></li>}
                                     </ul>
                                 </div>
                             </div>

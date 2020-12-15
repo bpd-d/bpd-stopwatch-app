@@ -1,8 +1,11 @@
 import * as React from 'react'
+import { ACTIONS_FLOW_ACTIONS } from '../../../app/flow/actions';
 import { SETTINGS_FLOW_ACTIONS } from '../../../app/flow/settings';
+import { ACTIONS } from '../../../app/flow/trainings';
 import { setDarkMode } from '../../../core/helpers';
 import { Settings } from '../../../core/models';
 import { PageHeader } from '../common/PageHeader';
+import { SettingsDevTools } from './SettingsDevTools';
 import { SettingsSwitchListItem } from './SettingsSwitchListItem'
 export interface SettingsState {
     darkModeEnabled: boolean;
@@ -11,7 +14,8 @@ export interface SettingsState {
 export function StopwatchSettings() {
     const [settings, setSettings] = React.useState<Settings>({
         soundEnabled: false,
-        darkMode: false
+        darkMode: false,
+        isWelcome: false
     })
 
     function onValueChange(name: string, value: boolean) {
@@ -27,17 +31,18 @@ export function StopwatchSettings() {
     }
 
     function onUpdateSettings() {
-        console.log("Update")
         window.$settingsFlow.perform(SETTINGS_FLOW_ACTIONS.GET_SETTINGS);
     }
 
     function onGetSettings(settings: Settings) {
-        console.log("GetSetting")
         if (settings) {
+            console.log(settings)
             setSettings(settings);
             setDarkMode(settings.darkMode);
         }
     }
+
+
 
     React.useEffect(() => {
         console.log("Reload")
@@ -48,11 +53,12 @@ export function StopwatchSettings() {
         return () => {
             window.$settingsFlow.unsubscribe(SETTINGS_FLOW_ACTIONS.GET_SETTINGS, settingsSub.id);
             window.$settingsFlow.unsubscribe(SETTINGS_FLOW_ACTIONS.SET_SETTINGS, settingsUpdateSub.id);
+
         }
     }, [settings.darkMode, settings.soundEnabled])
     return (<><div className="stopwatch-content-width">
         <PageHeader title="Settings" description="Change application setup" />
-        <div className="">
+        <div className="cui-section">
             <ul className="cui-list">
                 <li>
                     <SettingsSwitchListItem label="Dark mode" name="darkMode" value={settings.darkMode} onUpdate={onValueChange} />
@@ -60,8 +66,10 @@ export function StopwatchSettings() {
                 <li>
                     <SettingsSwitchListItem label="Play sound" name="soundEnabled" value={settings.soundEnabled} onUpdate={onValueChange} />
                 </li>
+                <li>Welcome screen status: {settings.isWelcome ? "Yes" : "No"}</li>
             </ul>
         </div>
+        <SettingsDevTools />
     </div></>);
 }
 

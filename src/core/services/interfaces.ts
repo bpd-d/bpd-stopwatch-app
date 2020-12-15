@@ -8,12 +8,15 @@ export interface ITrainingsService {
     getCurrentTraining(): Training;
     setCurrentTraining(training: Training): void;
     getTraining(id: number): Training;
+    clearTrainings(): void;
 }
 
 export interface IActionsService {
     getAllActions(): StopwatchAction[];
     setAction(action: StopwatchAction): boolean;
     removeAction(action: StopwatchAction): boolean;
+    getActionsById(...id: string[]): StopwatchAction[] | undefined;
+    clearActions(): void;
 }
 
 export interface ISettingsService {
@@ -21,6 +24,9 @@ export interface ISettingsService {
     isSoundEnabled(): boolean;
     setDarkMode(flag: boolean): void;
     isDarkMode(): boolean;
+    isWelcomeSet(): boolean;
+    setIsWelcome(flag: boolean): void;
     setSettings(value: Settings): boolean;
     getSettings(): Settings;
+    clearSettings(): void;
 }

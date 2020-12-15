@@ -36,9 +36,14 @@ export const ERROR_CODES = {
     e0102: "Training has no rounds",
     e0200: "Round is empty",
     e0201: "Round has no actions",
+    e0202: "Round name is missing",
     e0300: "Action is empty",
     e0301: "Action name is not provided",
     e0302: "Action type is not provided",
     e0303: "Action duration is not correct"
 
+}
+
+export function getDefaultRoundName(index: number) {
+    return "Round " + index;
 }

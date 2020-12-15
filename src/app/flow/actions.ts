@@ -4,7 +4,8 @@ import { StopwatchAction } from "../../core/models";
 export const ACTIONS_FLOW_ACTIONS = {
     GET_ALL: "GET_ALL",
     SET_ACTION: "SET_ACTION",
-    REMOVE_ACTION: "REMOVE_ACTION"
+    REMOVE_ACTION: "REMOVE_ACTION",
+    CLEAR_ACTIONS: "CLEAR_ACTIONS"
 }
 
 export type ActionsFlowInput = StopwatchAction;
@@ -25,6 +26,10 @@ export class ActionsFlow {
             },
             [ACTIONS_FLOW_ACTIONS.REMOVE_ACTION]: (action: StopwatchAction) => {
                 return this.#service.removeAction(action);
+            },
+            [ACTIONS_FLOW_ACTIONS.CLEAR_ACTIONS]: () => {
+                this.#service.clearActions();
+                return true;
             }
         }
     }
