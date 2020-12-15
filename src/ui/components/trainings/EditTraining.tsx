@@ -138,7 +138,7 @@ function EditTraining(props: EditTrainingProps) {
                         <NotFound message="The training you looking for could not be found" classes="" />}
                 </div>
             </div>
-            <div className="edit-container-bottom cui-padding-large-vertical">
+            <div className="edit-container-bottom cui-padding-small-vertical">
                 <div className="cui-container stopwatch-content-width cui-flex cui-middle cui-center cui-right--m">
                     <ul className="cui-list cui-inline">
                         <li className="cui-padding-remove"><a className="cui-icon cui-icon-margin cui-margin-right" cui-icon="close" onClick={() => { goBack() }}>Cancel</a></li>
