@@ -11,8 +11,9 @@ export interface AddActionDialogProps {
 
 export function AddActionDialog(props: AddActionDialogProps) {
     const [state, setState] = React.useState<StopwatchAction>({
+        id: undefined,
         name: "",
-        duration: 5,
+        duration: "5",
         removable: true,
         editable: false,
         type: StopwatchActionType.EXERCISE

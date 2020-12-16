@@ -9,8 +9,8 @@ export interface PageHeaderProps {
 export function PageHeader(props: PageHeaderProps) {
     return (<div className="stopwatch-page-header cui-container cui-center">
         <div>
-            <h1 className="cui-h1 cui-text-center cui-margin-remove">{props.title}</h1>
-            <p className="cui-text-center cui-text-muted">{props.description}</p>
+            <h1 className="cui-h1 cui-text-center cui-margin-remove cui-anim-fade-in">{props.title}</h1>
+            <p className="cui-text-center cui-text-muted cui-scale-y-in cui-animation-delay">{props.description}</p>
         </div>
     </div>);
 }

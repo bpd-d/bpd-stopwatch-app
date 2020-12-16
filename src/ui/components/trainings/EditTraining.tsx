@@ -10,8 +10,10 @@ import { MAPPIGNS } from '../../routes';
 import { deleteRoundConfirmDialog, onDeleteTrainingDialog } from '../common/Dialogs';
 import { NotFound } from '../common/NotFound';
 import { PageHeader } from '../common/PageHeader';
+import { ButtonBar, ButtonBarItemProps } from './ButtonBar';
 import { EditRoundDialog } from './EditRoundDialog';
 import { EditRoundListItem } from './EditRoundListItem';
+import { IconLabel } from './IconLabel';
 
 export interface EditTrainingSectionProps {
     training: Training;
@@ -109,9 +111,19 @@ function EditTraining(props: EditTrainingProps) {
         goBack();
     }
 
+    function getButtonNavItems(): ButtonBarItemProps[] {
+        const buttonNavItems = [
+            { icon: "close", label: "Cancel", onClick: () => { goBack() } },
+        ]
+        if (is(state.training.id)) {
+            buttonNavItems.push({ icon: "media_play", label: "Run", onClick: () => { props.history.push(MAPPIGNS.renderUrl('perform', { id: state.training.id })) } },
+                { icon: "trash", label: "Delete", onClick: () => { onDeleteTraining() } })
+        }
+        buttonNavItems.push({ icon: "checkmark", label: "Save", onClick: onTrainingSave, modifiers: "cui-rounded cui-success" });
+        return buttonNavItems;
+    }
 
     React.useEffect(() => {
-        console.log("Parent redraw")
         const updateTrainingSub = window.$flow.subscribe("UPDATE_TRAINING", { finish: onUpdateTraining })
         const getTrainingSub = window.$flow.subscribe("GET_TRAINING", { finish: onGetTraining })
         const deleteTraininSub = window.$flow.subscribe("DELETE_TRAINING", {
@@ -140,18 +152,14 @@ function EditTraining(props: EditTrainingProps) {
             </div>
             <div className="edit-container-bottom cui-padding-small-vertical">
                 <div className="cui-container stopwatch-content-width cui-flex cui-middle cui-center cui-right--m">
-                    <ul className="cui-list cui-inline">
-                        <li className="cui-padding-remove"><a className="cui-icon cui-icon-margin cui-margin-right" cui-icon="close" onClick={() => { goBack() }}>Cancel</a></li>
-                        <li className="cui-padding-remove"><Link to={MAPPIGNS.renderUrl('perform', { id: state.training.id })} className="cui-icon cui-icon-margin cui-margin-right" cui-icon="media_play">Run</Link></li>
-                        <li className="cui-padding-remove"><a className="cui-icon cui-icon-margin cui-margin-right" cui-icon="trash" onClick={() => { onDeleteTraining() }}>Delete</a></li>
-                        <li className="cui-padding-remove"><a className="cui-icon cui-success cui-icon-margin" cui-icon="checkmark" onClick={onTrainingSave}>Save</a></li>
-                    </ul>
+                    <ButtonBar items={
+                        getButtonNavItems()
+                    } />
                 </div>
             </div>
         </div>
     </>);
 }
-
 
 function EditTrainingSection(props: EditTrainingSectionProps) {
     const [state, setState] = React.useState<EditTrainingSectionState>({
@@ -177,7 +185,7 @@ function EditTrainingSection(props: EditTrainingSectionProps) {
 
     function onRoundDelete(round: Round, index: number) {
         deleteRoundConfirmDialog(() => {
-            let rounds = [<div className="props"></div>.training.rounds]
+            let rounds = [...props.training.rounds]
             rounds.splice(index, 1)
             updateRoundsState(rounds)
         })
@@ -255,7 +263,7 @@ function EditTrainingSection(props: EditTrainingSectionProps) {
     return (<>
         <div className="cui-container stopwatch-content-width cui-flex-grid cui-child-width-1-1 cui-child-width-1-2--m">
             <div className="cui-padding-small-right">
-                <h3 className="cui-h3 cui-text-muted">Common</h3>
+                {/* <h3 className="cui-h3 cui-text-muted">Common</h3> */}
                 <div className="cui-form">
                     <label htmlFor="" className="cui-form-label">Name</label>
                     <input type="text" className="cui-input stopwatch-input-width" placeholder="Name" name="name" value={props.training.name} onChange={onFormChange} />
@@ -266,7 +274,7 @@ function EditTrainingSection(props: EditTrainingSectionProps) {
                 </div>
             </div>
             <div className="cui-padding-small-left">
-                <h3 className="cui-h3 cui-text-muted">Rounds (total count: {props.training.rounds.length})</h3>
+                {/* <h3 className="cui-h3 cui-text-muted">Rounds (total count: {props.training.rounds.length})</h3> */}
                 <ul className="cui-list">
                     {props.training && props.training.rounds.map((round: Round, index: number, arr: Round[]) => {
                         return <li key={index} className="animation-fade-in"><EditRoundListItem
@@ -284,7 +292,7 @@ function EditTrainingSection(props: EditTrainingSectionProps) {
                     <li>
                         <button className="cui-button cui-icon cui-icon-margin cui-width-1-1" cui-icon="plus" onClick={() => {
                             onRoundEdit(null, -1);
-                        }}>Add New</button>
+                        }}>Add New Round</button>
                     </li>
                 </ul>
             </div>

@@ -82,6 +82,10 @@ export function PerfromTraining() {
     canPlayRef.current = canPlay;
 
     const countdownSound = React.useRef(null);
+    const exerciseSound = React.useRef(null);
+    const warmupSound = React.useRef(null);
+    const breakSound = React.useRef(null);
+    const cooldownSound = React.useRef(null);
     const endSound = React.useRef(null);
 
     function onGetTraining(training: Training) {
@@ -147,8 +151,11 @@ export function PerfromTraining() {
         let actionDuration = parseInt(currentRef.current.action.duration)
         let ct = actionDuration - currentTime;
         let progress = calculateProgress(currentTime, actionDuration)
+        if (currentTime === 0) {
+            play(currentRef.current.action.type);
+        }
         if (ct > 0) {
-            // Normal ticl
+            // Normal tick
             setStopWatchState(stopwatch.getState(), {
                 time: ct,
                 progress: 100 - progress,
@@ -161,10 +168,11 @@ export function PerfromTraining() {
             }
             return true;
         } else {
-            play("end");
+            // Next action
             stopwatch.reset();
             if (!setNextAction()) {
-
+                // End of training
+                play("end");
                 setStopWatchState(StopWatchStateOptions.STOPPED, {
                     time: 0, progress: 100, ct: 0, total: 0
                 })
@@ -244,6 +252,19 @@ export function PerfromTraining() {
             case "end":
                 element = endSound.current;
                 break;
+            case "exercise":
+                element = exerciseSound.current;
+                break;
+            case "warmup":
+                element = warmupSound.current;
+                break;
+            case "break":
+                element = breakSound.current;
+                break;
+            case "cooldown":
+                element = cooldownSound.current;
+                break;
+
         }
         if (element) {
             element.currentTime = 0;
@@ -329,7 +350,11 @@ export function PerfromTraining() {
                     </div>
                 </div>
                 <audio ref={countdownSound} id="stopwatch-countdown" src="/static/audio/stopwatch_countdown.mp3" />
-                <audio ref={endSound} id="stopwatch-end" src="/static/audio/stopwatch_end.mp3" />
+                <audio ref={exerciseSound} id="stopwatch-exercise" src="/static/audio/stopwatch_exercise.mp3" />
+                <audio ref={warmupSound} id="stopwatch-warmup" src="/static/audio/stopwatch_warmup.mp3" />
+                <audio ref={breakSound} id="stopwatch-break" src="/static/audio/stopwatch_break.mp3" />
+                <audio ref={cooldownSound} id="stopwatch-cooldown" src="/static/audio/stopwatch_cooldown.mp3" />
+                <audio ref={endSound} id="stopwatch-cooldown" src="/static/audio/stopwatch_end.mp3" />
             </div>
         }
     </>);

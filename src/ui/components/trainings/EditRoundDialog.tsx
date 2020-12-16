@@ -140,13 +140,13 @@ export function EditRoundDialog(props: EditRoundDialogProps) {
                             </div>
                         </li>
                     })}
-                    <li>
+                    <li className="cui-padding-vertical">
                         <div className="cui-flex cui-middle cui-nowrap">
                             <div className="cui-flex-grow">
                                 <ActionsSelect id="round-action-select" className="cui-width-1-1 cui-width-5-6--s" name="action" value={state.selected?.name} actions={props.definedActions} onSelect={onActionSelectChange} />
                             </div>
-                            <div className="">
-                                <a cui-icon="plus" className="cui-icon-button" onClick={onAddAction}></a>
+                            <div className="cui-padding-horizontal">
+                                <a cui-icon="plus" className="cui-icon cui-icon-button" onClick={onAddAction}></a>
                             </div>
                         </div>
                     </li>

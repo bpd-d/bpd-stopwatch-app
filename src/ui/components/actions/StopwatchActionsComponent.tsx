@@ -9,6 +9,7 @@ import { deleteActionConfirmDialog } from '../common/Dialogs';
 import { getBgClassByType } from '../../../core/helpers';
 import { is } from '../../../../node_modules/bpd-toolkit/dist/esm/index';
 import { ClearableInput } from '../common/ClearableInput';
+import { IconLabel } from '../trainings/IconLabel';
 
 const defaultAction: StopwatchAction = {
     id: undefined,
@@ -101,13 +102,14 @@ export function StopwatchActionsComponent() {
                                 <span className="cui-card-title cui-text-truncate cui-overflow-hidden">{action.name}</span>
                                 <BpdActionIcon type={action.type} />
                             </div>
-                            <div className="cui-card-body cui-flex cui-middle action-card-height">
-                                <div className="cui-flex-grow">
-                                    <div className="cui-text-muted"><span>{action.duration} seconds</span></div>
+                            <div className="cui-card-body cui-flex cui-middle cui-nowrap action-card-height">
+                                <div className="cui-flex-grow cui-overflow-hidden">
+                                    <div className="cui-text-truncate"><span>{action.duration} seconds</span></div>
                                 </div>
                                 <div className="cui-flex-shrink">
                                     <ul className="cui-icon-nav">
-                                        {action.removable && <li><a className="cui-icon" cui-icon="trash" onClick={() => { if (action.editable) { onDelete(action) } }}></a></li>}
+                                        {action.removable && <li><a className="cui-icon" cui-icon="trash" onClick={(ev) => { onDelete(action); ev.stopPropagation(); }}><IconLabel label="Delete" /></a></li>}
+                                        {!action.editable && <li><span className="cui-icon cui-muted" cui-icon="close"><IconLabel label="Not editable" /></span></li>}
                                     </ul>
                                 </div>
                             </div>

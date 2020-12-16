@@ -3,7 +3,7 @@ import { StopwatchAction, StopwatchActionType } from "./models";
 export const DefaultActions: StopwatchAction[] = [{
     id: "9996",
     name: "Warmup",
-    duration: "",
+    duration: "5",
     type: StopwatchActionType.WARMUP,
     removable: false,
     editable: false
@@ -28,7 +28,7 @@ export const DefaultActions: StopwatchAction[] = [{
     id: "9999",
     name: "Cooldown",
     duration: "90",
-    type: StopwatchActionType.WARMUP,
+    type: StopwatchActionType.COOLDOWN,
     removable: false,
     editable: false
 }]
