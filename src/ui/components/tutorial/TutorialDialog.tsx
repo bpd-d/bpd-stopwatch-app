@@ -39,7 +39,7 @@ export function TutorialDialog() {
     return (
         <BpdDialog id="welcome-dialog" title="Welcome"
             body={
-                <ul id="welcome-switch" cui-switch="links: #welcome-step-indicator > li; height: 200px">
+                <ul id="welcome-switch" cui-switch="links: #welcome-step-indicator > li; height: 250px">
                     <li className="cui-active"><div>Welcome to <span className="cui-text-bold cui-text-accent">Bpd Stopwatch</span> app. It is simple, offline tool which will allow you to perform highly custimzed trainings that need stopwatch.</div></li>
                     <li><div>Set up some <span className="cui-text-bold cui-text-accent">Actions</span> to build your trainings from. You can define action name, type and it's duration. Action type has it's indications in <span className="cui-text-bold">colors</span> and <span className="cui-text-bold">sounds</span> later when your training is performed, so choose type accordingly to your action type.
                     You can choose from <span className="cui-text-italic">warmup</span>, <span className="cui-text-italic">exercise</span>, <span className="cui-text-italic">break</span> and <span className="cui-text-italic">cooldown</span>. There are some actions already defined (they cannot be modified or deleted), which can help you to start with building your trainings.</div></li>

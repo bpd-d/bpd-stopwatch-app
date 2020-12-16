@@ -7,9 +7,12 @@ export interface ButtonBarProps {
 }
 
 export function ButtonBar(props: ButtonBarProps) {
+    React.useEffect(() => {
+
+    }, [props.items])
     return (<ul className="cui-list cui-inline">
         {props.items && props.items.length > 0 && props.items.map((item: ButtonBarItemProps, index: number) => {
-            return <ButtonBarItem key={index} icon={item.icon} label={item.label} onClick={item.onClick} modifiers={item.modifiers} />
+            return <ButtonBarItem key={item.icon} icon={item.icon} label={item.label} onClick={item.onClick} modifiers={item.modifiers} />
         })}
     </ul>);
 }

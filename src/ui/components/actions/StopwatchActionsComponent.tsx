@@ -97,7 +97,7 @@ export function StopwatchActionsComponent() {
             {is(state.actions) && state.actions.map((action: StopwatchAction, index: number) => {
                 return (matchesName(action.name) &&
                     <div key={index} className="cui-animation-fade-in">
-                        <div className={"cui-card cui-default cui-hover " + getBgClassByType(action.type)} onClick={(ev) => { if (action.editable) { onAddOrEditClick(action); ev.preventDefault(); } }}>
+                        <div className={"cui-card cui-default " + getBgClassByType(action.type) + (action.editable ? " cui-hover" : "")} onClick={(ev) => { if (action.editable) { onAddOrEditClick(action); ev.preventDefault(); } }}>
                             <div className="cui-card-header cui-flex cui-between cui-nowrap">
                                 <span className="cui-card-title cui-text-truncate cui-overflow-hidden">{action.name}</span>
                                 <BpdActionIcon type={action.type} />

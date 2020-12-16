@@ -90,7 +90,7 @@ function EditTraining(props: EditTrainingProps) {
         }
     }
 
-    function onTrainingSave(ev: any) {
+    function onTrainingSave() {
         let validaton = new TrainingValidator().validate(state.training);
         if (validaton.status) {
             window.$flow.perform("UPDATE_TRAINING", state.training)
@@ -112,7 +112,7 @@ function EditTraining(props: EditTrainingProps) {
     }
 
     function getButtonNavItems(): ButtonBarItemProps[] {
-        const buttonNavItems = [
+        const buttonNavItems: ButtonBarItemProps[] = [
             { icon: "close", label: "Cancel", onClick: () => { goBack() } },
         ]
         if (is(state.training.id)) {
