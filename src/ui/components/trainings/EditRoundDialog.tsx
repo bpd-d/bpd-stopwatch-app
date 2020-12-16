@@ -5,6 +5,7 @@ import { ACTIONS_FLOW_ACTIONS } from "../../../app/flow/actions";
 import { Round, StopwatchAction } from "../../../core/models";
 import { getDefaultRoundName } from "../../../core/statics";
 import { RoundValidator } from "../../../core/validators";
+import { ActionSelectDropdown } from "../actions/ActionSelectDropdown";
 import { ActionsSelect } from "../actions/ActionsSelect";
 import { BpdActionIcon } from "../common/BpdActionIcon";
 import { BpdDialog } from "../common/BpdDialog";
@@ -149,6 +150,7 @@ export function EditRoundDialog(props: EditRoundDialogProps) {
                                 <a cui-icon="plus" className="cui-icon cui-icon-button" onClick={onAddAction}></a>
                             </div>
                         </div>
+                        {/* <ActionSelectDropdown value={state.selected?.name} actions={props.definedActions} onSelect={onActionSelectChange} name="actioonaa" id="round-select-drop" /> */}
                     </li>
                 </ul>
                 {state.errors && state.errors.length > 0 && <ul className="cui-list ">

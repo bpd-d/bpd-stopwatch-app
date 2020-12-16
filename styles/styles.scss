@@ -38,12 +38,12 @@ $countdown-stroke-width : 6px;
         overflow: hidden;
 
         .stopwatch-page-top {
-            height  : 55%;
+            height  : 40%;
             overflow: hidden;
         }
 
         .stopwatch-page-bottom {
-            height                 : 45%;
+            height                 : 60%;
             border-top-right-radius: 12px;
             border-top-left-radius : 12px;
             transition             : transform 300ms ease-in;
@@ -60,7 +60,7 @@ $countdown-stroke-width : 6px;
     }
 
     .stopwatch-page-header {
-        height: 40vh;
+        height: 30vh;
     }
 
     .training-list-item-icon {

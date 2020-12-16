@@ -1,8 +1,11 @@
 import * as React from "react";
+import { DefaultActions } from "../../../core/statics";
 import { StopwatchAction, StopwatchActionType } from "../../../core/models";
 import { ActionValidator } from "../../../core/validators";
 import { BpdDialog } from "../common/BpdDialog";
 import { ErrorsList } from "../common/ErrorsList";
+import { ActionsSelect } from "./ActionsSelect";
+import { ActionTypeRadioChooser } from "./ActionTypeRadioChooser";
 
 export interface AddActionDialogProps {
     action: StopwatchAction;
@@ -22,8 +25,8 @@ export function AddActionDialog(props: AddActionDialogProps) {
     const [errors, setErrors] = React.useState<string[]>([])
 
     function onValueChange(event: any) {
+        let value = event.target.value;
         let name = event.target.name;
-
         switch (name) {
             case "name":
             case "duration":
@@ -35,6 +38,10 @@ export function AddActionDialog(props: AddActionDialogProps) {
                 setState({ ...state, [name]: event.target.checked })
                 break;
         }
+    }
+
+    function onActionTypeChange(action: string) {
+        setState({ ...state, "type": action })
     }
 
     function onSave() {
@@ -75,12 +82,15 @@ export function AddActionDialog(props: AddActionDialogProps) {
             </div>
             <div className="cui-form cui-margin-top">
                 <label className="cui-form-label">Type</label>
-                <select className="cui-select stopwatch-input-width" value={state.type} name="type" onChange={onValueChange} >
+                {/* <select className="cui-select stopwatch-input-width" value={state.type} name="type" onChange={onValueChange} >
                     <option value="warmup">Warmup</option>
                     <option value="exercise">Exercise</option>
                     <option value="break">Break</option>
                     <option value="cooldown">Cooldown</option>
-                </select>
+                </select> */}
+                <div className="stopwatch-input-width cui-margin-top">
+                    <ActionTypeRadioChooser id="add-action" value={state.type} onChange={onActionTypeChange} />
+                </div>
             </div>
             <div className="cui-form cui-flex cui-middle cui-reverse cui-margin-top">
                 <input type="checkbox" className="cui-checkbox" id="checkbox-1-2" name="editable" checked={state.editable} onChange={onValueChange} />

@@ -41,7 +41,7 @@ export function Navbar(props: NavbarProps) {
             <a className="cui-icon cui-padding cui-button cui-hidden--m" cui-icon="menu" cui-open="target: #app-offcanvas"></a>
         </div>
 
-        <ul className="cui-navbar-right cui-visible--m">
+        <ul className="cui-navbar-right cui-unhidden--m">
             <li><NavbarLink class="cui-navbar-item" url={MAPPIGNS.renderUrl("home")} name={MAPPIGNS.getName("home")} /></li>
             <li><NavbarLink class="cui-navbar-item" url={MAPPIGNS.renderUrl("actions")} name={MAPPIGNS.getName("actions")} /></li>
             <li><NavbarLink class="cui-navbar-item" url={MAPPIGNS.renderUrl("settings")} name={MAPPIGNS.getName("settings")} /></li>
