@@ -59,6 +59,11 @@ $countdown-stroke-width : 6px;
         max-width: 260px;
     }
 
+    .drop-height {
+        max-height: 200px;
+        overflow-y: auto;
+    }
+
     .stopwatch-home-list {
         height: 100%;
     }
