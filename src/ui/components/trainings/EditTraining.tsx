@@ -292,7 +292,7 @@ function EditTrainingSection(props: EditTrainingSectionProps) {
                     <li>
                         <button className="cui-button cui-icon cui-icon-margin cui-width-1-1" cui-icon="plus" onClick={() => {
                             onRoundEdit(null, -1);
-                        }}>Add New Round</button>
+                        }}>Add Round</button>
                     </li>
                 </ul>
             </div>

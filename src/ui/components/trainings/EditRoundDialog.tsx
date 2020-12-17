@@ -113,13 +113,13 @@ export function EditRoundDialog(props: EditRoundDialogProps) {
         id="edit-round-dialog"
         title="Edit Round"
         body={<>
-            <div className="edit-round-dialog-body">
+            <div className="">
                 <div className="cui-form">
                     <label htmlFor="" className="cui-form-label">Round name</label>
                     <input type="text" className="cui-input" placeholder="Round name" value={state.name} onChange={roundNameUpdate} />
                 </div>
-                <ul className="cui-list cui-margin-top">
-                    <div>Actions</div>
+                <div className="cui-margin-top">Actions</div>
+                <ul className="cui-list cui-margin-top edit-round-dialog-body">
                     {state.actions && state.actions.map((item: StopwatchAction, index: number) => {
                         return <li key={index} className="animation-fade-in" >
                             <div className="cui-flex cui-middle">
@@ -141,18 +141,16 @@ export function EditRoundDialog(props: EditRoundDialogProps) {
                             </div>
                         </li>
                     })}
-                    <li className="cui-padding-vertical">
-                        <div className="cui-flex cui-middle cui-nowrap">
-                            <div className="cui-flex-grow">
-                                <ActionsSelect id="round-action-select" className="cui-width-1-1 cui-width-5-6--s" name="action" value={state.selected?.name} actions={props.definedActions} onSelect={onActionSelectChange} />
-                            </div>
-                            <div className="cui-padding-horizontal">
-                                <a cui-icon="plus" className="cui-icon cui-icon-button" onClick={onAddAction}></a>
-                            </div>
-                        </div>
-                        {/* <ActionSelectDropdown value={state.selected?.name} actions={props.definedActions} onSelect={onActionSelectChange} name="actioonaa" id="round-select-drop" /> */}
-                    </li>
                 </ul>
+                <div className="cui-flex cui-middle cui-nowrap cui-margin-top">
+                    <div className="cui-flex-grow">
+                        <ActionSelectDropdown value={state.selected} actions={props.definedActions} onSelect={onActionSelectChange} name="actioonaa" id="round-select-drop" />
+                    </div>
+                    <div className="cui-padding-horizontal">
+                        <button cui-icon="plus" className="cui-icon cui-icon-button cui-width-1-1" onClick={onAddAction}></button>
+                    </div>
+                </div>
+
                 {state.errors && state.errors.length > 0 && <ul className="cui-list ">
                     {state.errors.map((error: string, index: number) => {
                         return <li key={index} className="cui-animation-slide-in"><span className="cui-text-error">{error}</span></li>

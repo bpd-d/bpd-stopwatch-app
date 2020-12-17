@@ -51,8 +51,12 @@ $countdown-stroke-width : 6px;
     }
 
     .edit-round-dialog-body {
-        max-height: 400px;
-        overflow-y: auto;
+        //   max-height: 300px;
+        //  overflow-y: auto;
+    }
+
+    .drop-max-width {
+        max-width: 260px;
     }
 
     .stopwatch-home-list {
@@ -391,6 +395,12 @@ $countdown-stroke-width : 6px;
                 align-items    : center;
                 justify-content: center;
             }
+        }
+    }
+
+    @include mixins.media-screen-min-large {
+        .drop-max-width {
+            max-width: 300px;
         }
     }
 

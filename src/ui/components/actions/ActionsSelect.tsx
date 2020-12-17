@@ -5,20 +5,20 @@ export interface ActionsSelectProps {
     id: string;
     name: string;
     className?: string;
-    value?: string;
+    value?: StopwatchAction;
     onSelect: (action: StopwatchAction) => void;
 }
 export function ActionsSelect(props: ActionsSelectProps) {
     function onChange(ev: any) {
         if (props.onSelect) {
-            let name = ev.target.value;
-            props.onSelect(props.actions.find(item => item.name === name))
+            let id = ev.target.value;
+            props.onSelect(props.actions.find(item => item.id === id))
         }
     }
     return (
-        <select className={"cui-select " + props.className} name={props.name} id={props.id} onChange={onChange} value={props.value}>
+        <select className={"cui-select " + props.className} name={props.name} id={props.id} onChange={onChange} value={props.value?.name}>
             {props.actions && props.actions.map((action: StopwatchAction) => {
-                return <option key={action.name} value={action.name}>{action.name} (Type: {action.type}, Duration: {action.duration})</option>
+                return <option key={action.name} value={action.id}>{action.name} (Type: {action.type}, Duration: {action.duration})</option>
             })}
         </select>
     );
