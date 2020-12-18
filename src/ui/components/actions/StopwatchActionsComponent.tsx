@@ -118,7 +118,7 @@ export function StopwatchActionsComponent() {
             })}
         </div>
         <div className="cui-position-float cui-position-bottom cui-position-right cui-margin cui-margin-large--l z-index-100">
-            <button className="cui-icon cui-button cui-icon-margin cui-background-default cui-box-shadow cui-rounded" cui-icon="plus" onClick={() => { onAddOrEditClick() }}>Add New</button>
+            <button className="cui-icon-button cui-large cui-background-default cui-box-shadow" cui-icon="plus" onClick={() => { onAddOrEditClick() }}></button>
         </div>
     </div>
         <AddActionDialog action={state.current} onSave={onDialogSave} /></>);

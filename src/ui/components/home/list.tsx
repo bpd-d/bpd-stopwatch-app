@@ -6,12 +6,12 @@ import { MAPPIGNS } from "../../routes";
 
 export interface TrainingListProps {
     list: Training[];
-    onDelete: (id: number) => void;
+    onDelete: (id: string) => void;
 }
 
 export interface TrainingListItemProps {
     data: Training;
-    onDelete: (id: number) => void;
+    onDelete: (id: string) => void;
 }
 
 export function TrainingList(props: TrainingListProps) {

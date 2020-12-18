@@ -9,6 +9,7 @@ export interface Settings {
     darkMode: boolean;
     soundEnabled: boolean;
     isWelcome: boolean;
+    simpleView: boolean;
 }
 
 export interface StopwatchAction {

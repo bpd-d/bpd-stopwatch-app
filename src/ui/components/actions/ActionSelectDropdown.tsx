@@ -32,7 +32,7 @@ export function DropTrigger(props: DropTriggerProps) {
     return (
         <div className="cui-flex cui-width-1-1">
             {props.action ? <div className="cui-flex-grow"><ActionDetailsLabel action={props.action} /></div> : <span>No action selected</span>}
-            <span cui-icon="chevron_down"></span>
+            <span cui-icon="chevron_small_down"></span>
         </div>
     );
 }

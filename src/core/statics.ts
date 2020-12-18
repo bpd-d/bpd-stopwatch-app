@@ -1,4 +1,4 @@
-import { StopwatchAction, StopwatchActionType } from "./models";
+import { Settings, StopwatchAction, StopwatchActionType } from "./models";
 
 export const DefaultActions: StopwatchAction[] = [{
     id: "9996",
@@ -51,4 +51,11 @@ export const ERROR_CODES = {
 
 export function getDefaultRoundName(index: number) {
     return "Round " + index;
+}
+
+export const DefaultSettings: Settings = {
+    darkMode: false,
+    soundEnabled: false,
+    isWelcome: false,
+    simpleView: false
 }

@@ -3,6 +3,7 @@ import { Training, StopwatchAction, Settings } from "../models";
 import { BpdStorage } from "../../../node_modules/bpd-storage/dist/index";
 import { ActionValidator, TrainingValidator } from "../validators";
 import { is } from "bpd-toolkit/dist/esm/index";
+import { DefaultSettings } from "../statics";
 
 export class TrainingsStorageService implements ITrainingsService {
     #storage: BpdStorage;
@@ -292,9 +293,7 @@ export class SettingsService implements ISettingsService {
 
     clearSettings(): void {
         this.setSettings({
-            darkMode: false,
-            soundEnabled: false,
-            isWelcome: false
+            ...DefaultSettings
         })
     }
 }

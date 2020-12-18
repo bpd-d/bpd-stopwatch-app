@@ -1,7 +1,6 @@
 import * as React from 'react'
-import { ACTIONS_FLOW_ACTIONS } from '../../../app/flow/actions';
+import { DefaultSettings } from '../../../core/statics';
 import { SETTINGS_FLOW_ACTIONS } from '../../../app/flow/settings';
-import { ACTIONS } from '../../../app/flow/trainings';
 import { setDarkMode } from '../../../core/helpers';
 import { Settings } from '../../../core/models';
 import { PageHeader } from '../common/PageHeader';
@@ -13,13 +12,11 @@ export interface SettingsState {
 }
 export function StopwatchSettings() {
     const [settings, setSettings] = React.useState<Settings>({
-        soundEnabled: false,
-        darkMode: false,
-        isWelcome: false
+        ...DefaultSettings
     })
 
     function onValueChange(name: string, value: boolean) {
-        if (name !== 'soundEnabled' && name !== "darkMode") {
+        if (name !== 'soundEnabled' && name !== "darkMode" && name !== "simpleView") {
             return;
         }
         let newSettings = {
@@ -65,6 +62,9 @@ export function StopwatchSettings() {
                 </li>
                 <li>
                     <SettingsSwitchListItem label="Play sound" name="soundEnabled" value={settings.soundEnabled} onUpdate={onValueChange} />
+                </li>
+                <li>
+                    <SettingsSwitchListItem label="Simple timer view" name="simpleView" value={settings.simpleView} onUpdate={onValueChange} />
                 </li>
                 <li>Welcome screen status: {settings.isWelcome ? "Yes" : "No"}</li>
             </ul>

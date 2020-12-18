@@ -43,7 +43,7 @@ export class Home extends React.Component<any, HomeState> {
         window.$flow.unsubscribe("DELETE_TRAINING", this.onDeleteSubscription.id);
     }
 
-    deleteTraining(id: number) {
+    deleteTraining(id: string) {
         let list = [...this.state.list];
         let elementIdx = list.findIndex(item => item.id === id);
         if (elementIdx > -1) {
@@ -92,7 +92,7 @@ export class Home extends React.Component<any, HomeState> {
                 </div>
             </div>
             <div className="cui-position-float cui-position-bottom cui-position-right cui-margin cui-margin-large--l z-index-100">
-                <Link to={MAPPIGNS.renderUrl("newTraining")} className="cui-button cui-icon cui-icon-margin cui-background-default cui-box-shadow cui-rounded" cui-icon="plus">Add New</Link>
+                <Link to={MAPPIGNS.renderUrl("newTraining")} className="cui-icon-button cui-large cui-background-default cui-box-shadow" cui-icon="plus"></Link>
             </div>
         </div>;
     }

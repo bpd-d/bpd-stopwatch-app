@@ -11,6 +11,7 @@ export const SETTINGS_FLOW_ACTIONS = {
     GET_SETTINGS: "GET_SETTINGS",
     GET_IS_WELCOME: "GET_IS_WELCOME",
     SET_IS_WELCOME: "SET_IS_WELCOME",
+    GET_SIMPLE_VIEW: "GET_SIMPLE_VIEW",
     CLEAR_SETTINGS: "CLEAR_SETTINGS"
 }
 
@@ -44,6 +45,10 @@ export class SettingsFlow {
             },
             [SETTINGS_FLOW_ACTIONS.GET_IS_WELCOME]: () => {
                 return this.#service.isWelcomeSet();
+            },
+            [SETTINGS_FLOW_ACTIONS.GET_SIMPLE_VIEW]: () => {
+                let sett = this.#service.getSettings();
+                return sett.simpleView;
             },
             [SETTINGS_FLOW_ACTIONS.SET_IS_WELCOME]: (flag: boolean) => {
                 this.#service.setIsWelcome(flag);

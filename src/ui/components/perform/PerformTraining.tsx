@@ -7,7 +7,7 @@ import { SETTINGS_FLOW_ACTIONS } from '../../../app/flow/settings';
 import { calcDisplayTimer, calculateDuration, calculateProgress, getBgClassByType, getTotalDuration, showMessage, getClassByType } from '../../../core/helpers';
 import { Round, StopwatchAction, Training } from '../../../core/models';
 import { CompleteTrainingValidator } from '../../../core/validators';
-import { NotFound } from '../common/NotFound'; import { CountDownTimer } from './CountDownTimer';
+import { NotFound } from '../common/NotFound'; import { CountDownTimer, SimpleCountDownTimer } from './CountDownTimer';
 ;
 
 interface TimeStateData {
@@ -59,6 +59,7 @@ export function PerfromTraining() {
     const [stopwatch, setStopwatch] = React.useState<StopWatch>(undefined)
     const [current, setCurrent] = React.useState<CurrentTrainingState>(defaultCurrent)
     const [canPlay, setCanPlay] = React.useState<boolean>(false);
+    const [simpleView, setSimpleView] = React.useState<boolean>(false);
 
     const [watchState, setWatchState] = React.useState<StopwatchState>({
         timer: "00:00",
@@ -163,13 +164,13 @@ export function PerfromTraining() {
                 total: total
             })
             // Start round end countdown
-            if (ct > 0 && ct <= 3) {
+            if (ct <= 2) {
                 play("countdown");
             }
             return true;
         } else {
             // Next action
-            stopwatch.reset();
+            console.log(ct)
             if (!setNextAction()) {
                 // End of training
                 play("end");
@@ -178,7 +179,9 @@ export function PerfromTraining() {
                 })
                 return false;
             }
-            //setStopWatchState(StopWatchStateOptions.RUNNING, { time: 0, progress: 100, ct: currentTime, total: total })
+            play("countdown");
+            setStopWatchState(StopWatchStateOptions.RUNNING, { time: 0, progress: 0, ct: ct, total: total })
+            stopwatch.reset();
             return true;
         }
     }
@@ -213,7 +216,7 @@ export function PerfromTraining() {
             let trainginProgress = calculateTrainingProgress(timeData.total);
             setWatchState({
                 timer: calcDisplayTimer(timeData.time),
-                timerCls: getTimerCls(timeData.time),
+                timerCls: getTimerCls(timeData.time, watchstate),
                 state: watchstate,
                 startBtnCls: getStartBtnCls(watchstate),
                 progress: timeData.progress,
@@ -272,8 +275,8 @@ export function PerfromTraining() {
         }
     }
 
-    function getTimerCls(timer: number): string {
-        return timer > 0 && timer <= 3 ? "cui-text-warning timer-blink-animation" : "";
+    function getTimerCls(timer: number, state: StopWatchState): string {
+        return state === StopWatchStateOptions.RUNNING && timer >= 0 && timer < 3 ? "cui-text-warning timer-blink-animation" : "";
     }
 
     function getStartBtnCls(state: StopWatchState) {
@@ -284,17 +287,22 @@ export function PerfromTraining() {
         setCanPlay(canPlay);
     }
 
+    function onGetSimpleView(simpleView: boolean) {
+        setSimpleView(simpleView);
+    }
+
     function getBackgroundClass(action: StopwatchAction) {
         return !is(action) ? "" : getBgClassByType(action.type);
     }
 
     React.useEffect(() => {
-        console.log("Perfrom init")
         const getTrainingSubscription = window.$flow.subscribe("GET_TRAINING", { finish: onGetTraining })
         const settingsPlaySound = window.$settingsFlow.subscribe(SETTINGS_FLOW_ACTIONS.GET_SOUND_ENABLED, {
             finish: onGetPlaySound
         })
+        const simpleViewSettingsHandler = window.$settingsFlow.subscribe(SETTINGS_FLOW_ACTIONS.GET_SIMPLE_VIEW, { finish: onGetSimpleView })
         window.$settingsFlow.perform(SETTINGS_FLOW_ACTIONS.GET_SOUND_ENABLED);
+        window.$settingsFlow.perform(SETTINGS_FLOW_ACTIONS.GET_SIMPLE_VIEW);
         const wakeLock = new KeepScreenAwakeFeature();
         try {
             wakeLock.activate();
@@ -312,6 +320,7 @@ export function PerfromTraining() {
             console.log("Perfrom restart")
             window.$flow.unsubscribe("GET_TRAINING", getTrainingSubscription.id)
             window.$settingsFlow.unsubscribe(SETTINGS_FLOW_ACTIONS.GET_SOUND_ENABLED, settingsPlaySound.id);
+            window.$settingsFlow.unsubscribe(SETTINGS_FLOW_ACTIONS.GET_SIMPLE_VIEW, simpleViewSettingsHandler.id);
             if (stopwatch) {
                 console.log("StopWatch stop")
                 stopwatch.stop();
@@ -329,7 +338,7 @@ export function PerfromTraining() {
                         <h2 className="cui-h2 cui-margin-remove">{state.training.name}</h2>
                         <p className="cui-margin-remove">{state?.training?.rounds[current.roundIdx]?.name}</p>
                         <p className="cui-text-muted cui-text-small cui-margin-remove">Round {current.roundIdx + 1} of {state.training.rounds.length}</p>
-                        <CountDownTimer actionIdx={current.actionIdx} watchState={watchState} />
+                        {simpleView ? <SimpleCountDownTimer actionIdx={current.actionIdx} watchState={watchState} /> : <CountDownTimer actionIdx={current.actionIdx} watchState={watchState} />}
                     </div>
                     <div className="perform-buttons">
                         <div className="cui-width-1-1">
