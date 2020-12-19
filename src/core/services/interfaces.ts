@@ -8,6 +8,10 @@ export interface ITrainingsService {
     getCurrentTraining(): Training;
     setCurrentTraining(training: Training): void;
     getTraining(id: string): Training;
+    isDraft(): boolean;
+    getDraft(): Training | undefined;
+    setDraft(training: Training): void;
+    clearDraft(): void;
     clearTrainings(): void;
 }
 

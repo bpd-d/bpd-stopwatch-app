@@ -1,9 +1,10 @@
 import * as React from 'react'
 import { Link, useParams, withRouter } from 'react-router-dom';
+import { ACTIONS } from '../../../app/flow/trainings';
 import { clone, is } from '../../../../node_modules/bpd-toolkit/dist/esm/index';
 import { ACTIONS_FLOW_ACTIONS } from '../../../app/flow/actions';
 import { insert, move, showMessage } from '../../../core/helpers';
-import { Round, StopwatchAction, Training } from '../../../core/models';
+import { Round, StopwatchAction, Training, TrainingState } from '../../../core/models';
 import { DefaultActions } from '../../../core/statics';
 import { TrainingValidator } from '../../../core/validators';
 import { MAPPIGNS } from '../../routes';
@@ -13,7 +14,6 @@ import { PageHeader } from '../common/PageHeader';
 import { ButtonBar, ButtonBarItemProps } from './ButtonBar';
 import { EditRoundDialog } from './EditRoundDialog';
 import { EditRoundListItem } from './EditRoundListItem';
-import { IconLabel } from './IconLabel';
 
 export interface EditTrainingSectionProps {
     training: Training;
@@ -42,10 +42,12 @@ interface EditTrainingDefinedActions {
 }
 
 function EditTraining(props: EditTrainingProps) {
+    const [isLoading, setIsLoading] = React.useState(false);
     const [state, setState] = React.useState<EditTrainingState>({
         training: {
             name: "",
-            rounds: []
+            rounds: [],
+            state: TrainingState.NEW
         }
     })
 
@@ -53,17 +55,23 @@ function EditTraining(props: EditTrainingProps) {
 
 
     function getTraining() {
+        setIsLoading(true);
         if (id) {
-            window.$flow.perform("GET_TRAINING", id);
+            window.$flow.perform(ACTIONS.GET_FOR_EDIT, id);
+        } else {
+            window.$flow.perform(ACTIONS.GET_DRAFT);
         }
     }
 
     function onUpdate(training: Training) {
-        setState({
-            ...state,
-            training: training
-        }
-        )
+        //if (training.state !== TrainingState.PUBLISH) {
+        pushDraft(training)
+        // }
+        // setState({
+        //     ...state,
+        //     training: training
+        // }
+        // )
     }
 
     function onUpdateTraining(result: boolean): void {
@@ -90,17 +98,40 @@ function EditTraining(props: EditTrainingProps) {
         }
     }
 
+    function onGetDraft(training: Training) {
+        setIsLoading(false);
+        if (training && !is(training.id)) {
+            setState({
+                training: { ...training }
+            })
+        }
+    }
+
+    function pushDraft(training: Training) {
+        //setIsLoading(true);
+        window.$flow.perform(ACTIONS.SET_DRAFT, training);
+        setState({
+            training: { ...training, state: TrainingState.DRAFT }
+        })
+    }
+
     function onTrainingSave() {
         let validaton = new TrainingValidator().validate(state.training);
         if (validaton.status) {
-            window.$flow.perform("UPDATE_TRAINING", state.training)
+            window.$flow.perform(ACTIONS.UPDATE_TRAINING, state.training)
         } else {
             showMessage("Training not valid", validaton.errors.join(", "))
         }
     }
 
     function onDeleteTraining() {
-        onDeleteTrainingDialog(state.training.name, onYes)
+        if (is(state.training.id) && state.training.state === TrainingState.PUBLISH)
+            onDeleteTrainingDialog(state.training.name, onYes)
+        else {
+            window.$flow.perform(ACTIONS.CLEAR_DRAFT);
+            goBack();
+        }
+
     }
 
     function onYes() {
@@ -113,19 +144,32 @@ function EditTraining(props: EditTrainingProps) {
 
     function getButtonNavItems(): ButtonBarItemProps[] {
         const buttonNavItems: ButtonBarItemProps[] = [
-            { icon: "close", label: "Cancel", onClick: () => { goBack() } },
-        ]
+            { icon: "close", label: "Cancel", onClick: () => { goBack() } }];
         if (is(state.training.id)) {
-            buttonNavItems.push({ icon: "media_play", label: "Run", onClick: () => { props.history.push(MAPPIGNS.renderUrl('perform', { id: state.training.id })) } },
-                { icon: "trash", label: "Delete", onClick: () => { onDeleteTraining() } })
+            buttonNavItems.push({ icon: "media_play", label: "Run", onClick: () => { props.history.push(MAPPIGNS.renderUrl('perform', { id: state.training.id })) } })
         }
-        buttonNavItems.push({ icon: "checkmark", label: "Save", onClick: onTrainingSave, modifiers: "cui-rounded cui-success" });
+
+        if (state.training.state !== TrainingState.NEW) {
+            buttonNavItems.push({ icon: "trash", label: "Delete", onClick: () => { onDeleteTraining() } });
+        }
+
+        buttonNavItems.push({ icon: "checkmark", label: "Save", onClick: onTrainingSave, modifiers: "cui-success" });
         return buttonNavItems;
+    }
+
+    function getPageName(): string {
+        let name = "";
+        if (!is(state.training) || !is(state.training.name)) {
+            return "Define training";
+        }
+
+        return `Update ${state.training.state === TrainingState.DRAFT ? "draft" : "training"} ${state.training.name}`;
     }
 
     React.useEffect(() => {
         const updateTrainingSub = window.$flow.subscribe("UPDATE_TRAINING", { finish: onUpdateTraining })
-        const getTrainingSub = window.$flow.subscribe("GET_TRAINING", { finish: onGetTraining })
+        const getTrainingSub = window.$flow.subscribe(ACTIONS.GET_FOR_EDIT, { finish: onGetTraining })
+        const getDraftSub = window.$flow.subscribe("GET_DRAFT", { finish: onGetDraft })
         const deleteTraininSub = window.$flow.subscribe("DELETE_TRAINING", {
             finish: onDeleteTrainingSub
         })
@@ -133,8 +177,9 @@ function EditTraining(props: EditTrainingProps) {
 
         return () => {
             window.$flow.unsubscribe("UPDATE_TRAINING", updateTrainingSub.id);
-            window.$flow.unsubscribe("GET_TRAINING", getTrainingSub.id);
+            window.$flow.unsubscribe(ACTIONS.GET_FOR_EDIT, getTrainingSub.id);
             window.$flow.unsubscribe("DELETE_TRAINING", deleteTraininSub.id);
+            window.$flow.unsubscribe("GET_DRAFT", getDraftSub.id);
         }
     }, [state.training.id])
 
@@ -142,7 +187,7 @@ function EditTraining(props: EditTrainingProps) {
         <div className="edit-container">
             <div className="edit-container-content cui-overflow-y-auto">
                 <div className="cui-container stopwatch-content-width">
-                    <PageHeader title={is(state.training?.name) ? "Update training " + state.training.name : "Define training"} description="Customize your training settings" />
+                    <PageHeader title={getPageName()} description="Customize your training settings" />
                 </div>
                 <div className="">
                     {state.training ?
@@ -150,8 +195,8 @@ function EditTraining(props: EditTrainingProps) {
                         <NotFound message="The training you looking for could not be found" classes="" />}
                 </div>
             </div>
-            <div className="edit-container-bottom cui-padding-small-vertical">
-                <div className="cui-container stopwatch-content-width cui-flex cui-middle cui-center cui-right--m">
+            <div className="edit-container-bottom cui-padding-small-vertical cui-border-top cui-border-remove--l cui-flex stopwatch-content-width">
+                <div className="stopwatch-content-width cui-flex cui-middle cui-center">
                     <ButtonBar items={
                         getButtonNavItems()
                     } />

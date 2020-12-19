@@ -5,6 +5,12 @@ export const StopwatchActionType = {
     WARMUP: "warmup"
 }
 
+export const TrainingState = {
+    DRAFT: 'draft',
+    PUBLISH: 'publish',
+    NEW: "new",
+}
+
 export interface Settings {
     darkMode: boolean;
     soundEnabled: boolean;
@@ -33,6 +39,7 @@ export interface Training {
     description?: string;
     id?: string;
     rounds: Round[];
+    state: string;
 }
 
 export class Exercise implements StopwatchAction {

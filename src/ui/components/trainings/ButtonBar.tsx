@@ -26,7 +26,7 @@ export interface ButtonBarItemProps {
 }
 
 export function ButtonBarItem(props: ButtonBarItemProps) {
-    let classes = "cui-icon cui-button " + (props.modifiers ?? "");
+    let classes = "cui-button cui-rounded " + (props.modifiers ?? "");
     return (<li className="cui-padding-small-horizontal">
         <a className={classes} cui-icon={props.icon} onClick={props.onClick}><IconLabel label={props.label} /></a>
     </li>);

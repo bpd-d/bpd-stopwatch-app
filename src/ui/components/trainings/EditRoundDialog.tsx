@@ -8,6 +8,7 @@ import { RoundValidator } from "../../../core/validators";
 import { ActionSelectDropdown } from "../actions/ActionSelectDropdown";
 import { ActionsSelect } from "../actions/ActionsSelect";
 import { BpdActionIcon } from "../common/BpdActionIcon";
+import { BpdActionLabel } from "../common/BpdActionLabel";
 import { BpdDialog } from "../common/BpdDialog";
 
 export interface EditRoundDialogProps {
@@ -121,19 +122,10 @@ export function EditRoundDialog(props: EditRoundDialogProps) {
                 <div className="cui-margin-top">Actions</div>
                 <ul className="cui-list cui-margin-top edit-round-dialog-body">
                     {state.actions && state.actions.map((item: StopwatchAction, index: number) => {
-                        return <li key={index} className="animation-fade-in" >
+                        return <li key={item.id + index} className="animation-fade-in" >
                             <div className="cui-flex cui-middle">
                                 <div className="cui-flex-grow">
-                                    <div className="cui-flex cui-middle">
-                                        <div className="cui-flex-center cui-margin-right">
-                                            <BpdActionIcon type={item.type} />
-                                        </div>
-                                        <div className="cui-flex-grow">
-                                            <div className="">{item.name}</div>
-                                            <div className="cui-text-muted">Lasts {item.duration} seconds</div>
-                                        </div>
-                                    </div>
-
+                                    <BpdActionLabel action={item} />
                                 </div>
                                 <ul className="cui-icon-nav">
                                     <li><a className="cui-icon" cui-icon="trash" onClick={() => { onDeleteAction(index) }}></a></li>

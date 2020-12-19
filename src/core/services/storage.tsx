@@ -1,21 +1,23 @@
 import { ITrainingsService, IActionsService, ISettingsService } from "./interfaces";
-import { Training, StopwatchAction, Settings } from "../models";
+import { Training, StopwatchAction, Settings, TrainingState } from "../models";
 import { BpdStorage } from "../../../node_modules/bpd-storage/dist/index";
 import { ActionValidator, TrainingValidator } from "../validators";
 import { is } from "bpd-toolkit/dist/esm/index";
 import { DefaultSettings } from "../statics";
 
+const TRAININGS_STORAGE = "Trainings";
+const DRAFT_STORAGE = "DRAFT_TRAINING";
+
 export class TrainingsStorageService implements ITrainingsService {
     #storage: BpdStorage;
-    #trainings: Training[];
-    #STORAGE_NAME: string;
+    // #trainings: Training[];
     #validator: TrainingValidator;
     constructor() {
         this.#storage = new BpdStorage("local", "BPD_TRAININGS");
-        this.#STORAGE_NAME = "Trainings";
-        this.#trainings = [];
+        // this.#trainings = [];
         this.#validator = new TrainingValidator();
     }
+
 
     getAllTrainings(): Training[] {
         return this.getTrainings();
@@ -27,7 +29,11 @@ export class TrainingsStorageService implements ITrainingsService {
         if (this.validate(training)) {
             this.onAction((t: Training[]) => {
                 if (!is(training.id)) {
+                    if (training.state === TrainingState.DRAFT) {
+                        this.clearDraft();
+                    }
                     training.id = "00" + this.getNextIndex();
+                    training.state = TrainingState.PUBLISH;
                     t.push(training)
                     result = true;
                     return t;
@@ -43,12 +49,15 @@ export class TrainingsStorageService implements ITrainingsService {
 
         if (this.validate(training)) {
             if (!is(training.id)) {
-                console.log(training)
                 result = this.addTraining(training)
             } else {
                 this.onAction((t: Training[]) => {
                     let idx = t.findIndex(item => item.id === training.id);
                     if (idx > -1) {
+                        if (training.state === TrainingState.DRAFT) {
+                            this.clearDraft();
+                        }
+                        training.state = TrainingState.PUBLISH;
                         t[idx] = training;
                         result = true;
                         return t;
@@ -82,13 +91,11 @@ export class TrainingsStorageService implements ITrainingsService {
     }
 
     getTraining(id: string): Training {
-        console.log(id)
         let training = undefined;
         this.onAction((t) => {
             training = t.find(item => { return item.id === id });
             return null;
         })
-        console.log(training)
         return training;
     }
 
@@ -101,6 +108,26 @@ export class TrainingsStorageService implements ITrainingsService {
         })
     }
 
+    isDraft(): boolean {
+        throw is(this.#storage.getAny(DRAFT_STORAGE));
+    }
+
+    getDraft(): Training {
+        return this.#storage.getAny(DRAFT_STORAGE) ?? undefined;
+    }
+
+    setDraft(training: Training): boolean {
+        if (!is(training)) {
+            return;
+        }
+        training.state = TrainingState.DRAFT;
+        this.#storage.setAny(DRAFT_STORAGE, training);
+    }
+
+    clearDraft(): void {
+        this.#storage.removeItem(DRAFT_STORAGE);
+    }
+
     getCurrentTraining(): Training {
         throw new Error("Method not implemented.");
     }
@@ -110,15 +137,11 @@ export class TrainingsStorageService implements ITrainingsService {
     }
 
     private getTrainings(): Training[] {
-        if (this.#trainings.length === 0) {
-            let res = this.#storage.getAny(this.#STORAGE_NAME);
-            this.#trainings = res ?? [];
-        }
-        return this.#storage.getAny(this.#STORAGE_NAME) ?? [];
+        return this.#storage.getAny(TRAININGS_STORAGE) ?? [];
     }
 
     private setTrainings(t: Training[]): void {
-        this.#storage.setAny(this.#STORAGE_NAME, t);
+        this.#storage.setAny(TRAININGS_STORAGE, t);
     }
 
     private getNextIndex(): number {
@@ -239,7 +262,6 @@ export class SettingsService implements ISettingsService {
     #storage: BpdStorage;
     constructor() {
         this.#storage = new BpdStorage("local", "BPD_SETTINGS");
-
     }
 
 
