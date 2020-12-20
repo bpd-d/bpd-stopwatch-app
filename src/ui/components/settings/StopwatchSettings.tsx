@@ -54,7 +54,7 @@ export function StopwatchSettings() {
         }
     }, [settings.darkMode, settings.soundEnabled])
     return (<><div className="stopwatch-content-width">
-        <PageHeader title="Settings" description="Change application setup" />
+        <PageHeader title="Settings" description="Change application setup" icon="setup" />
         <div className="cui-section">
             <ul className="cui-list">
                 <li>

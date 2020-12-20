@@ -24,10 +24,10 @@ export class OffCanvas extends React.Component<OffCanvasProps, {}> {
                     <div className="cui-width-1-1">
                         <h3 className="cui-h3">Menu</h3>
                         <ul className="cui-list cui-interactive cui-margin-top">
-                            <li><NavbarLink url={MAPPIGNS.renderUrl("home")} name={MAPPIGNS.getName("home")} shouldClose={true} /></li>
-                            <li><NavbarLink url={MAPPIGNS.renderUrl("actions")} name={MAPPIGNS.getName("actions")} shouldClose={true} /></li>
-                            <li><NavbarLink url={MAPPIGNS.renderUrl("settings")} name={MAPPIGNS.getName("settings")} shouldClose={true} /></li>
-                            <li><NavbarLink url={MAPPIGNS.renderUrl("about")} name={MAPPIGNS.getName("about")} shouldClose={true} /></li>
+                            <li><NavbarLink url={MAPPIGNS.renderUrl("home")} name={MAPPIGNS.getName("home")} icon="home" shouldClose={true} isIcon={true} /></li>
+                            <li><NavbarLink url={MAPPIGNS.renderUrl("actions")} name={MAPPIGNS.getName("actions")} icon="user" shouldClose={true} isIcon={true} /></li>
+                            <li><NavbarLink url={MAPPIGNS.renderUrl("settings")} name={MAPPIGNS.getName("settings")} icon="setup" shouldClose={true} isIcon={true} /></li>
+                            <li><NavbarLink url={MAPPIGNS.renderUrl("about")} name={MAPPIGNS.getName("about")} icon="info" shouldClose={true} isIcon={true} /></li>
                         </ul>
                     </div>
                 </div>

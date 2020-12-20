@@ -213,6 +213,20 @@ $countdown-stroke-width : 6px;
         height: 60px;
     }
 
+    .fade-enter {
+        opacity: 0;
+        z-index: 1;
+    }
+
+    .fade-enter.fade-enter-active {
+        opacity   : 1;
+        transition: opacity 250ms ease-in;
+    }
+
+    .coneee {
+        position: absolute;
+    }
+
     .total-circle-progress {
         display : block;
         position: relative;

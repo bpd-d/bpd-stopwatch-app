@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import '../styles/styles.scss';
-import { App } from "./ui/app";
+import { App, AppBase } from "./ui/app";
 import { CuiIconsPack } from 'bpd-cui-icons/index';
 import { Flow, FlowFactory } from '../node_modules/bpd-flow/dist/index';
 import { TrainingsStorageService, ActionStorageService, SettingsService } from './core/services/storage';
@@ -75,6 +75,6 @@ window.$actionsFlow = FlowFactory.create<ActionsFlowInput, ActionsFlowOutput>(ac
 window.$settingsFlow = FlowFactory.create<SettingsFlowInput, SettingsFlowOutput>(settingsFlow.getActions());
 
 new CuiInit().init(cuiSetup).then((result) => {
-    ReactDOM.render(<App />, rootElement);
+    ReactDOM.render(<AppBase />, rootElement);
 });
 

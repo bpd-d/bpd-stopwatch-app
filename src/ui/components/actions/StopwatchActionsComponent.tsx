@@ -89,7 +89,7 @@ export function StopwatchActionsComponent() {
     }, [state.actions])
 
     return (<><div className="stopwatch-content-width">
-        <PageHeader title="Activities" description="Define activies which you want to perform in trainings!" />
+        <PageHeader title="Activities" description="Define activies which you want to perform in trainings!" icon="user" />
         <div className="cui-container cui-flex cui-middle cui-middle cui-center cui-right--s">
             <ClearableInput value={filter} onUpdate={updateFilter} className="cui-width-1-1 cui-width-1-3--m cui-width-1-4--l" />
         </div>

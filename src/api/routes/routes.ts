@@ -3,7 +3,8 @@ import { enumerateObject, is } from "../../../node_modules/bpd-toolkit/dist/esm/
 
 export interface RouteDetails {
     url: string,
-    name: string
+    name: string,
+    icon?: string
 }
 export interface RoutesMapping {
     [id: string]: RouteDetails;

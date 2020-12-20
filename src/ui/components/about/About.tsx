@@ -3,7 +3,7 @@ import { PageHeader } from '../common/PageHeader';
 
 export function About() {
     return (<><div className="stopwatch-content-width">
-        <PageHeader title="About" description="Some details about the application" />
+        <PageHeader title="About" description="Some details about the application" icon="info" />
         <div className="">
             <div className="cui-container ">
                 <h3 className="cui-h3">Repository</h3>

@@ -4,6 +4,8 @@ import { NavLink } from "react-router-dom";
 export interface NavbarLinkProps {
     url: string;
     name: string;
+    icon: string;
+    isIcon?: boolean;
     shouldClose?: boolean;
     class?: string;
 }
@@ -22,6 +24,19 @@ export class NavbarLink extends React.Component<NavbarLinkProps, {}> {
     }
 
     render() {
-        return <NavLink exact activeClassName="cui-active" className={this.props.class} to={this.props.url} onClick={this.onClick}>{this.props.name}</NavLink>;
+        return <NavLink exact activeClassName="cui-active" className={this.props.class} to={this.props.url} onClick={this.onClick}>{this.props.isIcon ? <IconNavLabel name={this.props.name} icon={this.props.icon} /> : this.props.name}</NavLink>;
     }
+}
+
+export interface LinkLabelProps {
+    name: string;
+    icon: string;
+}
+
+export function IconNavLabel(props: LinkLabelProps) {
+    return (<span className="cui-flex cui-middle"><span cui-icon={props.icon}></span><span className="cui-margin-small-left">{props.name}</span></span>)
+}
+
+export function SimpleNavLabel(props: LinkLabelProps) {
+    return (<span>{props.name}</span>)
 }
