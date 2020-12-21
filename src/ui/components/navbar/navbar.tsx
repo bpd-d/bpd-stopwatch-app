@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import { MAPPIGNS } from "../../routes";
 import { NavbarLink } from "../common/NavbarLink";
 
@@ -21,7 +21,7 @@ export function Navbar(props: NavbarProps) {
         darkMode: false,
         soundEnabled: false
     });
-
+    const history = useHistory();
     function onGetSound(flag: boolean): void {
 
     }
@@ -36,7 +36,8 @@ export function Navbar(props: NavbarProps) {
     return <nav className={"cui-navbar cui-sticky cui-box-shadow-remove stopwatch-layout-navigation"}>
         <div className="cui-navbar-left cui-width-1-1 cui-width-auto--m cui-flex cui-middle cui-between" id="navbar-left">
             <ul>
-                {state.currentSite && <li><Link className="cui-icon" to={MAPPIGNS.renderUrl("home")} cui-icon="stopwatch_small"></Link></li>}
+                {state.currentSite && <><li><a cui-icon="chevron_small_left" onClick={() => { history.goBack() }} ></a></li>
+                    <li><Link className="cui-icon" to={MAPPIGNS.renderUrl("home")} cui-icon="stopwatch_small"></Link></li></>}
             </ul>
             <a className="cui-icon cui-padding cui-button cui-hidden--m" cui-icon="menu" cui-open="target: #app-offcanvas"></a>
         </div>

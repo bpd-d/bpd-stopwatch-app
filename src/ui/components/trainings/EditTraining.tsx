@@ -187,7 +187,7 @@ function EditTraining(props: EditTrainingProps) {
         <div className="edit-container">
             <div className="edit-container-content cui-overflow-y-auto">
                 <div className="cui-container stopwatch-content-width">
-                    <PageHeader title={getPageName()} description="Customize your training settings" />
+                    <PageHeader title={getPageName()} description="Customize your training settings" icon="dumbbell" />
                 </div>
                 <div className="">
                     {state.training ?

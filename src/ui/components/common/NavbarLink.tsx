@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 export interface NavbarLinkProps {
     url: string;
     name: string;
-    icon: string;
+    icon?: string;
     isIcon?: boolean;
     shouldClose?: boolean;
     class?: string;
