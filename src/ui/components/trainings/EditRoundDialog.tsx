@@ -10,6 +10,7 @@ import { ActionsSelect } from "../actions/ActionsSelect";
 import { BpdActionIcon } from "../common/BpdActionIcon";
 import { BpdActionLabel } from "../common/BpdActionLabel";
 import { BpdDialog } from "../common/BpdDialog";
+import { ErrorsList } from "../common/ErrorsList";
 
 export interface EditRoundDialogProps {
     onSave: (round: Round, index: number) => void;
@@ -82,8 +83,9 @@ export function EditRoundDialog(props: EditRoundDialogProps) {
 
     function setStateRoundData(actions: StopwatchAction[], name?: string) {
         setState({
+            ...state,
             actions: actions,
-            selected: props.definedActions[0],
+            selected: state.selected ?? props.definedActions[0],
             errors: [],
             name: name ? name : state.name
         })
@@ -106,7 +108,6 @@ export function EditRoundDialog(props: EditRoundDialogProps) {
         let name = props.round && props.round.name ? props.round.name : getDefaultRoundName(props.currentCount);
         let actions = is(props.round) ? props.round.actions : [];
         setStateRoundData(actions, name);
-
         return () => {
         }
     }, [props.round, props.definedActions, props.currentCount])
@@ -139,15 +140,10 @@ export function EditRoundDialog(props: EditRoundDialogProps) {
                         <ActionSelectDropdown value={state.selected} actions={props.definedActions} onSelect={onActionSelectChange} name="actioonaa" id="round-select-drop" />
                     </div>
                     <div className="cui-padding-horizontal">
-                        <button cui-icon="plus" className="cui-icon cui-icon-button cui-width-1-1" onClick={onAddAction}></button>
+                        <button cui-icon="plus" className="cui-icon cui-icon-button" onClick={onAddAction}></button>
                     </div>
                 </div>
-
-                {state.errors && state.errors.length > 0 && <ul className="cui-list ">
-                    {state.errors.map((error: string, index: number) => {
-                        return <li key={index} className="cui-animation-slide-in"><span className="cui-text-error">{error}</span></li>
-                    })}
-                </ul>}
+                <ErrorsList errors={state.errors} />
             </div>
         </>
         }

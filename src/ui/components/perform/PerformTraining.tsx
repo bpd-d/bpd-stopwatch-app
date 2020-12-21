@@ -157,7 +157,7 @@ export function PerfromTraining() {
         }
         if (ct > 0) {
             // Normal tick
-            setStopWatchState(stopwatch.getState(), {
+            updateStopWatchState(stopwatch.getState(), {
                 time: ct,
                 progress: 100 - progress,
                 ct: currentTime,
@@ -174,13 +174,13 @@ export function PerfromTraining() {
             if (!setNextAction()) {
                 // End of training
                 play("end");
-                setStopWatchState(StopWatchStateOptions.STOPPED, {
+                updateStopWatchState(StopWatchStateOptions.STOPPED, {
                     time: 0, progress: 100, ct: 0, total: 0
                 })
                 return false;
             }
             play("countdown");
-            setStopWatchState(StopWatchStateOptions.RUNNING, { time: 0, progress: 0, ct: ct, total: total })
+            updateStopWatchState(StopWatchStateOptions.RUNNING, { time: 0, progress: 0, ct: ct, total: total })
             stopwatch.reset();
             return true;
         }
@@ -188,23 +188,23 @@ export function PerfromTraining() {
 
     function onStartClick() {
         if (watchState.state === StopWatchStateOptions.STOPPED && stopwatch.start()) {
-            setStopWatchState(StopWatchStateOptions.RUNNING);
+            updateStopWatchState(StopWatchStateOptions.RUNNING);
         } else if (watchState.state !== StopWatchStateOptions.STOPPED && stopwatch.stop()) {
             setDefaultCurrentState(state.training);
-            setStopWatchState(StopWatchStateOptions.STOPPED, { time: 0, progress: 100, ct: 0, total: 0 });
+            updateStopWatchState(StopWatchStateOptions.STOPPED, { time: 0, progress: 100, ct: 0, total: 0 });
 
         }
     }
 
     function onPauseClick() {
         if (watchState.state === StopWatchStateOptions.RUNNING && stopwatch.pause()) {
-            setStopWatchState(StopWatchStateOptions.PAUSED);
+            updateStopWatchState(StopWatchStateOptions.PAUSED);
         } else if (watchState.state === StopWatchStateOptions.PAUSED && stopwatch && stopwatch.resume()) {
-            setStopWatchState(StopWatchStateOptions.RUNNING);
+            updateStopWatchState(StopWatchStateOptions.RUNNING);
         }
     }
 
-    function setStopWatchState(watchstate: StopWatchState, timeData?: TimeStateData) {
+    function updateStopWatchState(watchstate: StopWatchState, timeData?: TimeStateData) {
         if (!is(timeData) || timeData.time < 0) {
             setWatchState({
                 ...watchState,
@@ -344,7 +344,7 @@ export function PerfromTraining() {
                         <div className="cui-width-1-1">
                             <h3 className={"cui-h3 " + current.class}>{current.action && current.action.name}</h3>
                             <div className="cui-flex cui-center">
-                                {watchState.state !== StopWatchStateOptions.STOPPED && <button className="cui-button cui-default cui-margin-small-right" onClick={onPauseClick}>{watchState.state === StopWatchStateOptions.PAUSED ? "Resume" : "Pause"}</button>}
+                                {watchState.state !== StopWatchStateOptions.STOPPED && <button className="cui-button cui-margin-small-right" onClick={onPauseClick}>{watchState.state === StopWatchStateOptions.PAUSED ? "Resume" : "Pause"}</button>}
                                 <button className={"cui-button " + watchState.startBtnCls} onClick={onStartClick}>{watchState.state === StopWatchStateOptions.STOPPED ? "Start" : "Stop"}</button>
                             </div>
                             <p className="cui-text-muted">{state.training.description}</p>

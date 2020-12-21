@@ -14,7 +14,7 @@ export function CountDownTimer(props: CountDownTimerProps) {
                     <span className="cui-svg countdown-circle-progress" cui-circle-progress={props.watchState.progress}>
                         <div>
                             <span className="cui-block cui-text-small">{props.actionIdx + 1}</span>
-                            <h1 className={"cui-h1 cui-margin-remove" + props.watchState.timerCls}>{props.watchState.timer}</h1>
+                            <h1 className={"cui-h1 cui-margin-remove " + props.watchState.timerCls}>{props.watchState.timer}</h1>
                         </div>
                     </span>
                 </div>

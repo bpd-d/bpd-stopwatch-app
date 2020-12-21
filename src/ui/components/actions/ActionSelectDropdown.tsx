@@ -6,7 +6,7 @@ import { ActionsSelectProps } from './ActionsSelect';
 
 export function ActionSelectDropdown(props: ActionsSelectProps) {
     function onChange(action: StopwatchAction) {
-        if (props.onSelect && props.value.id !== action.id) {
+        if (props.onSelect && (!props.value || props.value.id !== action.id)) {
             props.onSelect(action);
         }
         window.$cui.get("#" + props.id).emit("close");
