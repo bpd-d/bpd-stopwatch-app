@@ -34,7 +34,7 @@
     "@types/react-redux": "^7.1.12",
     "@types/react-router-dom": "^5.1.6",
     "babel-loader": "^8.2.2",
-    "bpd-cui-icons": "^0.1.9",
+    "bpd-cui-icons": "^0.1.10",
     "bpd-flow": "^0.1.3",
     "bpd-storage": "^0.2.1",
     "bpd-toolkit": "^0.1.7",

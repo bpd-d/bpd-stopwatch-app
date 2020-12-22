@@ -10,6 +10,7 @@ import { getBgClassByType } from '../../../core/helpers';
 import { is } from '../../../../node_modules/bpd-toolkit/dist/esm/index';
 import { ClearableInput } from '../common/ClearableInput';
 import { IconLabel } from '../trainings/IconLabel';
+import { ActionsEditGrid } from './ActionsEditGrid';
 
 const defaultAction: StopwatchAction = {
     id: undefined,
@@ -89,34 +90,11 @@ export function StopwatchActionsComponent() {
     }, [state.actions])
 
     return (<><div className="stopwatch-content-width">
-        <PageHeader title="Activities" description="Define activies which you want to perform in trainings!" icon="user" />
+        <PageHeader title="Activities" description="Define activies which you want to perform in trainings!" icon="link" />
         <div className="cui-container cui-flex cui-middle cui-middle cui-center cui-right--s">
             <ClearableInput value={filter} onUpdate={updateFilter} className="cui-width-1-1 cui-width-1-3--m cui-width-1-4--l" />
         </div>
-        <div className="cui-container cui-flex-grid cui-flex-grid-match cui-child-width-1-2 cui-child-width-1-3--m">
-            {is(state.actions) && state.actions.map((action: StopwatchAction, index: number) => {
-                return (matchesName(action.name) &&
-                    <div key={index} className="cui-animation-fade-in">
-                        <div className={"cui-card cui-default " + getBgClassByType(action.type) + (action.editable ? " cui-hover" : "")} onClick={(ev) => { if (action.editable) { onAddOrEditClick(action); ev.preventDefault(); } }}>
-                            <div className="cui-card-header cui-flex cui-between cui-nowrap">
-                                <span className="cui-card-title cui-text-truncate cui-overflow-hidden">{action.name}</span>
-                                <BpdActionIcon type={action.type} />
-                            </div>
-                            <div className="cui-card-body cui-flex cui-middle cui-nowrap action-card-height">
-                                <div className="cui-flex-grow cui-overflow-hidden">
-                                    <div className="cui-text-truncate"><span>{action.duration} seconds</span></div>
-                                </div>
-                                <div className="cui-flex-shrink">
-                                    <ul className="cui-icon-nav">
-                                        {action.removable && <li><a className="cui-icon" cui-icon="trash" onClick={(ev) => { onDelete(action); ev.stopPropagation(); }}><IconLabel label="Delete" /></a></li>}
-                                        {!action.editable && <li><span className="cui-icon cui-muted" cui-icon="close"><IconLabel label="Not editable" /></span></li>}
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>)
-            })}
-        </div>
+        <ActionsEditGrid filter={filter} actions={state.actions} onEdit={onAddOrEditClick} onDelete={onDelete} />
         <div className="cui-position-float cui-position-bottom cui-position-center cui-margin-large-bottom z-index-100">
             <button className="cui-icon-button cui-large cui-background-default cui-box-shadow" cui-icon="plus" onClick={() => { onAddOrEditClick() }}></button>
         </div>
