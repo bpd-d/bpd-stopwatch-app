@@ -143,8 +143,8 @@ function EditTraining(props: EditTrainingProps) {
     }
 
     function getButtonNavItems(): ButtonBarItemProps[] {
-        const buttonNavItems: ButtonBarItemProps[] = [
-            { icon: "close", label: "Cancel", onClick: () => { goBack() } }];
+        const buttonNavItems: ButtonBarItemProps[] = [];
+        //{ icon: "close", label: "Cancel", onClick: () => { goBack() } }];
         if (is(state.training.id)) {
             buttonNavItems.push({ icon: "media_play", label: "Run", onClick: () => { props.history.push(MAPPIGNS.renderUrl('perform', { id: state.training.id })) } })
         }
