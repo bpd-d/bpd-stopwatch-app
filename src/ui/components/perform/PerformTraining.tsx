@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { useParams } from 'react-router-dom';
-import { is } from '../../../../node_modules/bpd-toolkit/dist/esm/index';
+import { is, openFullscreen } from '../../../../node_modules/bpd-toolkit/dist/esm/index';
 import { KeepScreenAwakeFeature } from '../../../api/screen/screen';
 import { StopWatch, StopWatchState, StopWatchStateOptions } from '../../../api/stopwatch/stopwatch';
 import { SETTINGS_FLOW_ACTIONS } from '../../../app/flow/settings';
@@ -88,7 +88,7 @@ export function PerfromTraining() {
     const breakSound = React.useRef(null);
     const cooldownSound = React.useRef(null);
     const endSound = React.useRef(null);
-
+    const mainViewRef = React.useRef(null);
     function onGetTraining(training: Training) {
         let validation = new CompleteTrainingValidator().validate(training);
         if (!validation.status) {
@@ -295,6 +295,13 @@ export function PerfromTraining() {
         return !is(action) ? "" : getBgClassByType(action.type);
     }
 
+    function onFullScreen() {
+        if (!mainViewRef.current) {
+            return;
+        }
+        openFullscreen(mainViewRef.current);
+    }
+
     React.useEffect(() => {
         const getTrainingSubscription = window.$flow.subscribe("GET_TRAINING", { finish: onGetTraining })
         const settingsPlaySound = window.$settingsFlow.subscribe(SETTINGS_FLOW_ACTIONS.GET_SOUND_ENABLED, {
@@ -317,22 +324,19 @@ export function PerfromTraining() {
 
         }
         return () => {
-            console.log("Perfrom restart")
             window.$flow.unsubscribe("GET_TRAINING", getTrainingSubscription.id)
             window.$settingsFlow.unsubscribe(SETTINGS_FLOW_ACTIONS.GET_SOUND_ENABLED, settingsPlaySound.id);
             window.$settingsFlow.unsubscribe(SETTINGS_FLOW_ACTIONS.GET_SIMPLE_VIEW, simpleViewSettingsHandler.id);
             if (stopwatch) {
-                console.log("StopWatch stop")
                 stopwatch.stop();
             }
-
             wakeLock.release();
         }
     }, [id, canPlay])
     return (<>
         {!state.training ?
             <NotFound message="We couldn't find training" /> :
-            <div className={"stopwatch-layout-content cui-flex-center " + getBackgroundClass(current.action)}>
+            <div className={"stopwatch-layout-content cui-flex-center " + getBackgroundClass(current.action)} ref={mainViewRef}>
                 <div className="stopwatch-content-width perform-layout cui-text-center animation-fade-in">
                     <div className="perform-main-controls">
                         <h2 className="cui-h2 cui-margin-remove">{state.training.name}</h2>
@@ -354,6 +358,7 @@ export function PerfromTraining() {
                                     window.$settingsFlow.perform(SETTINGS_FLOW_ACTIONS.SET_SOUND_ENABLED, !canPlay)
                                     window.$settingsFlow.perform(SETTINGS_FLOW_ACTIONS.GET_SOUND_ENABLED)
                                 }}></a>
+                                <a className="cui-icon-button cui-default cui-margin-small-left" cui-icon="expand" onClick={onFullScreen}></a>
                             </div>
                         </div>
                     </div>
