@@ -24,15 +24,16 @@ import { is } from "bpd-toolkit/dist/esm/index";
 import { TutorialDialog } from "./components/tutorial/TutorialDialog";
 
 export interface AppProps {
+    mode: string;
 }
 export interface AppState {
     currentSite?: string;
 }
 
-export function AppBase() {
+export function AppBase(props: AppProps) {
     return (<BrowserRouter>
         <Route path="*">
-            <App />
+            <App mode={props.mode} />
         </Route>
     </BrowserRouter>)
 }
@@ -97,7 +98,7 @@ export function App(props: AppProps) {
                     </Route>
                 </Switch>
             </div>
-            <Footer />
+            <Footer mode={props.mode} />
             <OffCanvas />
             <TutorialDialog />
         </div>);

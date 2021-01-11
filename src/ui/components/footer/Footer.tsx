@@ -1,6 +1,10 @@
 import * as React from 'react'
 
-export function Footer() {
+export interface FooterProps {
+    mode: string;
+}
+
+export function Footer(props: FooterProps) {
     function currentYear(): string {
         return new Date().getFullYear() + "";
     }
@@ -9,6 +13,7 @@ export function Footer() {
             <div className="cui-margin-horizontal">
                 <span className="cui-margin-small-right">Copyrights {currentYear()}</span>
                 <a href="https://github.com/bpd-d" target="_blank" className="cui-link cui-accent">BPDDev</a>
+                {props.mode === 'development' && <span class="cui-margin-left cui-text-bold">Dev</span>}
             </div>
         </div>);
 }

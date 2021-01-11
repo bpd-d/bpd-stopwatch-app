@@ -37,13 +37,13 @@ function setText(text: string) {
     }
 }
 
-
 Promise.all([
     fetch('app_settings.json').then(response => response.json()),
     fetch('/static/icons/all.json').then(response => response.json())
 ]).then((result) => {
     onDataFetch(result[0], result[1])
 }).catch(() => {
+    loadingIndicator.classList.add("error");
     setText("Application cannot be loaded!")
 })
 
@@ -101,7 +101,8 @@ function onDataFetch(settings: any, icons: any) {
 
     setTimeout(() => {
         new CuiInit().init(cuiSetup).then((result) => {
-            ReactDOM.render(<AppBase />, rootElement);
+            console.log(settings.mode)
+            ReactDOM.render(<AppBase mode={settings.mode} />, rootElement);
             loading.remove();
             rootElement.classList.remove("hidden");
         });
