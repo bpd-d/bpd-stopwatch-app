@@ -491,11 +491,11 @@ $countdown-stroke-width : 6px;
         }
 
         .action-background-warmup {
-            background-color: variables.$component-background-success-shade-dark !important;
+            background-color: variables.$component-background-success-dark-shade !important;
         }
 
         .action-background-break {
-            background-color: variables.$component-background-secondary-shade-dark !important;
+            background-color: variables.$component-background-secondary-dark-shade !important;
         }
 
         .action-background-cooldown {
@@ -503,7 +503,7 @@ $countdown-stroke-width : 6px;
         }
 
         .action-background-exercise {
-            background-color: variables.$component-background-accent-shade-dark !important;
+            background-color: variables.$component-background-accent-dark-shade !important;
         }
 
         .total-circle-progress {
@@ -529,6 +529,13 @@ $countdown-stroke-width : 6px;
                     stroke: variables.$component-background-accent !important;
                 }
             }
+        }
+
+        .stopwatch-title {
+            background             : linear-gradient(180deg, variables.$component-background-accent-dark 0%, variables.$component-background-secondary-dark 100%);
+            -webkit-background-clip: text;
+            background-clip        : text;
+            -webkit-text-fill-color: transparent;
         }
     }
 

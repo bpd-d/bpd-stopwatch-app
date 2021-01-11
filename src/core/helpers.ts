@@ -8,6 +8,10 @@ export function showMessage(title: string, message: string) {
     })
 }
 
+export function showToast(message: string) {
+    window.$cui.toast(message);
+}
+
 export function calculateDuration(actions: StopwatchAction[]) {
     return is(actions) ? actions.reduce<number>((result: number, value: StopwatchAction) => {
         return result + Number.parseInt(value.duration);

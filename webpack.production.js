@@ -22,6 +22,7 @@ module.exports = merge(common, {
             patterns: [
                 { from: path.resolve(__dirname, 'static'), to: `${path.resolve(__dirname, 'dist')}/static` },
                 { from: "netlify.toml", to: `${path.resolve(__dirname, 'dist')}` },
+                { from: "app_settings_prod.json", to: `${path.resolve(__dirname, 'dist')}/app_settings.json` },
             ],
         }),
     ]

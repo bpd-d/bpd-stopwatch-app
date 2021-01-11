@@ -12,9 +12,31 @@
     <link rel="icon" type="image/png" href="/static/images/favicon/favicon_128.png" sizes="128x128" />
     <link rel="icon" type="image/png" href="/static/images/favicon/favicon_196.png" sizes="196x196" />
 <link href="/stopwatch.styles.css" rel="stylesheet"></head>
+<style>
+    .hidden {
+        display: none;
+    }
+
+    .loading {
+        position: relative;
+        width: 100vw;
+        height: 100vh;
+    }
+
+    .loading .indicator {
+        position: absolute;
+        margin: auto;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+</style>
 
 <body>
-    <div id="root"></div>
+    <div class="loading" id="loading-screen">
+        <span class="indicator" id="loading-indicator">Stopwatch is loading...</span>
+    </div>
+    <div id="root" class="hidden"></div>
 <script type="text/javascript" src="/stopwatch.vendors~index.js"></script><script type="text/javascript" src="/stopwatch.index.js"></script></body>
 
 </html>

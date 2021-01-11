@@ -3,7 +3,7 @@ import { Link, useParams, withRouter } from 'react-router-dom';
 import { ACTIONS } from '../../../app/flow/trainings';
 import { clone, is } from '../../../../node_modules/bpd-toolkit/dist/esm/index';
 import { ACTIONS_FLOW_ACTIONS } from '../../../app/flow/actions';
-import { insert, move, showMessage } from '../../../core/helpers';
+import { insert, move, showMessage, showToast } from '../../../core/helpers';
 import { Round, StopwatchAction, Training, TrainingState } from '../../../core/models';
 import { DefaultActions } from '../../../core/statics';
 import { TrainingValidator } from '../../../core/validators';
@@ -64,20 +64,14 @@ function EditTraining(props: EditTrainingProps) {
     }
 
     function onUpdate(training: Training) {
-        //if (training.state !== TrainingState.PUBLISH) {
         pushDraft(training)
-        // }
-        // setState({
-        //     ...state,
-        //     training: training
-        // }
-        // )
     }
 
     function onUpdateTraining(result: boolean): void {
         if (!result) {
             showMessage("Fail", "Training was not saved")
         } else {
+            showToast("Saved");
             goBack();
         }
     }
@@ -128,6 +122,8 @@ function EditTraining(props: EditTrainingProps) {
         if (is(state.training.id) && state.training.state === TrainingState.PUBLISH)
             onDeleteTrainingDialog(state.training.name, onYes)
         else {
+            showToast("Draft removed");
+            // For not published trainings
             window.$flow.perform(ACTIONS.CLEAR_DRAFT);
             goBack();
         }
@@ -139,6 +135,7 @@ function EditTraining(props: EditTrainingProps) {
     }
 
     function onDeleteTrainingSub(result: boolean) {
+        showToast("Removed");
         goBack();
     }
 
@@ -158,7 +155,6 @@ function EditTraining(props: EditTrainingProps) {
     }
 
     function getPageName(): string {
-        let name = "";
         if (!is(state.training) || !is(state.training.name)) {
             return "Define training";
         }
