@@ -81,3 +81,14 @@ export class CoolDown implements StopwatchAction {
         this.name = name ? name : "Cooldown";
     }
 }
+
+export interface ActionsGroup {
+    [id: string]: StopwatchAction[];
+}
+
+export interface RoundActions {
+    warmup: StopwatchAction;
+    exercise: StopwatchAction;
+    break: StopwatchAction;
+    cooldown: StopwatchAction;
+}

@@ -38,7 +38,7 @@ function setText(text: string) {
 }
 
 Promise.all([
-    fetch('app_settings.json').then(response => response.json()),
+    fetch('/app_settings.json').then(response => response.json()),
     fetch('/static/icons/all.json').then(response => response.json())
 ]).then((result) => {
     onDataFetch(result[0], result[1])

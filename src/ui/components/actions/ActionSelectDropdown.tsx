@@ -33,7 +33,7 @@ interface DropTriggerProps {
 export function DropTrigger(props: DropTriggerProps) {
     return (
         <div className="cui-flex cui-middle cui-width-1-1">
-            {props.action ? <div className="cui-flex-grow"><BpdActionLabel action={props.action} /></div> : <span>No action selected</span>}
+            <div className="cui-flex-grow">{props.action ? <BpdActionLabel action={props.action} /> : <span className="cui-inline-block cui-padding-small">No action selected</span>}</div>
             <span cui-icon="chevron_small_down"></span>
         </div>
     );

@@ -14,6 +14,7 @@ import { PageHeader } from '../common/PageHeader';
 import { ButtonBar, ButtonBarItemProps } from './ButtonBar';
 import { EditRoundDialog } from './EditRoundDialog';
 import { EditRoundListItem } from './EditRoundListItem';
+import { QuickRoundDialog } from './QuickRoundDialog';
 
 export interface EditTrainingSectionProps {
     training: Training;
@@ -282,6 +283,15 @@ function EditTrainingSection(props: EditTrainingSectionProps) {
         }
     }
 
+    function OnQuickRoundClick() {
+        window.$cui.get("#quick-round-create").emit("open")
+    }
+
+    function onQuickRoundSave(round: Round) {
+        updateRoundsState(updateOrInsertRound(round, -1));
+        window.$cui.get("#quick-round-create").emit("close");
+    }
+
     function getDefinedActions(actions: StopwatchAction[]) {
         setDefinedActions({
             actions: [...DefaultActions, ...actions]
@@ -330,15 +340,17 @@ function EditTrainingSection(props: EditTrainingSectionProps) {
                             isLast={index === arr.length - 1} />
                         </li>
                     })}
-                    <li>
-                        <button className="cui-button cui-icon cui-icon-margin cui-width-1-1" cui-icon="plus" onClick={() => {
+                    <li className="cui-flex cui-evenly">
+                        <button className="cui-button cui-default cui-icon cui-icon-margin" cui-icon="plus" onClick={() => {
                             onRoundEdit(null, -1);
                         }}>Add Round</button>
+                        <button className="cui-button cui-accent cui-icon cui-icon-margin" cui-icon="bolt" onClick={OnQuickRoundClick}>Quick Round</button>
                     </li>
                 </ul>
             </div>
         </div>
         <EditRoundDialog index={state.currentIndex} round={state.currentRound} onSave={onRoundSave} currentCount={state.currentCount} definedActions={definedActions.actions} />
+        <QuickRoundDialog id="quick-round-create" actions={definedActions.actions} onSave={onQuickRoundSave} />
     </>);
 }
 

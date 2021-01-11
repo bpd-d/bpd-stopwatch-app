@@ -1,5 +1,5 @@
 import { is } from "bpd-toolkit/dist/esm/index";
-import { Round, StopwatchAction, Training } from "./models";
+import { ActionsGroup, Round, RoundActions, StopwatchAction, Training } from "./models";
 
 export function showMessage(title: string, message: string) {
     window.$cui.alert("common-info-dialog", "Info", {
@@ -128,4 +128,35 @@ export function move<T>(collection: T[], from: number, to: number, size?: number
     collection.splice(newTo, 0, ...el)
     return [...collection];
 
+}
+
+export function groupActionsByType(actions: StopwatchAction[]): ActionsGroup {
+    return actions.reduce<ActionsGroup>((out: ActionsGroup, item: StopwatchAction) => {
+        const type = item.type ?? "Unknown";
+        if (!out[type]) {
+            out[type] = [item];
+        } else {
+            out[type].push(item);
+        }
+        return out;
+    }, {})
+}
+
+export function buildQuickRoundActions(actions: RoundActions, exerciseCount: number): StopwatchAction[] {
+    const stopwatchActions: StopwatchAction[] = [];
+    if (actions.warmup) {
+        stopwatchActions.push(actions.warmup);
+    }
+    if (actions.exercise) {
+        for (let i = 0; i < exerciseCount; i++) {
+            stopwatchActions.push(actions.exercise);
+            if (actions.break && i < exerciseCount - 1) {
+                stopwatchActions.push(actions.break);
+            }
+        }
+    }
+    if (actions.cooldown) {
+        stopwatchActions.push(actions.cooldown)
+    }
+    return stopwatchActions;
 }
