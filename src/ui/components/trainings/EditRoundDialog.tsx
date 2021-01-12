@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
-import { is } from "../../../../node_modules/bpd-toolkit/dist/esm/index";
+import { are, is } from "../../../../node_modules/bpd-toolkit/dist/esm/index";
 import { ACTIONS_FLOW_ACTIONS } from "../../../app/flow/actions";
 import { Round, StopwatchAction } from "../../../core/models";
 import { getDefaultRoundName } from "../../../core/statics";
@@ -104,6 +104,19 @@ export function EditRoundDialog(props: EditRoundDialogProps) {
         })
     }
 
+    function onSwapAction(index: number) {
+        if (!are(state.selected, state.actions)) {
+            return;
+        }
+        let copy = [...state.actions];
+        copy[index] = state.selected;
+        setState({
+            ...state,
+            actions: copy
+        })
+
+    }
+
     React.useEffect(() => {
         let name = props.round && props.round.name ? props.round.name : getDefaultRoundName(props.currentCount);
         let actions = is(props.round) ? props.round.actions : [];
@@ -129,6 +142,7 @@ export function EditRoundDialog(props: EditRoundDialogProps) {
                                     <BpdActionLabel action={item} />
                                 </div>
                                 <ul className="cui-icon-nav">
+                                    <li><a className="cui-icon" cui-icon="swap" onClick={() => { onSwapAction(index) }}></a></li>
                                     <li><a className="cui-icon" cui-icon="trash" onClick={() => { onDeleteAction(index) }}></a></li>
                                 </ul>
                             </div>
