@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { TrainingList } from "./list";
 import { Training, WarmUp, CoolDown, Exercise } from "../../../core/models";
 import { FlowTask } from "../../../../node_modules/bpd-flow/dist/index";
-import { showMessage } from "../../../core/helpers";
+import { setPageTitle, showMessage } from "../../../core/helpers";
 import { MAPPIGNS } from "../../routes";
 
 export interface HomeProps {
@@ -32,6 +32,7 @@ export class Home extends React.Component<any, HomeState> {
     }
 
     componentDidMount() {
+        setPageTitle("Home");
         this.subscription = window.$flow.subscribe("GET_ALL_TRAININGS");
         this.subscription.finish(this.updateList);
         this.onDeleteSubscription = window.$flow.subscribe("DELETE_TRAINING", { finish: this.onDeleteTrainingComplete })

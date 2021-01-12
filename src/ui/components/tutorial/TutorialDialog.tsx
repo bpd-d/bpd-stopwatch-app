@@ -5,7 +5,7 @@ import { BpdDialog } from '../common/BpdDialog';
 
 export function TutorialDialog() {
     const [isLast, setIsLast] = React.useState(false);
-    let switchElement: ElementManager = null;
+    const switchElement = React.useRef<ElementManager>(null);
     function onSwitched(data: any) {
         if (is(data) && is(data.index) && data.index === 2) {
             setIsLast(true)
@@ -19,17 +19,19 @@ export function TutorialDialog() {
             window.$cui.get("#welcome-dialog").emit("close");
             return;
         }
-        switchElement.emit("switch", "next")
+        switchElement.current.emit("switch", "next")
 
     }
 
+    function getElement() { }
+
     React.useEffect(() => {
-        switchElement = window.$cui.get("#welcome-switch");
-        const ids: string[] = switchElement.on("switched", onSwitched);
+        switchElement.current = window.$cui.get("#welcome-switch");
+        const ids: string[] = switchElement.current.on("switched", onSwitched);
         return () => {
             if (is(ids)) {
                 ids.forEach(id => {
-                    switchElement.detach("switched", id)
+                    switchElement.current.detach("switched", id)
                 })
 
             }

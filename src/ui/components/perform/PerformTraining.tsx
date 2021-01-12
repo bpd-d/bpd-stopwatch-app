@@ -4,7 +4,7 @@ import { is, openFullscreen } from '../../../../node_modules/bpd-toolkit/dist/es
 import { KeepScreenAwakeFeature } from '../../../api/screen/screen';
 import { StopWatch, StopWatchState, StopWatchStateOptions } from '../../../api/stopwatch/stopwatch';
 import { SETTINGS_FLOW_ACTIONS } from '../../../app/flow/settings';
-import { calcDisplayTimer, calculateDuration, calculateProgress, getBgClassByType, getTotalDuration, showMessage, getClassByType } from '../../../core/helpers';
+import { calcDisplayTimer, calculateDuration, calculateProgress, getBgClassByType, getTotalDuration, showMessage, getClassByType, setPageTitle } from '../../../core/helpers';
 import { Round, StopwatchAction, Training } from '../../../core/models';
 import { CompleteTrainingValidator } from '../../../core/validators';
 import { NotFound } from '../common/NotFound'; import { CountDownTimer, SimpleCountDownTimer } from './CountDownTimer';
@@ -89,12 +89,14 @@ export function PerfromTraining() {
     const cooldownSound = React.useRef(null);
     const endSound = React.useRef(null);
     const mainViewRef = React.useRef(null);
+
     function onGetTraining(training: Training) {
         let validation = new CompleteTrainingValidator().validate(training);
         if (!validation.status) {
             showMessage("Incorrect training", `Training is not correct: ${validation.errors.join(", ")}`)
             return;
         }
+        setPageTitle(training.name);
         setState({
             ...state,
             training: training
@@ -303,6 +305,7 @@ export function PerfromTraining() {
     }
 
     React.useEffect(() => {
+        setPageTitle("Perform training");
         const getTrainingSubscription = window.$flow.subscribe("GET_TRAINING", { finish: onGetTraining })
         const settingsPlaySound = window.$settingsFlow.subscribe(SETTINGS_FLOW_ACTIONS.GET_SOUND_ENABLED, {
             finish: onGetPlaySound

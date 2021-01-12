@@ -1,5 +1,6 @@
 import { is } from "bpd-toolkit/dist/esm/index";
 import { ActionsGroup, Round, RoundActions, StopwatchAction, Training } from "./models";
+import { APP_NAME } from "./statics";
 
 export function showMessage(title: string, message: string) {
     window.$cui.alert("common-info-dialog", "Info", {
@@ -159,4 +160,12 @@ export function buildQuickRoundActions(actions: RoundActions, exerciseCount: num
         stopwatchActions.push(actions.cooldown)
     }
     return stopwatchActions;
+}
+
+export function setPageTitle(text: string): void {
+    if (is(text)) {
+        document.title = `${APP_NAME} - ${text}`;
+        return;
+    }
+    document.title = APP_NAME;
 }

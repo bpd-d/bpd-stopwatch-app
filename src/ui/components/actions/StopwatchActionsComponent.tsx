@@ -6,7 +6,7 @@ import { BpdActionIcon } from '../common/BpdActionIcon';
 import { AddActionDialog } from './AddActionDialog';
 import { PageHeader } from '../common/PageHeader';
 import { deleteActionConfirmDialog } from '../common/Dialogs';
-import { getBgClassByType } from '../../../core/helpers';
+import { getBgClassByType, setPageTitle } from '../../../core/helpers';
 import { is } from '../../../../node_modules/bpd-toolkit/dist/esm/index';
 import { ClearableInput } from '../common/ClearableInput';
 import { IconLabel } from '../trainings/IconLabel';
@@ -76,6 +76,7 @@ export function StopwatchActionsComponent() {
     }
 
     React.useEffect(() => {
+        setPageTitle("Actions");
         const getAllSub = window.$actionsFlow.subscribe(ACTIONS_FLOW_ACTIONS.GET_ALL, { finish: onGetAll })
         const setActionSub = window.$actionsFlow.subscribe(ACTIONS_FLOW_ACTIONS.SET_ACTION)
         const removeActionSub = window.$actionsFlow.subscribe(ACTIONS_FLOW_ACTIONS.REMOVE_ACTION)

@@ -1,7 +1,9 @@
 import * as React from 'react'
+import { setPageTitle } from '../../../core/helpers';
 import { PageHeader } from '../common/PageHeader';
 
 export function About() {
+    setPageTitle("About");
     return (<><div className="stopwatch-content-width">
         <PageHeader title="About" description="Some details about the application" icon="info" />
         <div className="">

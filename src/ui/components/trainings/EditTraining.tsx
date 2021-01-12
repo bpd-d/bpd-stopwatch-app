@@ -3,7 +3,7 @@ import { Link, useParams, withRouter } from 'react-router-dom';
 import { ACTIONS } from '../../../app/flow/trainings';
 import { clone, is } from '../../../../node_modules/bpd-toolkit/dist/esm/index';
 import { ACTIONS_FLOW_ACTIONS } from '../../../app/flow/actions';
-import { insert, move, showMessage, showToast } from '../../../core/helpers';
+import { insert, move, setPageTitle, showMessage, showToast } from '../../../core/helpers';
 import { Round, StopwatchAction, Training, TrainingState } from '../../../core/models';
 import { DefaultActions } from '../../../core/statics';
 import { TrainingValidator } from '../../../core/validators';
@@ -85,6 +85,7 @@ function EditTraining(props: EditTrainingProps) {
 
     function onGetTraining(training: Training): void {
         if (training) {
+            setPageTitle("Edit " + training.name);
             setState({
                 training: { ...training }
             })
@@ -164,6 +165,7 @@ function EditTraining(props: EditTrainingProps) {
     }
 
     React.useEffect(() => {
+        setPageTitle("Edit training");
         const updateTrainingSub = window.$flow.subscribe("UPDATE_TRAINING", { finish: onUpdateTraining })
         const getTrainingSub = window.$flow.subscribe(ACTIONS.GET_FOR_EDIT, { finish: onGetTraining })
         const getDraftSub = window.$flow.subscribe("GET_DRAFT", { finish: onGetDraft })
@@ -297,7 +299,6 @@ function EditTrainingSection(props: EditTrainingSectionProps) {
     }
 
     React.useEffect(() => {
-
         const getDefinedActionsSub = window.$actionsFlow.subscribe(ACTIONS_FLOW_ACTIONS.GET_ALL, { finish: getDefinedActions });
         window.$actionsFlow.perform(ACTIONS_FLOW_ACTIONS.GET_ALL);
         setState({

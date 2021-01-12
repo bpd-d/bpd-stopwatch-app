@@ -48,7 +48,7 @@ Promise.all([
 })
 
 function onDataFetch(settings: any, icons: any) {
-    setText("Application is initialing!")
+    setText("Initializing...")
     const rootElement = document.getElementById('root');
     const setup = new CuiSetupInit();
     setup.logLevel = settings?.mode === "production" ? 'error' : "debug";
