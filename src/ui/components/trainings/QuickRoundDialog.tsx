@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { buildQuickRoundActions, groupActionsByType } from '../../../core/helpers';
-import { ActionsGroup, Round, RoundActions, StopwatchAction } from '../../../core/models';
+import { ActionsGroup, Round, RoundActions, StopwatchAction, StopwatchActionType } from '../../../core/models';
 import { ActionSelectDropdown } from '../actions/ActionSelectDropdown';
 import { BpdDialog } from '../common/BpdDialog';
 import { BpdDialogFooter } from '../common/BpdDialogFooter';
@@ -82,28 +82,33 @@ export interface QuickRoundDialogBodyProps {
 }
 
 export function QuickRoundDialogBody(props: QuickRoundDialogBodyProps) {
+
+    function updateCounter(count: number) {
+        if (count > 0 && count < 12) {
+            props.onCounterUpdate(count);
+        }
+    }
+
     return <>
         <div>
-            <QuickRoundDialogSelect actions={props.actions['warmup']} value={props.data.warmup} onUpdate={props.onUpdate} type="warmup" id="warmup-select-drop" name="warmup-action" />
+            <QuickRoundDialogSelect actions={props.actions[StopwatchActionType.WARMUP]} value={props.data.warmup} onUpdate={props.onUpdate} type={StopwatchActionType.WARMUP} id="warmup-select-drop" name="warmup-action" />
         </div>
         <div className="cui-margin-top">
-            <QuickRoundDialogSelect actions={props.actions['exercise']} value={props.data.exercise} onUpdate={props.onUpdate} type="exercise" id="exercise-select-drop" name="exercise-action" />
+            <QuickRoundDialogSelect actions={props.actions[StopwatchActionType.EXERCISE]} value={props.data.exercise} onUpdate={props.onUpdate} type={StopwatchActionType.EXERCISE} id="exercise-select-drop" name="exercise-action" />
         </div>
         <div className="cui-form cui-margin-top">
-            <QuickRoundDialogSelect actions={props.actions['break']} value={props.data.break} onUpdate={props.onUpdate} type="break" id="break-select-drop" name="break-action" />
+            <QuickRoundDialogSelect actions={props.actions[StopwatchActionType.BREAK]} value={props.data.break} onUpdate={props.onUpdate} type={StopwatchActionType.BREAK} id="break-select-drop" name="break-action" />
         </div>
         <div className="cui-margin-top">
-            <QuickRoundDialogSelect actions={props.actions['cooldown']} value={props.data.cooldown} onUpdate={props.onUpdate} type="cooldown" id="cooldown-select-drop" name="cooldown-action" />
+            <QuickRoundDialogSelect actions={props.actions[StopwatchActionType.COOLDOWN]} value={props.data.cooldown} onUpdate={props.onUpdate} type={StopwatchActionType.COOLDOWN} id="cooldown-select-drop" name="cooldown-action" />
         </div>
         <div className="cui-form cui-margin-top">
             <label className="cui-form-label">Number of exercises</label>
-            <input type="number" className="cui-input" min="1" max="10" value={props.count} onChange={(ev) => {
-                if (ev.target && ev.target.value) {
-                    let int = parseInt(ev.target.value);
-                    if (!isNaN(int))
-                        props.onCounterUpdate(int)
-                }
-            }} />
+            <div className="cui-flex cui-middle cui-margin-small-top">
+                <button className="cui-icon-button" cui-icon="minus" onClick={() => updateCounter(props.count - 1)}></button>
+                <span className="cui-margin-horizontal">{props.count}</span>
+                <button className="cui-icon-button" cui-icon="plus" onClick={() => updateCounter(props.count + 1)}></button>
+            </div>
         </div>
     </>;
 }
@@ -119,8 +124,8 @@ export interface QuickRoundDialogSelectProps {
 
 export function QuickRoundDialogSelect(props: QuickRoundDialogSelectProps) {
     return (<>
-        <span className="cui-text-capital">{props.type}</span>
-        <div className="cui-flex cui-middle">
+        <span className="cui-text-capital cui-inline-block">{props.type}</span>
+        <div className="cui-flex cui-middle cui-margin-small-top">
             <div className="cui-flex-grow">
                 <ActionSelectDropdown value={props.value} actions={props.actions} onSelect={(value) => { props.onUpdate(value, props.type) }} name={props.name} id={props.id} />
             </div>

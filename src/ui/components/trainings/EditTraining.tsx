@@ -226,11 +226,9 @@ function EditTrainingSection(props: EditTrainingSectionProps) {
     }
 
     function onRoundDelete(round: Round, index: number) {
-        deleteRoundConfirmDialog(() => {
-            let rounds = [...props.training.rounds]
-            rounds.splice(index, 1)
-            updateRoundsState(rounds)
-        })
+        let rounds = [...props.training.rounds]
+        rounds.splice(index, 1)
+        updateRoundsState(rounds)
     }
 
     function onRoundDown(round: Round, index: number) {
@@ -340,11 +338,17 @@ function EditTrainingSection(props: EditTrainingSectionProps) {
                             isLast={index === arr.length - 1} />
                         </li>
                     })}
-                    <li className="cui-flex cui-evenly">
-                        <button className="cui-button cui-default cui-icon cui-icon-margin" cui-icon="plus" onClick={() => {
-                            onRoundEdit(null, -1);
-                        }}>Add Round</button>
-                        <button className="cui-button cui-accent cui-icon cui-icon-margin" cui-icon="bolt" onClick={OnQuickRoundClick}>Quick Round</button>
+                    <li>
+                        <div className="cui-flex-grid cui-center cui-child-width-1-2--m">
+                            <div className="">
+                                <button className="cui-button cui-default cui-icon cui-icon-margin cui-width-1-1" cui-icon="plus" onClick={() => {
+                                    onRoundEdit(null, -1);
+                                }}>Add Round</button>
+                            </div>
+                            <div>
+                                <button className="cui-button cui-accent cui-icon cui-icon-margin cui-width-1-1" cui-icon="bolt" onClick={OnQuickRoundClick}>Quick Round</button>
+                            </div>
+                        </div>
                     </li>
                 </ul>
             </div>

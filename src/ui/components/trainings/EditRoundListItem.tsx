@@ -2,6 +2,7 @@ import * as React from 'react';
 import { calculateDuration } from '../../../core/helpers';
 import { Round } from "../../../core/models";
 import { getDefaultRoundName } from '../../../core/statics';
+import { BpdConfirmDrop } from '../common/BpdConfirmDrop';
 
 interface RoundListItemProps {
     round: Round;
@@ -30,7 +31,12 @@ export function EditRoundListItem(props: RoundListItemProps) {
                 {!props.isLast && <li><a className="cui-icon" cui-icon="chevron_down" onClick={() => { props.onMoveDown(props.round, props.index) }} cui-tooltip="Move down"></a></li>}
                 <li><a className="cui-icon" cui-icon="copy" onClick={() => { props.onClone(props.round, props.index) }} cui-tooltip="Clone"></a></li>
                 <li><a className="cui-icon" cui-icon="edit" onClick={() => { props.onEdit(props.round, props.index) }} cui-tooltip="Edit"></a></li>
-                <li><a className="cui-icon" cui-icon="trash" onClick={() => { props.onDelete(props.round, props.index) }} cui-tooltip="Delete"></a></li>
+                <li><div className="cui-drop-trigger">
+                    <a className="cui-icon" cui-icon="trash"></a>
+                    <BpdConfirmDrop id="delete-confirm-drop" message="Do you really want to delete this round?" cancelLabel="No" confirmLabel="Yes" onConfirm={() => {
+                        props.onDelete(props.round, props.index);
+                    }} />
+                </div></li>
             </ul>
         </div>
     );

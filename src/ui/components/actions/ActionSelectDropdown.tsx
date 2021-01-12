@@ -16,7 +16,7 @@ export function ActionSelectDropdown(props: ActionsSelectProps) {
         <a className="cui-link cui-block">
             <DropTrigger action={props.value} />
         </a>
-        <div className="cui-dropdown  drop-height" cui-drop="outClose: Y;" id={props.id}>
+        <div className="cui-dropdown drop-height" cui-drop="outClose: Y;" id={props.id}>
             <ul className="cui-drop-nav drop-max-width">
                 {props.actions && props.actions.map(action => {
                     return <li key={action.id}><a className="cui-overflow-hidden cui-text-truncate" onClick={() => { onChange(action) }}><BpdActionLabel action={action} /></a></li>
