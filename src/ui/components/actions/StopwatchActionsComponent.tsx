@@ -44,9 +44,7 @@ export function StopwatchActionsComponent() {
     }
 
     function onDelete(action: StopwatchAction) {
-        deleteActionConfirmDialog(action.name, () => {
-            window.$actionsFlow.perform(ACTIONS_FLOW_ACTIONS.REMOVE_ACTION, action);
-        })
+        window.$actionsFlow.perform(ACTIONS_FLOW_ACTIONS.REMOVE_ACTION, action);
     }
 
     function onGetAll(actions: StopwatchAction[]) {

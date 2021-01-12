@@ -23,7 +23,7 @@ export function BpdConfirmDrop(props: BpdConfirmDropProp) {
         props.onConfirm()
     }
 
-    return (<div className="cui-dropdown cui-section drop-max-width" cui-drop="outClose: Y; autoClose: Y" id={props.id}>
+    return (<div className="cui-dropdown cui-section drop-max-width" cui-drop="" id={props.id}>
         <p>{props.message}</p>
         <div className="cui-flex cui-right cui-margin-top">
             <button className="cui-button cui-small" onClick={() => { onCancel() }}>{cancelLabel}</button>

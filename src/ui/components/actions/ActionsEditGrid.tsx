@@ -4,6 +4,7 @@ import { is } from 'bpd-toolkit/dist/esm/index';
 import { getBgClassByType } from '../../../core/helpers';
 import { BpdActionIcon } from '../common/BpdActionIcon';
 import { IconLabel } from '../trainings/IconLabel';
+import { BpdConfirmDrop } from '../common/BpdConfirmDrop';
 
 export interface ActionsEditGridProps {
     actions: StopwatchAction[];
@@ -32,10 +33,11 @@ export function ActionsEditGrid(props: ActionsEditGridProps) {
         }
     }
 
-    return (<div className="cui-container cui-flex-grid cui-flex-grid-match cui-child-width-1-1 cui-child-width-1-3--m">
+    return (<div className="cui-container cui-flex-grid cui-flex-grid-match cui-child-width-1-1 cui-child-width-1-3--m cui-animatio-fade-in">
         {is(props.actions) && props.actions.map((action: StopwatchAction, index: number) => {
             return (matchesName(action.name) &&
-                <div key={index} className="cui-animation-fade-in">
+                <div key={index}>
+
                     <div className={"cui-card cui-default " + getBgClassByType(action.type)}>
                         <div className="cui-card-header cui-flex cui-between cui-nowrap cui-middle">
                             <span className="cui-card-title cui-text-truncate cui-overflow-hidden">{action.name}</span>
@@ -45,10 +47,14 @@ export function ActionsEditGrid(props: ActionsEditGridProps) {
                             <div className="cui-flex-grow cui-overflow-hidden">
                                 <div className="cui-text-truncate"><span>{action.duration} seconds</span></div>
                             </div>
+
                             <div className="cui-flex-shrink">
                                 <ul className="cui-icon-nav">
                                     {action.editable && <li><a className="cui-icon" cui-icon="edit" onClick={() => { onOption('edit', action) }} ><IconLabel label="Edit" /></a></li>}
-                                    {action.removable && <li><a className="cui-icon" cui-icon="trash" onClick={() => { onOption('delete', action) }}><IconLabel label="Delete" /></a></li>}
+                                    {action.removable && <li> <div className="cui-drop-trigger">
+                                        <a className="cui-icon" cui-icon="trash"><IconLabel label="Delete" /></a>
+                                        <BpdConfirmDrop message="Do you really want to delete this action?" cancelLabel="No" confirmLabel="Yes" id="action-delete-drop" onConfirm={() => { props.onDelete(action) }} />
+                                    </div></li>}
                                 </ul>
                             </div>
                         </div>
