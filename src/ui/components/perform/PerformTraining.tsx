@@ -339,39 +339,41 @@ export function PerfromTraining() {
     return (<>
         {!state.training ?
             <NotFound message="We couldn't find training" /> :
-            <div className={"stopwatch-layout-content cui-flex-center " + getBackgroundClass(current.action)} ref={mainViewRef}>
-                <div className="stopwatch-content-width perform-layout cui-text-center animation-fade-in">
-                    <div className="perform-main-controls">
-                        <h2 className="cui-h2 cui-margin-remove">{state.training.name}</h2>
-                        <p className="cui-margin-remove">{state?.training?.rounds[current.roundIdx]?.name}</p>
-                        <p className="cui-text-muted cui-text-small cui-margin-remove">Round {current.roundIdx + 1} of {state.training.rounds.length}</p>
-                        {simpleView ? <SimpleCountDownTimer actionIdx={current.actionIdx} watchState={watchState} /> : <CountDownTimer actionIdx={current.actionIdx} watchState={watchState} />}
-                    </div>
-                    <div className="perform-buttons">
-                        <div className="cui-width-1-1">
-                            <h3 className={"cui-h3 " + current.class}>{current.action && current.action.name}</h3>
-                            <div className="cui-flex cui-center">
-                                {watchState.state !== StopWatchStateOptions.STOPPED && <button className="cui-button cui-margin-small-right" onClick={onPauseClick}>{watchState.state === StopWatchStateOptions.PAUSED ? "Resume" : "Pause"}</button>}
-                                <button className={"cui-button " + watchState.startBtnCls} onClick={onStartClick}>{watchState.state === StopWatchStateOptions.STOPPED ? "Start" : "Stop"}</button>
-                            </div>
-                            <p className="cui-text-muted">{state.training.description}</p>
-                            <div className="">
-                                {is(errorMessage) && <span className="cui-icon cui-error cui-tooltip" cui-icon="ban" data-tooltip={errorMessage}></span>}
-                                <a className="cui-icon-button cui-default" cui-icon={canPlay ? "speaker" : "volume_muted"} onClick={() => {
-                                    window.$settingsFlow.perform(SETTINGS_FLOW_ACTIONS.SET_SOUND_ENABLED, !canPlay)
-                                    window.$settingsFlow.perform(SETTINGS_FLOW_ACTIONS.GET_SOUND_ENABLED)
-                                }}></a>
-                                <a className="cui-icon-button cui-default cui-margin-small-left" cui-icon="expand" onClick={onFullScreen}></a>
+            <div className="stopwatch-layout-content  cui-background-default" ref={mainViewRef}>
+                <div className={"cui-height-1-1 cui-flex-center " + getBackgroundClass(current.action)} >
+                    <div className="stopwatch-content-width perform-layout cui-text-center animation-fade-in">
+                        <div className="perform-main-controls">
+                            <h2 className="cui-h2 cui-margin-remove">{state.training.name}</h2>
+                            <p className="cui-margin-remove">{state?.training?.rounds[current.roundIdx]?.name}</p>
+                            <p className="cui-text-muted cui-text-small cui-margin-remove">Round {current.roundIdx + 1} of {state.training.rounds.length}</p>
+                            {simpleView ? <SimpleCountDownTimer actionIdx={current.actionIdx} watchState={watchState} /> : <CountDownTimer actionIdx={current.actionIdx} watchState={watchState} />}
+                        </div>
+                        <div className="perform-buttons">
+                            <div className="cui-width-1-1">
+                                <h3 className={"cui-h3 " + current.class}>{current.action && current.action.name}</h3>
+                                <div className="cui-flex cui-center">
+                                    {watchState.state !== StopWatchStateOptions.STOPPED && <button className="cui-button cui-margin-small-right" onClick={onPauseClick}>{watchState.state === StopWatchStateOptions.PAUSED ? "Resume" : "Pause"}</button>}
+                                    <button className={"cui-button " + watchState.startBtnCls} onClick={onStartClick}>{watchState.state === StopWatchStateOptions.STOPPED ? "Start" : "Stop"}</button>
+                                </div>
+                                <p className="cui-text-muted">{state.training.description}</p>
+                                <div className="">
+                                    {is(errorMessage) && <span className="cui-icon cui-error cui-tooltip" cui-icon="ban" data-tooltip={errorMessage}></span>}
+                                    <a className="cui-icon-button cui-default" cui-icon={canPlay ? "speaker" : "volume_muted"} onClick={() => {
+                                        window.$settingsFlow.perform(SETTINGS_FLOW_ACTIONS.SET_SOUND_ENABLED, !canPlay)
+                                        window.$settingsFlow.perform(SETTINGS_FLOW_ACTIONS.GET_SOUND_ENABLED)
+                                    }}></a>
+                                    <a className="cui-icon-button cui-default cui-margin-small-left" cui-icon="expand" onClick={onFullScreen}></a>
+                                </div>
                             </div>
                         </div>
                     </div>
+                    <audio ref={countdownSound} id="stopwatch-countdown" src="/static/audio/stopwatch_countdown.mp3" />
+                    <audio ref={exerciseSound} id="stopwatch-exercise" src="/static/audio/stopwatch_exercise.mp3" />
+                    <audio ref={warmupSound} id="stopwatch-warmup" src="/static/audio/stopwatch_warmup.mp3" />
+                    <audio ref={breakSound} id="stopwatch-break" src="/static/audio/stopwatch_break.mp3" />
+                    <audio ref={cooldownSound} id="stopwatch-cooldown" src="/static/audio/stopwatch_cooldown.mp3" />
+                    <audio ref={endSound} id="stopwatch-cooldown" src="/static/audio/stopwatch_end.mp3" />
                 </div>
-                <audio ref={countdownSound} id="stopwatch-countdown" src="/static/audio/stopwatch_countdown.mp3" />
-                <audio ref={exerciseSound} id="stopwatch-exercise" src="/static/audio/stopwatch_exercise.mp3" />
-                <audio ref={warmupSound} id="stopwatch-warmup" src="/static/audio/stopwatch_warmup.mp3" />
-                <audio ref={breakSound} id="stopwatch-break" src="/static/audio/stopwatch_break.mp3" />
-                <audio ref={cooldownSound} id="stopwatch-cooldown" src="/static/audio/stopwatch_cooldown.mp3" />
-                <audio ref={endSound} id="stopwatch-cooldown" src="/static/audio/stopwatch_end.mp3" />
             </div>
         }
     </>);
