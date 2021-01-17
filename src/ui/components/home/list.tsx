@@ -62,7 +62,7 @@ export function TrainingListItem(props: TrainingListItemProps) {
         }
     })
 
-    return <div className={"cui-flex cui-middle cui-animation-fade-in cui-padding-bottom cui-padding-top" + animationDelay()}>
+    return <div className={"cui-flex cui-middle cui-animation-fade-in cui-padding-bottom cui-padding-top"}>
         <div className="cui-flex-grow" onClick={onItemClick}>
             <div className="cui-flex cui-middle cui-nowrap">
                 <div className="training-list-item-icon">
