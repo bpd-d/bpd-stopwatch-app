@@ -336,6 +336,37 @@ $countdown-stroke-width : 6px;
         }
     }
 
+    .delay-100 {
+        animation-delay: 100ms !important;
+    }
+
+    .delay-200 {
+        animation-delay: 200ms !important;
+    }
+
+    .delay-300 {
+        animation-delay: 300ms !important;
+    }
+
+    .delay-400 {
+        animation-delay: 400ms !important;
+    }
+
+    .anim-fade-in {
+        opacity  : 1;
+        animation: fadeee 300ms ease-out;
+    }
+
+    @keyframes fadeee {
+        0% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
+
     @keyframes timerPulse {
         0% {
             opacity: 1;

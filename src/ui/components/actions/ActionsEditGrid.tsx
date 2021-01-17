@@ -38,7 +38,7 @@ export function ActionsEditGrid(props: ActionsEditGridProps) {
             return (matchesName(action.name) &&
                 <div key={index}>
 
-                    <div className={"cui-card cui-default " + getBgClassByType(action.type)}>
+                    <div className={"cui-card cui-default cui-animation-fade-in " + getBgClassByType(action.type)}>
                         <div className="cui-card-header cui-flex cui-between cui-nowrap cui-middle">
                             <span className="cui-card-title cui-text-truncate cui-overflow-hidden">{action.name}</span>
                             <BpdActionIcon className="cui-padding-small" type={action.type} />

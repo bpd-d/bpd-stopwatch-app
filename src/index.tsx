@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOM from "react-dom";
 import '../styles/styles.scss';
 import { App, AppBase } from "./ui/app";
-import { CuiIconsPack } from 'bpd-cui-icons/index';
+import { CuiIconsPack } from 'bpd-cui-icons/esm/index';
 import { Flow, FlowFactory } from '../node_modules/bpd-flow/dist/index';
 import { TrainingsStorageService, ActionStorageService, SettingsService } from './core/services/storage';
 import { TrainingsFlow, TrainingsFlowInput, TrainingsFlowOutput } from "./app/flow/trainings";

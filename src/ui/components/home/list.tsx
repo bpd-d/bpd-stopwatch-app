@@ -4,6 +4,8 @@ import { Link, useHistory } from "react-router-dom";
 import { calculateDuration } from "../../../core/helpers";
 import { MAPPIGNS } from "../../routes";
 
+const delays = [' delay-100', ' delay-200', ' delay-300', ' delay-400']
+
 export interface TrainingListProps {
     list: Training[];
     onDelete: (id: string) => void;
@@ -11,13 +13,14 @@ export interface TrainingListProps {
 
 export interface TrainingListItemProps {
     data: Training;
+    index: number;
     onDelete: (id: string) => void;
 }
 
 export function TrainingList(props: TrainingListProps) {
     return <ul className="cui-list cui-hover">
-        {props.list && props.list.map(item => {
-            return <li key={item.id} className="stopwatch-content-width cui-corner-round"><TrainingListItem data={item} onDelete={props.onDelete} /></li>
+        {props.list && props.list.map((item, index) => {
+            return <li key={item.id} className="stopwatch-content-width cui-corner-round"><TrainingListItem data={item} onDelete={props.onDelete} index={index} /></li>
         })}
     </ul>
 }
@@ -41,6 +44,14 @@ export function TrainingListItem(props: TrainingListItemProps) {
         history.push(MAPPIGNS.renderUrl("perform", { id: props.data.id }))
     }
 
+    function animationDelay(): string {
+        if (props.index === 0 || props.index > 3) {
+            return ''
+        }
+        return delays[props.index];
+
+    }
+
     React.useEffect(() => {
         const deleteSubscription = window.$flow.subscribe(deleteTrainingAction).finish((result) => {
             window.$flow.perform("GET_TRAININGS")
@@ -51,14 +62,14 @@ export function TrainingListItem(props: TrainingListItemProps) {
         }
     })
 
-    return <div className="cui-flex cui-middle cui-animation-fade-in cui-padding-bottom cui-padding-top">
+    return <div className={"cui-flex cui-middle cui-animation-fade-in cui-padding-bottom cui-padding-top" + animationDelay()}>
         <div className="cui-flex-grow" onClick={onItemClick}>
             <div className="cui-flex cui-middle cui-nowrap">
                 <div className="training-list-item-icon">
                     <span className="cui-text-bold">{props.data.name[0].toUpperCase()}</span>
                 </div>
                 <div className="cui-flex-grow cui-margin-left">
-                    <span >{props.data.name}</span>
+                    <span>{props.data.name}</span>
                     <div className="cui-text-muted cui-text-truncate cui-overflow-hidden">
                         <span>{getDetails(props.data)}</span>
                     </div></div>

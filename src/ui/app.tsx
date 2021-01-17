@@ -1,9 +1,4 @@
 import * as React from "react";
-import * as ReactDOM from "react-dom";
-import {
-    TransitionGroup,
-    CSSTransition
-} from "react-transition-group";
 import { Switch, Route, BrowserRouter, useLocation } from "react-router-dom";
 import { Home } from "./components/home/home";
 import { ErrorRoute } from "./error";
@@ -13,7 +8,6 @@ import { StopwatchActionsComponent } from "./components/actions/StopwatchActions
 import EditTraining from "./components/trainings/EditTraining";
 import { PerfromTraining } from "./components/perform/PerformTraining";
 import { StopwatchSettings } from "./components/settings/StopwatchSettings";
-import { FlowTask } from "../../node_modules/bpd-flow/dist/index";
 import { SETTINGS_FLOW_ACTIONS } from "../app/flow/settings";
 import { setDarkMode } from "../core/helpers";
 import { About } from "./components/about/About";
