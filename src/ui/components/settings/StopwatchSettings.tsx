@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { DefaultSettings } from '../../../core/statics';
 import { SETTINGS_FLOW_ACTIONS } from '../../../app/flow/settings';
-import { setDarkMode, setPageTitle } from '../../../core/helpers';
+import { setDarkMode, setNavbarTitle, setPageTitle } from '../../../core/helpers';
 import { Settings } from '../../../core/models';
 import { PageHeader } from '../common/PageHeader';
 import { SettingsDevTools } from './SettingsDevTools';
@@ -43,6 +43,7 @@ export function StopwatchSettings() {
 
     React.useEffect(() => {
         setPageTitle("Settings");
+        setNavbarTitle("Settings");
         const settingsSub = window.$settingsFlow.subscribe(SETTINGS_FLOW_ACTIONS.GET_SETTINGS, { finish: onGetSettings })
         const settingsUpdateSub = window.$settingsFlow.subscribe(SETTINGS_FLOW_ACTIONS.SET_SETTINGS, { finish: onUpdateSettings })
 

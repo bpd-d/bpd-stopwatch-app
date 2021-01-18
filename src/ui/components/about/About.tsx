@@ -1,12 +1,17 @@
 import * as React from 'react'
-import { setPageTitle } from '../../../core/helpers';
+import { setNavbarTitle, setPageTitle } from '../../../core/helpers';
 import { PageHeader } from '../common/PageHeader';
 
 export function About() {
     setPageTitle("About");
+    setNavbarTitle("About");
     return (<><div className="stopwatch-content-width">
         <PageHeader title="About" description="Some details about the application" icon="info" />
         <div className="">
+            <div className="cui-container ">
+                <h3 className="cui-h3">Creator</h3>
+                <p className="">Project was created and is devloped by <span className="cui-text-accent cui-text-bold">BPDev</span>: <a href="https://github.com/bpd-d" className="cui-link cui-accent">Visit Github</a> </p>
+            </div>
             <div className="cui-container ">
                 <h3 className="cui-h3">Repository</h3>
                 <p className="">Project sources can be found on Github under following link: <a className="cui-link cui-accent" href="https://github.com/bpd-d/bpd-stopwatch-app">bpd-stopwatch-app</a></p>

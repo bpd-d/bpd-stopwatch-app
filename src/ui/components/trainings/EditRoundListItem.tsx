@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { calculateDuration } from '../../../core/helpers';
+import { calculateDuration, getUserDisplayNotation } from '../../../core/helpers';
 import { Round } from "../../../core/models";
 import { getDefaultRoundName } from '../../../core/statics';
 import { BpdConfirmDrop } from '../common/BpdConfirmDrop';
@@ -22,7 +22,7 @@ export function EditRoundListItem(props: RoundListItemProps) {
         <div className="cui-flex cui-middle cui-nowrap">
             <div className="cui-flex-grow">
                 <div><span className="cui-text-bold">{props.round.name}</span></div>
-                <div className="cui-text-muted cui-text-small cui-text-no-wrap"><span >{props.round.actions.length} actions, {calculateDuration(props.round.actions)} seconds</span></div>
+                <div className="cui-text-muted cui-text-small cui-text-no-wrap"><span >{props.round.actions.length} actions, {getUserDisplayNotation(calculateDuration(props.round.actions))}</span></div>
 
             </div>
 

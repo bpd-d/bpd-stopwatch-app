@@ -12,6 +12,8 @@ import { CuiSetupInit } from "cui-light-core/dist/esm/models/setup";
 import { CuiInstance } from "cui-light/dist/esm/index";
 import { CuiInitData } from "cui-light/dist/esm/initializer";
 import { CuiInit } from "../../cui-light/dist/esm/init";
+import { PushServiceFlow, PushServiceInput, PushServiceOutput } from "./app/push/push";
+import { PushService } from "./core/services/push";
 
 
 declare global {
@@ -21,6 +23,7 @@ declare global {
         $flow: Flow<any, any>;
         $actionsFlow: Flow<ActionsFlowInput, ActionsFlowOutput>;
         $settingsFlow: Flow<SettingsFlowInput, SettingsFlowOutput>;
+        $push: Flow<PushServiceInput, PushServiceOutput>;
     }
 }
 
@@ -94,10 +97,12 @@ function onDataFetch(settings: any, icons: any) {
     const actionsFlow = new ActionsFlow(actionsService);
     const settingsService = new SettingsService();
     const settingsFlow = new SettingsFlow(settingsService);
+    const pushService = new PushServiceFlow(new PushService());
 
     window.$flow = FlowFactory.create<TrainingsFlowInput, TrainingsFlowOutput>(traningsFlow.getActions());
     window.$actionsFlow = FlowFactory.create<ActionsFlowInput, ActionsFlowOutput>(actionsFlow.getActions());
     window.$settingsFlow = FlowFactory.create<SettingsFlowInput, SettingsFlowOutput>(settingsFlow.getActions());
+    window.$push = FlowFactory.create<PushServiceInput, PushServiceOutput>(pushService.getActions());
 
     setTimeout(() => {
         new CuiInit().init(cuiSetup).then((result) => {

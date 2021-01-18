@@ -314,10 +314,10 @@ $countdown-stroke-width : 6px;
     .loop-screen {
         display : inline;
         position: absolute;
-        top     : 0;
-        left    : 0;
-        width   : 10px;
-        height  : 10px;
+        top     : -10px;
+        left    : -10px;
+        width   : 2px;
+        height  : 2px;
     }
 
     .edit-container {

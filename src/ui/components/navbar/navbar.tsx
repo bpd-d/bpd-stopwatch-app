@@ -1,7 +1,10 @@
 import * as React from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
+import { setNavbarTitle } from "../../../core/helpers";
+import { PUSH_ACTIONS } from "../../../app/push/push";
 import { MAPPIGNS } from "../../routes";
 import { NavbarLink } from "../common/NavbarLink";
+import { useNavbarTitle } from "../../../ui/hooks/NavbarTitle";
 
 export interface NavbarState {
     currentSite: string;
@@ -19,25 +22,35 @@ export function Navbar(props: NavbarProps) {
     const [state, setState] = React.useState<NavbarState>({
         currentSite: "",
         darkMode: false,
-        soundEnabled: false
+        soundEnabled: false,
     });
+    const [location, setLocation] = React.useState("")
+    const title = useNavbarTitle("");
     const history = useHistory();
-    function onGetSound(flag: boolean): void {
 
-    }
+    // function onTitleUpdate(value: string): void {
+    //     setState({
+    //         ...state,
+    //         currentSite: value
+    //     })
+    // }
 
     React.useEffect(() => {
         let split = currentLocation.pathname.split('/');
-        setState({
-            ...state,
-            currentSite: split.length > 1 ? currentLocation.pathname.split('/')[1].toLocaleUpperCase() : ""
-        })
+        setLocation(split.length > 1 ? split[1].toLocaleUpperCase() : "")
+        // const pushServiceTitleSub = window.$push.subscribe(PUSH_ACTIONS.SET_NAVBAR_TITLE, { finish: onTitleUpdate })
+
+        return () => {
+            //window.$push.unsubscribe(PUSH_ACTIONS.SET_NAVBAR_TITLE, pushServiceTitleSub.id);
+        }
     }, [currentLocation])
-    return <nav className={"cui-navbar cui-sticky cui-box-shadow-remove stopwatch-layout-navigation"}>
+    return <nav className={"cui-navbar cui-sticky cui-transparent stopwatch-layout-navigation"}>
         <div className="cui-navbar-left cui-width-1-1 cui-width-auto--m cui-flex cui-middle cui-between" id="navbar-left">
             <ul>
-                {state.currentSite && <><li><a cui-icon="chevron_small_left" onClick={() => { history.goBack() }} ></a></li>
-                    <li><Link className="cui-icon" to={MAPPIGNS.renderUrl("home")} cui-icon="stopwatch_small"></Link></li></>}
+                {location && <><li><a cui-icon="chevron_small_left" onClick={() => { history.goBack() }} ></a></li>
+                    <li><Link className="cui-icon" to={MAPPIGNS.renderUrl("home")} cui-icon="stopwatch_small"></Link></li>
+                    <li><span>{title}</span></li>
+                </>}
             </ul>
             <a className="cui-icon cui-padding cui-button cui-hidden--m" cui-icon="menu" cui-open="target: #app-offcanvas"></a>
         </div>

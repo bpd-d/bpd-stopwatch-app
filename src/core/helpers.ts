@@ -1,4 +1,5 @@
 import { is } from "bpd-toolkit/dist/esm/index";
+import { PUSH_ACTIONS } from "../app/push/push";
 import { ActionsGroup, Round, RoundActions, StopwatchAction, Training } from "./models";
 import { APP_NAME } from "./statics";
 
@@ -23,18 +24,56 @@ export function calcDisplayTimer(seconds: number): string {
     if (seconds < 0) {
         return "Error"
     }
+    return getSimplifiedDuration(seconds, (value: number, type: string) => {
+        switch (type) {
+            case "hour":
+            case "minute":
+                return getDisplayTimerValue(value) + ":"
+            default:
+                return getDisplayTimerValue(value)
+        }
+    })
+    // if (seconds < 60) {
+    //     return "00:" + getDisplayTimerValue(seconds)
+    // } else if (seconds < 3600) {
+    //     let minutes = Math.floor(seconds / 60);
+    //     let restSeconds = seconds % 60;
+    //     return getDisplayTimerValue(minutes) + ":" + getDisplayTimerValue(restSeconds);
+    // } else {
+    //     let hours = Math.floor(seconds / 3600);
+    //     let secondsLeft = seconds % 3600
+    //     return getDisplayTimerValue(hours) + ":" + calcDisplayTimer(secondsLeft);
+    // }
+}
+
+export function getUserDisplayNotation(seconds: number) {
+    return getSimplifiedDuration(seconds, (value: number, type: string) => {
+        switch (type) {
+            case "hour":
+                return `${value}h`
+            case "minute":
+                return `${value}m`
+            default:
+                return `${value}s`
+        }
+    })
+}
+
+export function getSimplifiedDuration(seconds: number, format: (value: number, type: string) => string): string {
     if (seconds < 60) {
-        return "00:" + getDisplayTimerValue(seconds)
+        return format(seconds, "second");
     } else if (seconds < 3600) {
         let minutes = Math.floor(seconds / 60);
         let restSeconds = seconds % 60;
-        return getDisplayTimerValue(minutes) + ":" + getDisplayTimerValue(restSeconds);
+        return format(minutes, 'minute') + getSimplifiedDuration(restSeconds, format);
     } else {
         let hours = Math.floor(seconds / 3600);
-        let secondsLeft = seconds % 3600
-        return getDisplayTimerValue(hours) + ":" + calcDisplayTimer(secondsLeft);
+        let secondsLeft = seconds % 3600;
+        return format(hours, 'hours') + getSimplifiedDuration(secondsLeft, format);
     }
 }
+
+
 
 export function getDisplayTimerValue(value: number): string {
     if (value < 0 || value > 59) {
@@ -42,6 +81,8 @@ export function getDisplayTimerValue(value: number): string {
     }
     return value < 10 ? "0" + value : "" + value;
 }
+
+
 
 export function setDarkMode(darkMode: boolean) {
     if (window.$cui) {
@@ -168,4 +209,8 @@ export function setPageTitle(text: string): void {
         return;
     }
     document.title = APP_NAME;
+}
+
+export function setNavbarTitle(text: string): void {
+    window.$push.perform(PUSH_ACTIONS.SET_NAVBAR_TITLE, text);
 }

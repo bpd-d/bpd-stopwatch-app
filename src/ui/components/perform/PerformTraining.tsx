@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { useParams } from 'react-router-dom';
+import { PUSH_ACTIONS } from '../../../app/push/push';
 import { is, openFullscreen } from '../../../../node_modules/bpd-toolkit/dist/esm/index';
 import { KeepScreenAwakeFeature } from '../../../api/screen/screen';
 import { StopWatch, StopWatchState, StopWatchStateOptions } from '../../../api/stopwatch/stopwatch';
@@ -62,7 +63,7 @@ export function PerfromTraining() {
     const [simpleView, setSimpleView] = React.useState<boolean>(false);
 
     const [watchState, setWatchState] = React.useState<StopwatchState>({
-        timer: "00:00",
+        timer: "-",
         state: StopWatchStateOptions.STOPPED,
         startBtnCls: getStartBtnCls(StopWatchStateOptions.STOPPED),
         timerCls: "",
@@ -97,6 +98,7 @@ export function PerfromTraining() {
             return;
         }
         setPageTitle(training.name);
+        window.$push.perform(PUSH_ACTIONS.SET_NAVBAR_TITLE, training.name)
         setState({
             ...state,
             training: training
@@ -306,6 +308,7 @@ export function PerfromTraining() {
 
     React.useEffect(() => {
         setPageTitle("Perform training");
+
         const getTrainingSubscription = window.$flow.subscribe("GET_TRAINING", { finish: onGetTraining })
         const settingsPlaySound = window.$settingsFlow.subscribe(SETTINGS_FLOW_ACTIONS.GET_SOUND_ENABLED, {
             finish: onGetPlaySound
@@ -334,6 +337,7 @@ export function PerfromTraining() {
                 stopwatch.stop();
             }
             wakeLock.release();
+            window.$push.perform(PUSH_ACTIONS.SET_NAVBAR_TITLE, "")
         }
     }, [id, canPlay])
     return (<>
@@ -343,7 +347,6 @@ export function PerfromTraining() {
                 <div className={"cui-height-1-1 cui-flex-center " + getBackgroundClass(current.action)} >
                     <div className="stopwatch-content-width perform-layout cui-text-center animation-fade-in">
                         <div className="perform-main-controls">
-                            <h2 className="cui-h2 cui-margin-remove">{state.training.name}</h2>
                             <p className="cui-margin-remove">{state?.training?.rounds[current.roundIdx]?.name}</p>
                             <p className="cui-text-muted cui-text-small cui-margin-remove">Round {current.roundIdx + 1} of {state.training.rounds.length}</p>
                             {simpleView ? <SimpleCountDownTimer actionIdx={current.actionIdx} watchState={watchState} /> : <CountDownTimer actionIdx={current.actionIdx} watchState={watchState} />}

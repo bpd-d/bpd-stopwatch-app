@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Round, Training } from "../../../core/models";
 import { Link, useHistory } from "react-router-dom";
-import { calculateDuration } from "../../../core/helpers";
+import { calculateDuration, getUserDisplayNotation } from "../../../core/helpers";
 import { MAPPIGNS } from "../../routes";
 
 const delays = [' delay-100', ' delay-200', ' delay-300', ' delay-400']
@@ -37,19 +37,11 @@ export function TrainingListItem(props: TrainingListItemProps) {
 
     function getDetails(training: Training) {
         const [actions, duration] = getActionsDuration(training);
-        return `${duration} seconds`;
+        return getUserDisplayNotation(duration);//`${duration} seconds`;
     }
 
     function onItemClick() {
         history.push(MAPPIGNS.renderUrl("perform", { id: props.data.id }))
-    }
-
-    function animationDelay(): string {
-        if (props.index === 0 || props.index > 3) {
-            return ''
-        }
-        return delays[props.index];
-
     }
 
     React.useEffect(() => {

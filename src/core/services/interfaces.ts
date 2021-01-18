@@ -34,3 +34,7 @@ export interface ISettingsService {
     getSettings(): Settings;
     clearSettings(): void;
 }
+
+export interface IPushService {
+    setNavbarTitle(title: string): string;
+}
