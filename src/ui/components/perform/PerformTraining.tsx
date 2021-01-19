@@ -11,6 +11,8 @@ import { NotFound } from '../common/NotFound';
 import { CountDownTimer, NewCountDownTimer, SimpleCountDownTimer } from './CountDownTimer';
 import { useSettings } from '../../../ui/hooks/settings';
 import { useIsFullscreen } from '../../../ui/hooks/useResize';
+import { IconBtnLabel } from '../common/IconBtnLabel';
+import { IconButton } from '../common/IconButton';
 ;
 
 interface TimeStateData {
@@ -37,11 +39,19 @@ export interface CurrentTrainingState {
 export interface StopwatchState {
     timer: string;
     state: StopWatchPerformState;
-    startBtnCls: string;
     timerCls: string;
     progress: number;
     roundProgress: number;
     trainingProgress: number;
+}
+
+interface CurrentStateControls {
+    startBtnCls: string;
+    startBtnText: string;
+    isPauseVisible: boolean;
+    pauseBtnText: string;
+    startBtnIcon: string;
+    pauseBtnIcon: string;
 }
 
 const defaultCurrent: CurrentTrainingState = {
@@ -65,12 +75,21 @@ export function PerfromTraining() {
     const [watchState, setWatchState] = React.useState<StopwatchState>({
         timer: "-",
         state: StopWatchStateOptions.STOPPED,
-        startBtnCls: getStartBtnCls(StopWatchStateOptions.STOPPED),
         timerCls: "",
         progress: 100,
         roundProgress: 100,
         trainingProgress: 100,
     })
+
+    const [currentPlayStateControls, setCurrentPlayStateControls] = React.useState<CurrentStateControls>({
+        startBtnText: "Start",
+        startBtnCls: "cui-accent",
+        pauseBtnText: "Pause",
+        isPauseVisible: false,
+        startBtnIcon: "media_play",
+        pauseBtnIcon: "media_pause"
+    })
+
 
     const [settings, setSettings] = useSettings();
 
@@ -161,7 +180,7 @@ export function PerfromTraining() {
         let ct = actionDuration - currentTime;
         let progress = calculateProgress(currentTime, actionDuration)
         if (currentTime === 0) {
-            play(currentRef.current.action.type);
+            playSound(currentRef.current.action.type);
         }
         if (ct > 0) {
             // Normal tick
@@ -173,20 +192,20 @@ export function PerfromTraining() {
             })
             // Start round end countdown
             if (ct <= 2) {
-                play("countdown");
+                playSound("countdown");
             }
             return true;
         } else {
             // Next action
             if (!setNextAction()) {
                 // End of training
-                play("end");
+                playSound("end");
                 updateStopWatchState(StopWatchStateOptions.STOPPED, {
                     time: 0, progress: 100, ct: 0, total: 0
                 })
                 return false;
             }
-            play("countdown");
+            playSound("countdown");
             updateStopWatchState(StopWatchStateOptions.RUNNING, { time: 0, progress: 0, ct: ct, total: total })
             stopwatch.reset();
             return true;
@@ -216,7 +235,6 @@ export function PerfromTraining() {
             setWatchState({
                 ...watchState,
                 state: watchstate,
-                startBtnCls: getStartBtnCls(watchstate)
             })
         } else {
             let roundProgress = calculateRoundProgress(timeData.ct);
@@ -225,12 +243,12 @@ export function PerfromTraining() {
                 timer: calcDisplayTimer(timeData.time),
                 timerCls: getTimerCls(timeData.time, watchstate),
                 state: watchstate,
-                startBtnCls: getStartBtnCls(watchstate),
                 progress: timeData.progress,
                 roundProgress: roundProgress,
                 trainingProgress: trainginProgress
             })
         }
+        updatePlayStateControls(watchstate);
     }
 
     function calculateRoundCurrentTime(ct: number) {
@@ -250,7 +268,7 @@ export function PerfromTraining() {
         return 100 - calculateProgress(ct, currentRef.current.totalDuration);
     }
 
-    function play(type: string) {
+    function playSound(type: string) {
         if (!settingsRef.current.soundEnabled) {
             return
         }
@@ -286,8 +304,40 @@ export function PerfromTraining() {
         return state === StopWatchStateOptions.RUNNING && timer >= 0 && timer < 3 ? "cui-text-warning timer-blink-animation" : "";
     }
 
-    function getStartBtnCls(state: StopWatchPerformState) {
-        return state !== StopWatchStateOptions.STOPPED ? "cui-error" : "cui-accent";
+    function updatePlayStateControls(state: StopWatchPerformState) {
+        switch (state) {
+            case StopWatchStateOptions.RUNNING:
+                setCurrentPlayStateControls({
+                    startBtnCls: "cui-error",
+                    startBtnIcon: "media_stop",
+                    startBtnText: "Stop",
+                    isPauseVisible: true,
+                    pauseBtnIcon: "media_pause",
+                    pauseBtnText: "Pause"
+                })
+                break;
+            case StopWatchStateOptions.PAUSED:
+                setCurrentPlayStateControls({
+                    startBtnCls: "cui-error",
+                    startBtnIcon: "media_stop",
+                    startBtnText: "Stop",
+                    isPauseVisible: true,
+                    pauseBtnIcon: "media_play",
+                    pauseBtnText: "Resume"
+                })
+                break;
+            case StopWatchStateOptions.STOPPED:
+                setCurrentPlayStateControls({
+                    startBtnCls: "cui-accent",
+                    startBtnIcon: "media_play",
+                    startBtnText: "Start",
+                    isPauseVisible: false,
+                    pauseBtnIcon: "media_pause",
+                    pauseBtnText: "Pause"
+                })
+                break;
+        }
+
     }
 
     function getBackgroundClass(action: StopwatchAction) {
@@ -334,19 +384,21 @@ export function PerfromTraining() {
         {!state.training ?
             <NotFound message="We couldn't find training" /> :
             <div className="stopwatch-layout-content  cui-background-default" ref={mainViewRef}>
-                <div className={"cui-height-1-1 cui-flex-center " + getBackgroundClass(current.action)} >
-                    <div className="stopwatch-content-width perform-layout cui-text-center animation-fade-in">
+                <div className={"cui-height-1-1 cui-overflow-y-auto cui-flex cui-center cui-middle " + getBackgroundClass(current.action)} >
+                    <div className="stopwatch-content-width perform-layout cui-text-center animation-fade-in ">
                         <div className="perform-main-controls">
                             <p className="cui-margin-remove">{state?.training?.rounds[current.roundIdx]?.name}</p>
                             <p className="cui-text-muted cui-text-small cui-margin-remove">Round {current.roundIdx + 1} of {state.training.rounds.length}</p>
-                            {settings.simpleView ? <SimpleCountDownTimer actionIdx={current.actionIdx} watchState={watchState} /> : <CountDownTimer actionIdx={current.actionIdx} watchState={watchState} />}
+                            <div className="cui-flex-center">
+                                {settings.simpleView ? <SimpleCountDownTimer actionIdx={current.actionIdx} watchState={watchState} /> : <CountDownTimer actionIdx={current.actionIdx} watchState={watchState} />}
+                            </div>
                         </div>
                         <div className="perform-buttons">
                             <div className="cui-width-1-1">
                                 <h3 className={"cui-h3 " + current.class}>{current.action && current.action.name}</h3>
                                 <div className="cui-flex cui-center">
-                                    {watchState.state !== StopWatchStateOptions.STOPPED && <button className="cui-button cui-margin-small-right" onClick={onPauseClick}>{watchState.state === StopWatchStateOptions.PAUSED ? "Resume" : "Pause"}</button>}
-                                    <button className={"cui-button " + watchState.startBtnCls} onClick={onStartClick}>{watchState.state === StopWatchStateOptions.STOPPED ? "Start" : "Stop"}</button>
+                                    {currentPlayStateControls.isPauseVisible && <IconButton icon={currentPlayStateControls.pauseBtnIcon} label={currentPlayStateControls.pauseBtnText} onClick={onPauseClick} modifiers="cui-margin-small-right" />}
+                                    <IconButton icon={currentPlayStateControls.startBtnIcon} label={currentPlayStateControls.startBtnText} onClick={onStartClick} modifiers={currentPlayStateControls.startBtnCls} />
                                 </div>
                                 <p className="cui-text-muted">{state.training.description}</p>
                                 <div className="">
