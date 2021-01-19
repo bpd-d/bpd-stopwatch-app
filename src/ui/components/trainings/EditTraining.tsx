@@ -8,7 +8,7 @@ import { Round, StopwatchAction, Training, TrainingState } from '../../../core/m
 import { DefaultActions } from '../../../core/statics';
 import { TrainingValidator } from '../../../core/validators';
 import { MAPPIGNS } from '../../routes';
-import { deleteRoundConfirmDialog, onDeleteTrainingDialog } from '../common/Dialogs';
+import { onDeleteTrainingDialog } from '../common/Dialogs';
 import { NotFound } from '../common/NotFound';
 import { PageHeader } from '../common/PageHeader';
 import { ButtonBar, ButtonBarItemProps } from './ButtonBar';

@@ -1,21 +1,21 @@
 import * as React from 'react'
-import { DefaultSettings } from '../../../core/statics';
-import { SETTINGS_FLOW_ACTIONS } from '../../../app/flow/settings';
-import { setDarkMode, setNavbarTitle, setPageTitle } from '../../../core/helpers';
-import { Settings } from '../../../core/models';
+import { setNavbarTitle, setPageTitle } from '../../../core/helpers';
 import { PageHeader } from '../common/PageHeader';
 import { SettingsDevTools } from './SettingsDevTools';
 import { SettingsSwitchListItem } from './SettingsSwitchListItem'
+import { useSettings } from '../../../ui/hooks/settings';
+
 export interface SettingsState {
     darkModeEnabled: boolean;
     soundEnabled: boolean;
 }
+
 export function StopwatchSettings() {
-    const [settings, setSettings] = React.useState<Settings>({
-        ...DefaultSettings
-    })
+    const [settings, setSettings] = useSettings();
+
 
     function onValueChange(name: string, value: boolean) {
+
         if (name !== 'soundEnabled' && name !== "darkMode" && name !== "simpleView") {
             return;
         }
@@ -23,36 +23,14 @@ export function StopwatchSettings() {
             ...settings,
             [name]: value
         }
-        window.$settingsFlow.perform(SETTINGS_FLOW_ACTIONS.SET_SETTINGS, newSettings);
         setSettings(newSettings)
     }
-
-    function onUpdateSettings() {
-        window.$settingsFlow.perform(SETTINGS_FLOW_ACTIONS.GET_SETTINGS);
-    }
-
-    function onGetSettings(settings: Settings) {
-        if (settings) {
-            console.log(settings)
-            setSettings(settings);
-            setDarkMode(settings.darkMode);
-        }
-    }
-
 
 
     React.useEffect(() => {
         setPageTitle("Settings");
         setNavbarTitle("Settings");
-        const settingsSub = window.$settingsFlow.subscribe(SETTINGS_FLOW_ACTIONS.GET_SETTINGS, { finish: onGetSettings })
-        const settingsUpdateSub = window.$settingsFlow.subscribe(SETTINGS_FLOW_ACTIONS.SET_SETTINGS, { finish: onUpdateSettings })
 
-        onUpdateSettings();
-        return () => {
-            window.$settingsFlow.unsubscribe(SETTINGS_FLOW_ACTIONS.GET_SETTINGS, settingsSub.id);
-            window.$settingsFlow.unsubscribe(SETTINGS_FLOW_ACTIONS.SET_SETTINGS, settingsUpdateSub.id);
-
-        }
     }, [settings.darkMode, settings.soundEnabled])
     return (<><div className="stopwatch-content-width">
         <PageHeader title="Settings" description="Change application setup" icon="setup" />
@@ -78,5 +56,3 @@ export function StopwatchSettings() {
         <SettingsDevTools />
     </div></>);
 }
-
-

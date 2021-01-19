@@ -4,7 +4,7 @@ export const StopWatchStateOptions: any = {
     PAUSED: "PAUSED",
 }
 
-export type StopWatchState = "RUNNING" | 'PAUSED' | "STOPPED";
+export type StopWatchPerformState = "RUNNING" | 'PAUSED' | "STOPPED";
 
 export interface StopwatchCallback {
     (current: number, total: number, stopWatch: StopWatch): boolean;
@@ -16,7 +16,7 @@ export interface IStopWatch {
     pause(): boolean;
     resume(): boolean;
     finish(): void;
-    getState(): StopWatchState;
+    getState(): StopWatchPerformState;
 }
 
 export class StopWatch implements IStopWatch {
@@ -24,7 +24,7 @@ export class StopWatch implements IStopWatch {
     #current: number;
     #total: number;
     #isReset: boolean;
-    #state: StopWatchState;
+    #state: StopWatchPerformState;
     #id: any;
     constructor() {
         this.#current = 0;

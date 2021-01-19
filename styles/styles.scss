@@ -14,7 +14,7 @@ $countdown-stroke-width : 6px;
     }
 
     .countdown-timer-size {
-        font-size: 60px !important;
+        font-size: 72px !important;
     }
 
     .stopwatch-layout-navigation {
@@ -230,13 +230,13 @@ $countdown-stroke-width : 6px;
     .total-circle-progress {
         display : block;
         position: relative;
-        width   : 176px;
-        height  : 176px;
+        width   : 178px;
+        height  : 178px;
 
         svg {
             position: absolute;
-            width   : 174px;
-            height  : 174px;
+            width   : 176px;
+            height  : 176px;
             top     : 0px;
             left    : 0px;
 
@@ -355,6 +355,14 @@ $countdown-stroke-width : 6px;
     .anim-fade-in {
         opacity  : 1;
         animation: fadeee 300ms ease-out;
+    }
+
+    .width-100 {
+        width: 100px !important;
+    }
+
+    .width-200 {
+        width: 200px !important;
     }
 
     @keyframes fadeee {
