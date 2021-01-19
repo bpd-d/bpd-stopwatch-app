@@ -43,7 +43,22 @@ export interface StopwatchState {
     progress: number;
     roundProgress: number;
     trainingProgress: number;
+    roundIdx: number;
+    roundTotal: number;
+    actionIdx: number;
+    actionTotal: number;
 }
+
+
+
+// export interface StopwatchState {
+//     timer: string;
+//     state: StopWatchPerformState;
+//     timerCls: string;
+//     progress: number;
+//     roundProgress: number;
+//     trainingProgress: number;
+// }
 
 interface CurrentStateControls {
     startBtnCls: string;
@@ -79,7 +94,13 @@ export function PerfromTraining() {
         progress: 100,
         roundProgress: 100,
         trainingProgress: 100,
+        roundIdx: 0,
+        roundTotal: 0,
+        actionIdx: 0,
+        actionTotal: 0
     })
+
+
 
     const [currentPlayStateControls, setCurrentPlayStateControls] = React.useState<CurrentStateControls>({
         startBtnText: "Start",
@@ -100,8 +121,10 @@ export function PerfromTraining() {
     currentRef.current = current;
     const trainingRef = React.useRef(state.training);
     trainingRef.current = state.training;
-
+    const watchStateRef = React.useRef(watchState);
+    watchStateRef.current = watchState;
     const settingsRef = React.useRef(settings);
+    settingsRef.current = settings;
 
 
     const countdownSound = React.useRef(null);
@@ -127,6 +150,11 @@ export function PerfromTraining() {
             training: training
         })
         setDefaultCurrentState(training);
+        setWatchState({
+            ...watchState,
+            roundTotal: training.rounds.length,
+            actionTotal: training.rounds[0].actions.length,
+        })
     }
 
 
@@ -154,6 +182,10 @@ export function PerfromTraining() {
                 action: newAction,
                 class: getClassByType(newAction.type)
             })
+            setWatchState({
+                ...watchStateRef.current,
+                actionIdx: nextActionIdx
+            })
             return true;
         }
         let nextRoundIdx = currentRef.current.roundIdx + 1;
@@ -168,6 +200,12 @@ export function PerfromTraining() {
                 action: newAction,
                 class: getClassByType(newAction.type),
                 roundDuration: calculateDuration(newRound.actions),
+            })
+            setWatchState({
+                ...watchStateRef.current,
+                roundIdx: nextRoundIdx,
+                actionTotal: newRound.actions.length,
+                actionIdx: 0
             })
             return true;
         }
@@ -233,13 +271,14 @@ export function PerfromTraining() {
     function updateStopWatchState(watchstate: StopWatchPerformState, timeData?: TimeStateData) {
         if (!is(timeData) || timeData.time < 0) {
             setWatchState({
-                ...watchState,
+                ...watchStateRef.current,
                 state: watchstate,
             })
         } else {
             let roundProgress = calculateRoundProgress(timeData.ct);
             let trainginProgress = calculateTrainingProgress(timeData.total);
             setWatchState({
+                ...watchStateRef.current,
                 timer: calcDisplayTimer(timeData.time),
                 timerCls: getTimerCls(timeData.time, watchstate),
                 state: watchstate,
