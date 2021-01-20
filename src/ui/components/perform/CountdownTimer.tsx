@@ -26,7 +26,7 @@ export function CountDownTimer(props: CountDownTimerProps) {
 export function NewCountDownTimer(props: CountDownTimerProps) {
     return (
         <div>
-            <div className="cui-flex-center  ">
+            <div className="cui-flex-center">
                 <progress className="cui-progress cui-small cui-success width-100" value={props.watchState.trainingProgress} max="100"></progress>
             </div>
             {/* <span className="cui-block cui-text-small">{props.actionIdx + 1}</span> */}

@@ -10,13 +10,14 @@ export interface NotFoundProps {
 
 export function NotFound(props: NotFoundProps) {
     return (<div className={props.classes}>
-        <h2 className="cui-h2 cui-text-center cui-text-error">{props.message}</h2>
-        <div className="">
-            <div className="cui-flex cui-center">
-                <Link to="/" className="cui-button cui-margin-small-right">Go Home</Link>
-                {props.goBack ?? <GoBack />}
+        <div>
+            <h2 className="cui-h2 cui-text-center cui-text-error">{props.message}</h2>
+            <div className="">
+                <div className="cui-flex cui-center">
+                    <Link to="/" className="cui-button cui-margin-small-right">Go Home</Link>
+                    {props.goBack ?? <GoBack />}
+                </div>
             </div>
         </div>
-
     </div>);
 }

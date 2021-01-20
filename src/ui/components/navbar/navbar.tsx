@@ -59,6 +59,7 @@ export function Navbar(props: NavbarProps) {
             <li><NavbarLink class="cui-navbar-item" url={MAPPIGNS.renderUrl("home")} name={MAPPIGNS.getName("home")} /></li>
             <li><NavbarLink class="cui-navbar-item" url={MAPPIGNS.renderUrl("actions")} name={MAPPIGNS.getName("actions")} /></li>
             <li><NavbarLink class="cui-navbar-item" url={MAPPIGNS.renderUrl("settings")} name={MAPPIGNS.getName("settings")} /></li>
+            <li><NavbarLink class="cui-navbar-item" url={MAPPIGNS.renderUrl("help")} name={MAPPIGNS.getName("help")} /></li>
             <li><NavbarLink class="cui-navbar-item" url={MAPPIGNS.renderUrl("about")} name={MAPPIGNS.getName("about")} /></li>
         </ul>
     </nav>

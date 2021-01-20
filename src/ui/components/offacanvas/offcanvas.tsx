@@ -26,6 +26,7 @@ export class OffCanvas extends React.Component<OffCanvasProps, {}> {
                             <li><NavbarLink url={MAPPIGNS.renderUrl("home")} name={MAPPIGNS.getName("home")} icon="home" shouldClose={true} isIcon={true} /></li>
                             <li><NavbarLink url={MAPPIGNS.renderUrl("actions")} name={MAPPIGNS.getName("actions")} icon="link" shouldClose={true} isIcon={true} /></li>
                             <li><NavbarLink url={MAPPIGNS.renderUrl("settings")} name={MAPPIGNS.getName("settings")} icon="setup" shouldClose={true} isIcon={true} /></li>
+                            <li><NavbarLink url={MAPPIGNS.renderUrl("help")} name={MAPPIGNS.getName("help")} icon="emoji_smile" shouldClose={true} isIcon={true} /></li>
                             <li><NavbarLink url={MAPPIGNS.renderUrl("about")} name={MAPPIGNS.getName("about")} icon="info" shouldClose={true} isIcon={true} /></li>
                         </ul>
                     </div>

@@ -60,4 +60,4 @@ export const DefaultSettings: Settings = {
     simpleView: false
 }
 
-export const APP_NAME = "BPd Stopwatch"
+export const APP_NAME = "bpd Stopwatch"

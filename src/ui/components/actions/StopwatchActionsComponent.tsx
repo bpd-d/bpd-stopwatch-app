@@ -96,7 +96,7 @@ export function StopwatchActionsComponent() {
             <ClearableInput value={filter} onUpdate={updateFilter} className="cui-width-1-1 cui-width-1-3--m cui-width-1-4--l" />
         </div>
         <ActionsEditGrid filter={filter} actions={state.actions} onEdit={onAddOrEditClick} onDelete={onDelete} />
-        <div className="cui-position-float cui-position-bottom cui-position-center cui-margin-large-bottom z-index-100">
+        <div className="cui-position-float cui-position-bottom cui-position-center cui-margin-large-bottom app-float-bottom z-index-100">
             <button className="cui-icon-button cui-large cui-background-default cui-box-shadow" cui-icon="plus" onClick={() => { onAddOrEditClick() }}></button>
         </div>
     </div>

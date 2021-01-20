@@ -8,11 +8,11 @@ import { calcDisplayTimer, calculateDuration, calculateProgress, getBgClassByTyp
 import { Round, StopwatchAction, Training } from '../../../core/models';
 import { CompleteTrainingValidator } from '../../../core/validators';
 import { NotFound } from '../common/NotFound';
-import { CountDownTimer, NewCountDownTimer, SimpleCountDownTimer } from './CountDownTimer';
+import { CountDownTimer, SimpleCountDownTimer } from './CountDownTimer';
 import { useSettings } from '../../../ui/hooks/settings';
 import { useIsFullscreen } from '../../../ui/hooks/useResize';
-import { IconBtnLabel } from '../common/IconBtnLabel';
 import { IconButton } from '../common/IconButton';
+import { useIsLoading } from '../../../ui/hooks/loading';
 ;
 
 interface TimeStateData {
@@ -26,16 +26,6 @@ interface PerfromTrainingState {
     training: Training;
 }
 
-export interface CurrentTrainingState {
-    round: Round;
-    roundIdx: number;
-    action: StopwatchAction;
-    actionIdx: number;
-    class: string;
-    roundDuration: number;
-    totalDuration: number;
-}
-
 export interface StopwatchState {
     timer: string;
     state: StopWatchPerformState;
@@ -47,18 +37,13 @@ export interface StopwatchState {
     roundTotal: number;
     actionIdx: number;
     actionTotal: number;
+    round: Round,
+    action: StopwatchAction,
+    roundDuration: number,
+    totalDuration: number
 }
 
 
-
-// export interface StopwatchState {
-//     timer: string;
-//     state: StopWatchPerformState;
-//     timerCls: string;
-//     progress: number;
-//     roundProgress: number;
-//     trainingProgress: number;
-// }
 
 interface CurrentStateControls {
     startBtnCls: string;
@@ -69,23 +54,60 @@ interface CurrentStateControls {
     pauseBtnIcon: string;
 }
 
-const defaultCurrent: CurrentTrainingState = {
-    round: undefined,
-    roundIdx: -1,
-    actionIdx: -1,
-    action: undefined,
-    class: "",
-    roundDuration: 0,
-    totalDuration: 0
-}
 
 export function PerfromTraining() {
     const [state, setState] = React.useState<PerfromTrainingState>({
         training: undefined
     })
 
+    const [isLoading, setIsLoading] = useIsLoading(false);
+
+    const { id } = useParams();
+
+    function onGetTraining(training: Training) {
+        let validation = new CompleteTrainingValidator().validate(training);
+        if (!validation.status) {
+            showMessage("Incorrect training", `Training is not correct: ${validation.errors.join(", ")}`)
+            return;
+        }
+        setIsLoading(false);
+        setState({
+            training: training
+        })
+    }
+
+    React.useEffect(() => {
+        setPageTitle("Perform training");
+
+        const getTrainingSubscription = window.$flow.subscribe("GET_TRAINING", { finish: onGetTraining })
+
+        if (id > -1) {
+            setIsLoading(true);
+            window.$flow.perform("GET_TRAINING", id)
+
+        }
+        return () => {
+            window.$flow.unsubscribe("GET_TRAINING", getTrainingSubscription.id)
+
+
+        }
+    }, [id])
+    return (<>
+        {isLoading ? <div className="cui-height-1-1 cui-flex-center">Loading...</div> : (
+            !state.training ? <NotFound message="We couldn't find training" classes="cui-height-1-1 cui-flex-center" /> :
+                <PerformTrainingElement training={state.training} />
+        )}
+    </>);
+}
+
+
+export interface PerformTrainingElementProps {
+    training: Training;
+}
+
+export function PerformTrainingElement(props: PerformTrainingElementProps) {
+
     const [stopwatch, setStopwatch] = React.useState<StopWatch>(undefined)
-    const [current, setCurrent] = React.useState<CurrentTrainingState>(defaultCurrent)
 
     const [watchState, setWatchState] = React.useState<StopwatchState>({
         timer: "-",
@@ -97,10 +119,12 @@ export function PerfromTraining() {
         roundIdx: 0,
         roundTotal: 0,
         actionIdx: 0,
-        actionTotal: 0
+        actionTotal: 0,
+        roundDuration: 0,
+        totalDuration: 0,
+        action: undefined,
+        round: undefined,
     })
-
-
 
     const [currentPlayStateControls, setCurrentPlayStateControls] = React.useState<CurrentStateControls>({
         startBtnText: "Start",
@@ -115,12 +139,10 @@ export function PerfromTraining() {
     const [settings, setSettings] = useSettings();
 
     const [errorMessage, setErrorMessage] = React.useState("");
-    const { id } = useParams();
 
-    const currentRef = React.useRef(current);
-    currentRef.current = current;
-    const trainingRef = React.useRef(state.training);
-    trainingRef.current = state.training;
+
+    const trainingRef = React.useRef(props.training);
+    trainingRef.current = props.training;
     const watchStateRef = React.useRef(watchState);
     watchStateRef.current = watchState;
     const settingsRef = React.useRef(settings);
@@ -137,88 +159,59 @@ export function PerfromTraining() {
 
     const isFullscreen = useIsFullscreen(mainViewRef.current);
 
-    function onGetTraining(training: Training) {
-        let validation = new CompleteTrainingValidator().validate(training);
-        if (!validation.status) {
-            showMessage("Incorrect training", `Training is not correct: ${validation.errors.join(", ")}`)
-            return;
-        }
-        setPageTitle(training.name);
-        setNavbarTitle(training.name)
-        setState({
-            ...state,
-            training: training
-        })
-        setDefaultCurrentState(training);
-        setWatchState({
-            ...watchState,
-            roundTotal: training.rounds.length,
-            actionTotal: training.rounds[0].actions.length,
-        })
-    }
-
-
-    function setDefaultCurrentState(training: Training) {
+    function setDefaultWatchState(training: Training) {
         let round = training.rounds[0];
         let action = round.actions[0];
-        setCurrent({
-            roundIdx: 0,
+        setWatchState({
+            ...watchState,
             round: round,
-            action: action,
-            actionIdx: 0,
-            class: getClassByType(action.type),
+            roundIdx: 0,
+            roundTotal: training.rounds.length,
             roundDuration: calculateDuration(round.actions),
+            actionIdx: 0,
+            action: action,
+            actionTotal: round.actions.length,
             totalDuration: getTotalDuration(training)[1]
         })
     }
 
     function setNextAction(): boolean {
-        let nextActionIdx = currentRef.current.actionIdx + 1;
-        if (currentRef.current.round.actions.length > nextActionIdx) {
-            let newAction = currentRef.current.round.actions[nextActionIdx]
-            setCurrent({
-                ...currentRef.current,
-                actionIdx: nextActionIdx,
-                action: newAction,
-                class: getClassByType(newAction.type)
-            })
+        let nextActionIdx = watchStateRef.current.actionIdx + 1;
+        if (watchStateRef.current.round.actions.length > nextActionIdx) {
+            let newAction = watchStateRef.current.round.actions[nextActionIdx]
             setWatchState({
                 ...watchStateRef.current,
-                actionIdx: nextActionIdx
+                actionIdx: nextActionIdx,
+                action: newAction,
             })
             return true;
         }
-        let nextRoundIdx = currentRef.current.roundIdx + 1;
+        let nextRoundIdx = watchStateRef.current.roundIdx + 1;
         if (trainingRef.current.rounds.length > nextRoundIdx) {
             let newRound = trainingRef.current.rounds[nextRoundIdx];
             let newAction = newRound.actions[0];
-            setCurrent({
-                ...currentRef.current,
-                round: newRound,
-                roundIdx: nextRoundIdx,
-                actionIdx: 0,
-                action: newAction,
-                class: getClassByType(newAction.type),
-                roundDuration: calculateDuration(newRound.actions),
-            })
+
             setWatchState({
                 ...watchStateRef.current,
-                roundIdx: nextRoundIdx,
+                actionIdx: 0,
+                action: newAction,
                 actionTotal: newRound.actions.length,
-                actionIdx: 0
+                round: newRound,
+                roundIdx: nextRoundIdx,
+                roundDuration: calculateDuration(newRound.actions),
             })
             return true;
         }
-        setDefaultCurrentState(trainingRef.current);
+        setDefaultWatchState(trainingRef.current);
         return false;
     }
 
     function onStopwatchTick(currentTime: number, total: number, stopwatch: StopWatch): boolean {
-        let actionDuration = parseInt(currentRef.current.action.duration)
+        let actionDuration = parseInt(watchStateRef.current.action.duration)//parseInt(currentRef.current.action.duration)
         let ct = actionDuration - currentTime;
         let progress = calculateProgress(currentTime, actionDuration)
         if (currentTime === 0) {
-            playSound(currentRef.current.action.type);
+            playSound(watchStateRef.current.action.type);
         }
         if (ct > 0) {
             // Normal tick
@@ -254,7 +247,7 @@ export function PerfromTraining() {
         if (watchState.state === StopWatchStateOptions.STOPPED && stopwatch.start()) {
             updateStopWatchState(StopWatchStateOptions.RUNNING);
         } else if (watchState.state !== StopWatchStateOptions.STOPPED && stopwatch.stop()) {
-            setDefaultCurrentState(state.training);
+            setDefaultWatchState(props.training);
             updateStopWatchState(StopWatchStateOptions.STOPPED, { time: 0, progress: 100, ct: 0, total: 0 });
 
         }
@@ -291,8 +284,8 @@ export function PerfromTraining() {
     }
 
     function calculateRoundCurrentTime(ct: number) {
-        return currentRef.current.round.actions.reduce<number>((result: number, act: StopwatchAction, idx: number) => {
-            if (idx < currentRef.current.actionIdx) {
+        return watchStateRef.current.round.actions.reduce<number>((result: number, act: StopwatchAction, idx: number) => {
+            if (idx < watchStateRef.current.actionIdx) {
                 return result + parseInt(act.duration);
             }
             return result;
@@ -300,11 +293,11 @@ export function PerfromTraining() {
     }
 
     function calculateRoundProgress(ct: number) {
-        return 100 - calculateProgress(calculateRoundCurrentTime(ct), currentRef.current.roundDuration);
+        return 100 - calculateProgress(calculateRoundCurrentTime(ct), watchStateRef.current.roundDuration);
     }
 
     function calculateTrainingProgress(ct: number) {
-        return 100 - calculateProgress(ct, currentRef.current.totalDuration);
+        return 100 - calculateProgress(ct, watchStateRef.current.totalDuration);
     }
 
     function playSound(type: string) {
@@ -395,72 +388,110 @@ export function PerfromTraining() {
 
     React.useEffect(() => {
         setPageTitle("Perform training");
-
-        const getTrainingSubscription = window.$flow.subscribe("GET_TRAINING", { finish: onGetTraining })
-
         const wakeLock = new KeepScreenAwakeFeature();
-        try {
-            wakeLock.activate();
-        } catch (e) {
-            setErrorMessage("We could not activate feature to keep your device's screen awake during training performance")
-        }
-        let stop = new StopWatch();
-        stop.onTick(onStopwatchTick);
-        setStopwatch(stop);
-        if (id > -1) {
-            window.$flow.perform("GET_TRAINING", id)
+        if (props.training) {
+            setPageTitle(props.training.name);
+            setNavbarTitle(props.training.name)
+            setDefaultWatchState(props.training);
 
+            try {
+                wakeLock.activate();
+            } catch (e) {
+                setErrorMessage("We could not activate feature to keep your device's screen awake during training performance")
+            }
+            let stop = new StopWatch();
+            stop.onTick(onStopwatchTick);
+            setStopwatch(stop);
         }
+
         return () => {
-            window.$flow.unsubscribe("GET_TRAINING", getTrainingSubscription.id)
             if (stopwatch) {
                 stopwatch.stop();
             }
             wakeLock.release();
         }
-    }, [id, settings.soundEnabled])
-    return (<>
-        {!state.training ?
-            <NotFound message="We couldn't find training" /> :
-            <div className="stopwatch-layout-content  cui-background-default" ref={mainViewRef}>
-                <div className={"cui-height-1-1 cui-overflow-y-auto cui-flex cui-center cui-middle " + getBackgroundClass(current.action)} >
-                    <div className="stopwatch-content-width perform-layout cui-text-center animation-fade-in ">
-                        <div className="perform-main-controls">
-                            <p className="cui-margin-remove">{state?.training?.rounds[current.roundIdx]?.name}</p>
-                            <p className="cui-text-muted cui-text-small cui-margin-remove">Round {current.roundIdx + 1} of {state.training.rounds.length}</p>
-                            <div className="cui-flex-center">
-                                {settings.simpleView ? <SimpleCountDownTimer actionIdx={current.actionIdx} watchState={watchState} /> : <CountDownTimer actionIdx={current.actionIdx} watchState={watchState} />}
-                            </div>
-                        </div>
-                        <div className="perform-buttons">
-                            <div className="cui-width-1-1">
-                                <h3 className={"cui-h3 " + current.class}>{current.action && current.action.name}</h3>
-                                <div className="cui-flex cui-center">
-                                    {currentPlayStateControls.isPauseVisible && <IconButton icon={currentPlayStateControls.pauseBtnIcon} label={currentPlayStateControls.pauseBtnText} onClick={onPauseClick} modifiers="cui-margin-small-right" />}
-                                    <IconButton icon={currentPlayStateControls.startBtnIcon} label={currentPlayStateControls.startBtnText} onClick={onStartClick} modifiers={currentPlayStateControls.startBtnCls} />
-                                </div>
-                                <p className="cui-text-muted">{state.training.description}</p>
-                                <div className="">
-                                    {is(errorMessage) && <span className="cui-icon cui-error cui-tooltip" cui-icon="ban" data-tooltip={errorMessage}></span>}
-                                    <a className="cui-icon-button cui-default" cui-icon={settings.soundEnabled ? "speaker" : "volume_muted"} onClick={() => {
-                                        setSettings({
-                                            ...settings,
-                                            soundEnabled: !settings.soundEnabled
-                                        })
-                                    }}></a>
-                                    <a className="cui-icon-button cui-default cui-margin-small-left" cui-icon={isFullscreen ? "shrink" : "expand"} onClick={onFullScreen}></a>
-                                </div>
-                            </div>
-                        </div>
+    }, [props.training, settings.soundEnabled])
+    return (<div className="stopwatch-layout-content cui-background-default" ref={mainViewRef}>
+        <div className={"cui-height-1-1 cui-overflow-y-auto cui-flex cui-center cui-middle " + getBackgroundClass(watchState.action)} >
+            <div className="stopwatch-content-width perform-layout cui-text-center animation-fade-in">
+                <div className="perform-main-controls">
+                    <p className="cui-margin-remove">{watchState.round?.name}</p>
+                    <p className="cui-text-muted cui-text-small cui-margin-remove">Round {watchState.roundIdx + 1} of {watchState.roundTotal}</p>
+                    <div className="cui-flex-center">
+                        {settings.simpleView ? <SimpleCountDownTimer actionIdx={watchState.actionIdx} watchState={watchState} /> : <CountDownTimer actionIdx={watchState.actionIdx} watchState={watchState} />}
                     </div>
-                    <audio ref={countdownSound} id="stopwatch-countdown" src="/static/audio/stopwatch_countdown.mp3" />
-                    <audio ref={exerciseSound} id="stopwatch-exercise" src="/static/audio/stopwatch_exercise.mp3" />
-                    <audio ref={warmupSound} id="stopwatch-warmup" src="/static/audio/stopwatch_warmup.mp3" />
-                    <audio ref={breakSound} id="stopwatch-break" src="/static/audio/stopwatch_break.mp3" />
-                    <audio ref={cooldownSound} id="stopwatch-cooldown" src="/static/audio/stopwatch_cooldown.mp3" />
-                    <audio ref={endSound} id="stopwatch-cooldown" src="/static/audio/stopwatch_end.mp3" />
+                </div>
+                <div className="perform-buttons">
+                    <div className="cui-width-1-1">
+                        <h3 className={"cui-h3 "}>{watchState.action?.name}</h3>
+                        <p className="cui-text-muted">{props.training?.description}</p>
+                    </div>
                 </div>
             </div>
-        }
-    </>);
+            {/* Show button bar */}
+            <div className="cui-position-float cui-position-bottom cui-position-center training-control-btns app-float-bottom cui-flex cui-center cui-middle cui-background-shade cui-corner-circle">
+                <a className="cui-icon-button cui-default cui-margin-small-right" cui-icon={settings.soundEnabled ? "speaker" : "volume_muted"} onClick={() => {
+                    setSettings({
+                        ...settings,
+                        soundEnabled: !settings.soundEnabled
+                    })
+                }}></a>
+                {currentPlayStateControls.isPauseVisible && <IconButton icon={currentPlayStateControls.pauseBtnIcon} onClick={onPauseClick} modifiers="cui-margin-small-right cui-large cui-default" />}
+                <IconButton icon={currentPlayStateControls.startBtnIcon} onClick={onStartClick} modifiers={"cui-large " + currentPlayStateControls.startBtnCls} />
+                <a className="cui-icon-button cui-default cui-margin-small-left" cui-icon={isFullscreen ? "shrink" : "expand"} onClick={onFullScreen}></a>
+            </div>
+            {/* Show error message */}
+            {is(errorMessage) &&
+                <div className="cui-position-float cui-position-bottom cui-position-right app-float-bottom cui-margin-right"><span className="cui-icon cui-error cui-tooltip" cui-icon="ban" cui-tooltip={errorMessage}></span></div>}
+            <audio ref={countdownSound} id="stopwatch-countdown" src="/static/audio/stopwatch_countdown.mp3" />
+            <audio ref={exerciseSound} id="stopwatch-exercise" src="/static/audio/stopwatch_exercise.mp3" />
+            <audio ref={warmupSound} id="stopwatch-warmup" src="/static/audio/stopwatch_warmup.mp3" />
+            <audio ref={breakSound} id="stopwatch-break" src="/static/audio/stopwatch_break.mp3" />
+            <audio ref={cooldownSound} id="stopwatch-cooldown" src="/static/audio/stopwatch_cooldown.mp3" />
+            <audio ref={endSound} id="stopwatch-cooldown" src="/static/audio/stopwatch_end.mp3" />
+        </div>
+    </div>);
 }
+
+
+/*
+<div className="stopwatch-layout-content cui-background-default" ref={mainViewRef}>
+        <div className={"cui-height-1-1 cui-overflow-y-auto cui-flex cui-center cui-middle " + getBackgroundClass(watchState.action)} >
+            <div className="stopwatch-content-width perform-layout cui-text-center animation-fade-in">
+                <div className="perform-main-controls">
+                    <p className="cui-margin-remove">{watchState.round?.name}</p>
+                    <p className="cui-text-muted cui-text-small cui-margin-remove">Round {watchState.roundIdx + 1} of {watchState.roundTotal}</p>
+                    <div className="cui-flex-center">
+                        {settings.simpleView ? <SimpleCountDownTimer actionIdx={watchState.actionIdx} watchState={watchState} /> : <CountDownTimer actionIdx={watchState.actionIdx} watchState={watchState} />}
+                    </div>
+                </div>
+                <div className="perform-buttons">
+                    <div className="cui-width-1-1">
+                        <h3 className={"cui-h3 "}>{watchState.action?.name}</h3>
+                        <div className="cui-flex cui-center">
+                            {currentPlayStateControls.isPauseVisible && <IconButton icon={currentPlayStateControls.pauseBtnIcon} onClick={onPauseClick} modifiers="cui-margin-small-right cui-large cui-default" />}
+                            <IconButton icon={currentPlayStateControls.startBtnIcon} onClick={onStartClick} modifiers={"cui-large " + currentPlayStateControls.startBtnCls} />
+                        </div>
+                        <p className="cui-text-muted">{props.training?.description}</p>
+                        <div className="">
+                            {is(errorMessage) && <span className="cui-icon cui-error cui-tooltip" cui-icon="ban" data-tooltip={errorMessage}></span>}
+                            <a className="cui-icon-button cui-default" cui-icon={settings.soundEnabled ? "speaker" : "volume_muted"} onClick={() => {
+                                setSettings({
+                                    ...settings,
+                                    soundEnabled: !settings.soundEnabled
+                                })
+                            }}></a>
+                            <a className="cui-icon-button cui-default cui-margin-small-left" cui-icon={isFullscreen ? "shrink" : "expand"} onClick={onFullScreen}></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <audio ref={countdownSound} id="stopwatch-countdown" src="/static/audio/stopwatch_countdown.mp3" />
+            <audio ref={exerciseSound} id="stopwatch-exercise" src="/static/audio/stopwatch_exercise.mp3" />
+            <audio ref={warmupSound} id="stopwatch-warmup" src="/static/audio/stopwatch_warmup.mp3" />
+            <audio ref={breakSound} id="stopwatch-break" src="/static/audio/stopwatch_break.mp3" />
+            <audio ref={cooldownSound} id="stopwatch-cooldown" src="/static/audio/stopwatch_cooldown.mp3" />
+            <audio ref={endSound} id="stopwatch-cooldown" src="/static/audio/stopwatch_end.mp3" />
+        </div>
+    </div>
+*/

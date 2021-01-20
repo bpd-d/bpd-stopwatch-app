@@ -320,6 +320,17 @@ $countdown-stroke-width : 6px;
         height  : 1px;
     }
 
+    .training-control-btns {
+        //margin-bottom: calc(#{$footer-height} + #{variables.$margin-global});
+        width  : 240px;
+        padding: variables.$padding-global-small;
+
+    }
+
+    .app-float-bottom {
+        margin-bottom: calc(#{$footer-height} + #{variables.$margin-global});
+    }
+
     .edit-container {
         display       : flex;
         flex-direction: column;

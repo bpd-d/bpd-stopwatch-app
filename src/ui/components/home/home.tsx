@@ -92,7 +92,7 @@ export class Home extends React.Component<any, HomeState> {
                     {this.state.list.length > 0 ? <TrainingList list={this.state.list} onDelete={this.deleteTraining} /> : <NoTrainings />}
                 </div>
             </div>
-            <div className="cui-position-float cui-position-bottom cui-position-center cui-margin-large-bottom z-index-100">
+            <div className="cui-position-float cui-position-bottom cui-position-center cui-margin-large-bottom app-float-bottom z-index-100">
                 <Link to={MAPPIGNS.renderUrl("newTraining")} className="cui-icon-button cui-large cui-background-default cui-box-shadow" cui-icon="plus"></Link>
             </div>
         </div>;

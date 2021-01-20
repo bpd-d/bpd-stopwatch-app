@@ -1,3 +1,4 @@
+import { is } from 'bpd-toolkit/dist/esm/index'
 import * as React from 'react'
 
 export function useResize(element: Element | Window, callback: (element: Element | Window) => void) {
@@ -24,14 +25,18 @@ export function useResize(element: Element | Window, callback: (element: Element
 
 export function useIsFullscreen(element: Element) {
     const resizeEl = useResize(element, onResize)
-    const [isFullscreen, setIsFullscreen] = React.useState(isElementFullscreen());
+    const [isFullscreen, setIsFullscreen] = React.useState(isElementFullscreen(element));
 
     function onResize(element: Element) {
-        setIsFullscreen(isElementFullscreen())
+        if (is(element))
+            setIsFullscreen(isElementFullscreen(element))
     }
 
-    function isElementFullscreen() {
-        return element && element.clientHeight >= (screen.availHeight || screen.height - 30) && element.clientWidth >= (screen.availWidth || screen.width - 30)
+    function isElementFullscreen(element: Element) {
+        if (!is(element)) {
+            return false;
+        }
+        return element && element.clientHeight >= ((screen.availHeight || screen.height) - 30) && element.clientWidth >= ((screen.availWidth || screen.width) - 30)
     }
 
     React.useEffect(() => { }, [isFullscreen])
