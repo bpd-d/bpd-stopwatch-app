@@ -7,6 +7,8 @@ $countdown-stroke-width : 6px;
 @use "../node_modules/cui-styles/styles/mixins"as mixins;
 @use "../node_modules/cui-styles/styles/build"as build;
 
+@use "perform_button_bar"as perform;
+
 @include build.wrapper() {
 
     #root {
@@ -320,13 +322,6 @@ $countdown-stroke-width : 6px;
         height  : 1px;
     }
 
-    .training-control-btns {
-        //margin-bottom: calc(#{$footer-height} + #{variables.$margin-global});
-        width  : 240px;
-        padding: variables.$padding-global-small;
-
-    }
-
     .app-float-bottom {
         margin-bottom: calc(#{$footer-height} + #{variables.$margin-global});
     }
@@ -588,5 +583,7 @@ $countdown-stroke-width : 6px;
             -webkit-text-fill-color: transparent;
         }
     }
+
+    @include perform.definition();
 
 }

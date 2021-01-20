@@ -26,6 +26,7 @@ export function CountDownTimer(props: CountDownTimerProps) {
 export function NewCountDownTimer(props: CountDownTimerProps) {
     return (
         <div>
+
             <div className="cui-flex-center">
                 <progress className="cui-progress cui-small cui-success width-100" value={props.watchState.trainingProgress} max="100"></progress>
             </div>
@@ -42,8 +43,11 @@ export function NewCountDownTimer(props: CountDownTimerProps) {
 export function SimpleCountDownTimer(props: CountDownTimerProps) {
     return (
         <div>
+            <p className="cui-margin-remove">{props.watchState.round?.name}</p>
+            <p className="cui-text-muted cui-text-small cui-margin-remove">Round {props.watchState.roundIdx + 1} of {props.watchState.roundTotal}</p>
             <span className="cui-block cui-text-small">{props.actionIdx + 1}</span>
             <h1 className={"cui-h1 cui-margin-remove countdown-timer-size " + props.watchState.timerCls}>{props.watchState.timer}</h1>
+            <h3 className={"cui-h3 "}>{props.watchState.action?.name}</h3>
         </div>
     );
 }
