@@ -110,7 +110,7 @@ export function getBgClassByType(type: string) {
     return "action-background-" + type;
 }
 
-export function getClassByType(type: string) {
+export function getTextClassByActionType(type: string) {
     switch (type) {
         case 'warmup':
             return "cui-text-success";
@@ -213,4 +213,14 @@ export function setPageTitle(text: string): void {
 
 export function setNavbarTitle(text: string): void {
     window.$push.perform(PUSH_ACTIONS.SET_NAVBAR_TITLE, text);
+}
+
+export function createArray<T>(t: T | T[] | undefined): T[] {
+    if (!t) {
+        return []
+    }
+    if (Array.isArray(t)) {
+        return t;
+    }
+    return [t];
 }

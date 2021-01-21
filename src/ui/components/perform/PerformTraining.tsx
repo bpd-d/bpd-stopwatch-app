@@ -4,7 +4,7 @@ import { PUSH_ACTIONS } from '../../../app/push/push';
 import { closeFullscreen, is, openFullscreen } from '../../../../node_modules/bpd-toolkit/dist/esm/index';
 import { KeepScreenAwakeFeature } from '../../../api/screen/screen';
 import { StopWatch, StopWatchPerformState, StopWatchStateOptions } from '../../../api/stopwatch/stopwatch';
-import { calcDisplayTimer, calculateDuration, calculateProgress, getBgClassByType, getTotalDuration, showMessage, getClassByType, setPageTitle, setNavbarTitle } from '../../../core/helpers';
+import { calcDisplayTimer, calculateDuration, calculateProgress, getBgClassByType, getTotalDuration, showMessage, getTextClassByActionType, setPageTitle, setNavbarTitle } from '../../../core/helpers';
 import { Round, StopwatchAction, Training } from '../../../core/models';
 import { CompleteTrainingValidator } from '../../../core/validators';
 import { NotFound } from '../common/NotFound';
@@ -13,6 +13,8 @@ import { useSettings } from '../../../ui/hooks/settings';
 import { useIsFullscreen } from '../../../ui/hooks/useResize';
 import { IconButton } from '../common/IconButton';
 import { useIsLoading } from '../../../ui/hooks/loading';
+import { TrainingSoundPlayer, TrainingSoundPlayerItemProps } from './TrainingSoundPlayer';
+import { useStopwatch2 } from './hook';
 ;
 
 interface TimeStateData {
@@ -107,7 +109,51 @@ export interface PerformTrainingElementProps {
 
 export function PerformTrainingElement(props: PerformTrainingElementProps) {
 
-    const [stopwatch, setStopwatch] = React.useState<StopWatch>(undefined)
+    const [errorMessage, setErrorMessage] = React.useState("");
+
+
+    function callError(message: string) {
+        setErrorMessage(message);
+    }
+
+    React.useEffect(() => {
+        setPageTitle("Perform training");
+        const wakeLock = new KeepScreenAwakeFeature();
+        if (props.training) {
+            setPageTitle(props.training.name);
+            setNavbarTitle(props.training.name);
+            try {
+                wakeLock.activate();
+            } catch (e) {
+                setErrorMessage("We could not activate feature to keep your device's screen awake during training performance")
+            }
+
+        }
+
+        return () => {
+            wakeLock.release();
+        }
+    }, [props.training])
+    return (<>
+        <TrainingSoundPlayer>
+            <TrainingPerformer key={props.training?.id} callError={callError} training={props.training} />
+        </TrainingSoundPlayer>
+        {
+            is(errorMessage) &&
+            <div className="cui-position-float cui-position-bottom cui-position-right app-float-bottom cui-margin-right"><span className="cui-icon cui-error cui-tooltip" cui-icon="ban" cui-tooltip={errorMessage}></span></div>
+        }
+    </>
+    );
+}
+
+export interface TrainingPerformerProps {
+    callError: (error: string) => void;
+    training: Training;
+}
+
+export function TrainingPerformer(props: TrainingPerformerProps & TrainingSoundPlayerItemProps) {
+
+    const [stopwatch, setOnTick] = useStopwatch2();
 
     const [watchState, setWatchState] = React.useState<StopwatchState>({
         timer: "-",
@@ -126,35 +172,16 @@ export function PerformTrainingElement(props: PerformTrainingElementProps) {
         round: undefined,
     })
 
-    const [currentPlayStateControls, setCurrentPlayStateControls] = React.useState<CurrentStateControls>({
-        startBtnText: "Start",
-        startBtnCls: "cui-accent",
-        pauseBtnText: "Pause",
-        isPauseVisible: false,
-        startBtnIcon: "media_play",
-        pauseBtnIcon: "media_pause"
-    })
-
-
     const [settings, setSettings] = useSettings();
 
-    const [errorMessage, setErrorMessage] = React.useState("");
 
-
-    const trainingRef = React.useRef(props.training);
-    trainingRef.current = props.training;
+    const stopWatchRef = React.useRef(stopwatch);
+    stopWatchRef.current = stopwatch;
     const watchStateRef = React.useRef(watchState);
     watchStateRef.current = watchState;
     const settingsRef = React.useRef(settings);
     settingsRef.current = settings;
 
-
-    const countdownSound = React.useRef(null);
-    const exerciseSound = React.useRef(null);
-    const warmupSound = React.useRef(null);
-    const breakSound = React.useRef(null);
-    const cooldownSound = React.useRef(null);
-    const endSound = React.useRef(null);
     const mainViewRef = React.useRef(null);
 
     const isFullscreen = useIsFullscreen(mainViewRef.current);
@@ -187,8 +214,8 @@ export function PerformTrainingElement(props: PerformTrainingElementProps) {
             return true;
         }
         let nextRoundIdx = watchStateRef.current.roundIdx + 1;
-        if (trainingRef.current.rounds.length > nextRoundIdx) {
-            let newRound = trainingRef.current.rounds[nextRoundIdx];
+        if (props.training.rounds.length > nextRoundIdx) {
+            let newRound = props.training.rounds[nextRoundIdx];
             let newAction = newRound.actions[0];
 
             setWatchState({
@@ -202,7 +229,7 @@ export function PerformTrainingElement(props: PerformTrainingElementProps) {
             })
             return true;
         }
-        setDefaultWatchState(trainingRef.current);
+        setDefaultWatchState(props.training);
         return false;
     }
 
@@ -238,9 +265,17 @@ export function PerformTrainingElement(props: PerformTrainingElementProps) {
             }
             playSound("countdown");
             updateStopWatchState(StopWatchStateOptions.RUNNING, { time: 0, progress: 0, ct: ct, total: total })
-            stopwatch.reset();
+            stopWatchRef.current.reset();
             return true;
         }
+    }
+
+    function playSound(name: string) {
+        if (!settingsRef.current.soundEnabled || !props.playSound || !is(name)) {
+            return
+        }
+
+        props.playSound(name);
     }
 
     function onStartClick() {
@@ -280,7 +315,6 @@ export function PerformTrainingElement(props: PerformTrainingElementProps) {
                 trainingProgress: trainginProgress
             })
         }
-        updatePlayStateControls(watchstate);
     }
 
     function calculateRoundCurrentTime(ct: number) {
@@ -300,76 +334,8 @@ export function PerformTrainingElement(props: PerformTrainingElementProps) {
         return 100 - calculateProgress(ct, watchStateRef.current.totalDuration);
     }
 
-    function playSound(type: string) {
-        if (!settingsRef.current.soundEnabled) {
-            return
-        }
-        let element = undefined;
-        switch (type) {
-            case "countdown":
-                element = countdownSound.current;
-                break;
-            case "end":
-                element = endSound.current;
-                break;
-            case "exercise":
-                element = exerciseSound.current;
-                break;
-            case "warmup":
-                element = warmupSound.current;
-                break;
-            case "break":
-                element = breakSound.current;
-                break;
-            case "cooldown":
-                element = cooldownSound.current;
-                break;
-
-        }
-        if (element) {
-            element.currentTime = 0;
-            element.play();
-        }
-    }
-
     function getTimerCls(timer: number, state: StopWatchPerformState): string {
         return state === StopWatchStateOptions.RUNNING && timer >= 0 && timer < 3 ? "cui-text-warning timer-blink-animation" : "";
-    }
-
-    function updatePlayStateControls(state: StopWatchPerformState) {
-        switch (state) {
-            case StopWatchStateOptions.RUNNING:
-                setCurrentPlayStateControls({
-                    startBtnCls: "cui-error",
-                    startBtnIcon: "media_stop",
-                    startBtnText: "Stop",
-                    isPauseVisible: true,
-                    pauseBtnIcon: "media_pause",
-                    pauseBtnText: "Pause"
-                })
-                break;
-            case StopWatchStateOptions.PAUSED:
-                setCurrentPlayStateControls({
-                    startBtnCls: "cui-error",
-                    startBtnIcon: "media_stop",
-                    startBtnText: "Stop",
-                    isPauseVisible: true,
-                    pauseBtnIcon: "media_play",
-                    pauseBtnText: "Resume"
-                })
-                break;
-            case StopWatchStateOptions.STOPPED:
-                setCurrentPlayStateControls({
-                    startBtnCls: "cui-accent",
-                    startBtnIcon: "media_play",
-                    startBtnText: "Start",
-                    isPauseVisible: false,
-                    pauseBtnIcon: "media_pause",
-                    pauseBtnText: "Pause"
-                })
-                break;
-        }
-
     }
 
     function getBackgroundClass(action: StopwatchAction) {
@@ -386,100 +352,109 @@ export function PerformTrainingElement(props: PerformTrainingElementProps) {
         openFullscreen(mainViewRef.current);
     }
 
-    React.useEffect(() => {
-        setPageTitle("Perform training");
-        const wakeLock = new KeepScreenAwakeFeature();
-        if (props.training) {
-            setPageTitle(props.training.name);
-            setNavbarTitle(props.training.name)
-            setDefaultWatchState(props.training);
 
-            try {
-                wakeLock.activate();
-            } catch (e) {
-                setErrorMessage("We could not activate feature to keep your device's screen awake during training performance")
-            }
-            let stop = new StopWatch();
-            stop.onTick(onStopwatchTick);
-            setStopwatch(stop);
+    React.useEffect(() => {
+
+        if (props.training) {
+            setDefaultWatchState(props.training);
+            setOnTick(onStopwatchTick);
         }
 
         return () => {
-            if (stopwatch) {
-                stopwatch.stop();
+            if (stopWatchRef.current) {
+                stopWatchRef.current.stop();
             }
-            wakeLock.release();
         }
     }, [props.training, settings.soundEnabled])
+
     return (<div className="stopwatch-layout-content cui-background-default" ref={mainViewRef}>
         <div className={"cui-height-1-1 cui-overflow-y-auto cui-flex cui-center cui-middle " + getBackgroundClass(watchState.action)} >
             <div className="stopwatch-content-width cui-text-center cui-flex-center animation-fade-in">
                 {settings.simpleView ? <SimpleCountDownTimer actionIdx={watchState.actionIdx} watchState={watchState} /> : <CountDownTimer actionIdx={watchState.actionIdx} watchState={watchState} />}
             </div>
         </div>
-        {/* Show button bar */}
-        <div className="training-control-btns">
-            <a className="cui-icon-button cui-default cui-margin-small" cui-icon={settings.soundEnabled ? "speaker" : "volume_muted"} onClick={() => {
+        <PerformerButtonBar playState={watchState.state}
+            soundIcon={settings.soundEnabled ? "speaker" : "volume_muted"}
+            fullscreenIcon={isFullscreen ? "shrink" : "expand"}
+            onFullScreen={onFullScreen}
+            onStartStop={onStartClick}
+            onPauseResume={onPauseClick}
+            onMute={() => {
                 setSettings({
                     ...settings,
                     soundEnabled: !settings.soundEnabled
                 })
-            }}></a>
-            {currentPlayStateControls.isPauseVisible && <IconButton icon={currentPlayStateControls.pauseBtnIcon} onClick={onPauseClick} modifiers="cui-margin-small cui-large cui-default" />}
-            <IconButton icon={currentPlayStateControls.startBtnIcon} onClick={onStartClick} modifiers={"cui-large " + currentPlayStateControls.startBtnCls} />
-            <a className="cui-icon-button cui-default cui-margin-small" cui-icon={isFullscreen ? "shrink" : "expand"} onClick={onFullScreen}></a>
-        </div>
-        {/* Show error message */}
-        {is(errorMessage) &&
-            <div className="cui-position-float cui-position-bottom cui-position-right app-float-bottom cui-margin-right"><span className="cui-icon cui-error cui-tooltip" cui-icon="ban" cui-tooltip={errorMessage}></span></div>}
-        <audio ref={countdownSound} id="stopwatch-countdown" src="/static/audio/stopwatch_countdown.mp3" />
-        <audio ref={exerciseSound} id="stopwatch-exercise" src="/static/audio/stopwatch_exercise.mp3" />
-        <audio ref={warmupSound} id="stopwatch-warmup" src="/static/audio/stopwatch_warmup.mp3" />
-        <audio ref={breakSound} id="stopwatch-break" src="/static/audio/stopwatch_break.mp3" />
-        <audio ref={cooldownSound} id="stopwatch-cooldown" src="/static/audio/stopwatch_cooldown.mp3" />
-        <audio ref={endSound} id="stopwatch-cooldown" src="/static/audio/stopwatch_end.mp3" />
+            }}
+        />
     </div>);
 }
 
 
-/*
-<div className="stopwatch-layout-content cui-background-default" ref={mainViewRef}>
-        <div className={"cui-height-1-1 cui-overflow-y-auto cui-flex cui-center cui-middle " + getBackgroundClass(watchState.action)} >
-            <div className="stopwatch-content-width perform-layout cui-text-center animation-fade-in">
-                <div className="perform-main-controls">
-                    <p className="cui-margin-remove">{watchState.round?.name}</p>
-                    <p className="cui-text-muted cui-text-small cui-margin-remove">Round {watchState.roundIdx + 1} of {watchState.roundTotal}</p>
-                    <div className="cui-flex-center">
-                        {settings.simpleView ? <SimpleCountDownTimer actionIdx={watchState.actionIdx} watchState={watchState} /> : <CountDownTimer actionIdx={watchState.actionIdx} watchState={watchState} />}
-                    </div>
-                </div>
-                <div className="perform-buttons">
-                    <div className="cui-width-1-1">
-                        <h3 className={"cui-h3 "}>{watchState.action?.name}</h3>
-                        <div className="cui-flex cui-center">
-                            {currentPlayStateControls.isPauseVisible && <IconButton icon={currentPlayStateControls.pauseBtnIcon} onClick={onPauseClick} modifiers="cui-margin-small-right cui-large cui-default" />}
-                            <IconButton icon={currentPlayStateControls.startBtnIcon} onClick={onStartClick} modifiers={"cui-large " + currentPlayStateControls.startBtnCls} />
-                        </div>
-                        <p className="cui-text-muted">{props.training?.description}</p>
-                        <div className="">
-                            {is(errorMessage) && <span className="cui-icon cui-error cui-tooltip" cui-icon="ban" data-tooltip={errorMessage}></span>}
-                            <a className="cui-icon-button cui-default" cui-icon={settings.soundEnabled ? "speaker" : "volume_muted"} onClick={() => {
-                                setSettings({
-                                    ...settings,
-                                    soundEnabled: !settings.soundEnabled
-                                })
-                            }}></a>
-                            <a className="cui-icon-button cui-default cui-margin-small-left" cui-icon={isFullscreen ? "shrink" : "expand"} onClick={onFullScreen}></a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <audio ref={countdownSound} id="stopwatch-countdown" src="/static/audio/stopwatch_countdown.mp3" />
-            <audio ref={exerciseSound} id="stopwatch-exercise" src="/static/audio/stopwatch_exercise.mp3" />
-            <audio ref={warmupSound} id="stopwatch-warmup" src="/static/audio/stopwatch_warmup.mp3" />
-            <audio ref={breakSound} id="stopwatch-break" src="/static/audio/stopwatch_break.mp3" />
-            <audio ref={cooldownSound} id="stopwatch-cooldown" src="/static/audio/stopwatch_cooldown.mp3" />
-            <audio ref={endSound} id="stopwatch-cooldown" src="/static/audio/stopwatch_end.mp3" />
-        </div>
-    </div>
-*/
+export interface PerformerButtonBarProps {
+    onFullScreen: () => void;
+    onMute: () => void;
+    onPauseResume: () => void;
+    onStartStop: () => void;
+    playState: StopWatchPerformState;
+    soundIcon: string;
+    fullscreenIcon: string;
+}
+
+export function PerformerButtonBar(props: PerformerButtonBarProps) {
+    const [controls, setControls] = React.useState<CurrentStateControls>({
+        startBtnText: "Start",
+        startBtnCls: "cui-accent",
+        pauseBtnText: "Pause",
+        isPauseVisible: false,
+        startBtnIcon: "media_play",
+        pauseBtnIcon: "media_pause"
+    })
+
+
+    function updatePlayStateControls(state: StopWatchPerformState) {
+        switch (state) {
+            case StopWatchStateOptions.RUNNING:
+                setControls({
+                    startBtnCls: "cui-error",
+                    startBtnIcon: "media_stop",
+                    startBtnText: "Stop",
+                    isPauseVisible: true,
+                    pauseBtnIcon: "media_pause",
+                    pauseBtnText: "Pause"
+                })
+                break;
+            case StopWatchStateOptions.PAUSED:
+                setControls({
+                    startBtnCls: "cui-error",
+                    startBtnIcon: "media_stop",
+                    startBtnText: "Stop",
+                    isPauseVisible: true,
+                    pauseBtnIcon: "media_play",
+                    pauseBtnText: "Resume"
+                })
+                break;
+            case StopWatchStateOptions.STOPPED:
+                setControls({
+                    startBtnCls: "cui-accent",
+                    startBtnIcon: "media_play",
+                    startBtnText: "Start",
+                    isPauseVisible: false,
+                    pauseBtnIcon: "media_pause",
+                    pauseBtnText: "Pause"
+                })
+                break;
+        }
+    }
+
+    React.useEffect(() => {
+        updatePlayStateControls(props.playState);
+        return () => { }
+    }, [props.playState])
+
+    return (<div className="training-control-btns">
+        <a className="cui-icon-button cui-default cui-margin-small" cui-icon={props.soundIcon} onClick={props.onMute}></a>
+        { controls.isPauseVisible && <IconButton icon={controls.pauseBtnIcon} onClick={props.onPauseResume} modifiers="cui-margin-small cui-large cui-default" />}
+        <IconButton icon={controls.startBtnIcon} onClick={props.onStartStop} modifiers={"cui-large cui-fill " + controls.startBtnCls} />
+        <a className="cui-icon-button cui-default cui-margin-small" cui-icon={props.fullscreenIcon} onClick={props.onFullScreen}></a>
+    </div >);
+}

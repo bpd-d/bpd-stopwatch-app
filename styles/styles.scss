@@ -1,22 +1,17 @@
-$prefix                 : 'cui' !default;
-$navbar-height          : 60px;
-$footer-height          : 36px;
-$countdown-stroke-width : 6px;
+$prefix : 'cui' !default;
+@use 'static'as *;
 
 @use "../node_modules/cui-styles/styles/variables"as variables with($prefix : $prefix);
 @use "../node_modules/cui-styles/styles/mixins"as mixins;
 @use "../node_modules/cui-styles/styles/build"as build;
 
 @use "perform_button_bar"as perform;
+@use "./countdown_timers.scss"as timers;
 
 @include build.wrapper() {
 
     #root {
         height: 100vh;
-    }
-
-    .countdown-timer-size {
-        font-size: 72px !important;
     }
 
     .stopwatch-layout-navigation {
@@ -229,89 +224,7 @@ $countdown-stroke-width : 6px;
         position: absolute;
     }
 
-    .total-circle-progress {
-        display : block;
-        position: relative;
-        width   : 178px;
-        height  : 178px;
-
-        svg {
-            position: absolute;
-            width   : 176px;
-            height  : 176px;
-            top     : 0px;
-            left    : 0px;
-
-            path {
-                stroke      : variables.$component-background-success;
-                stroke-width: $countdown-stroke-width;
-            }
-        }
-
-        >div {
-            position : absolute;
-            top      : 50%;
-            left     : 50%;
-            transform: translate(-50%, -50%);
-
-        }
-    }
-
-    .current-circle-progress {
-        display : block;
-        position: relative;
-        width   : 150px;
-        height  : 150px;
-
-        svg {
-            position: absolute;
-            width   : 148px;
-            height  : 148px;
-            top     : 0px;
-            left    : 0px;
-
-            path {
-                stroke      : variables.$component-background-secondary;
-                stroke-width: $countdown-stroke-width;
-            }
-        }
-
-        >div {
-            position : absolute;
-            top      : 50%;
-            left     : 50%;
-            transform: translate(-50%, -50%);
-
-        }
-    }
-
-    .countdown-circle-progress {
-        display : block;
-        position: relative;
-        width   : 128px;
-        height  : 128px;
-
-        svg {
-            position: absolute;
-            width   : 126px;
-            height  : 126px;
-            top     : 0px;
-            left    : 0px;
-
-            path {
-                stroke      : variables.$component-background-accent;
-                stroke-width: $countdown-stroke-width;
-            }
-        }
-
-        >div {
-            position : absolute;
-            top      : 50%;
-            left     : 50%;
-            transform: translate(-50%, -70%);
-
-        }
-    }
+    
 
     .loop-screen {
         display : inline;
@@ -585,5 +498,7 @@ $countdown-stroke-width : 6px;
     }
 
     @include perform.definition();
+    @include timers.definitions();
+
 
 }

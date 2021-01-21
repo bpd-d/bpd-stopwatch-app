@@ -1,0 +1,130 @@
+@use "../node_modules/cui-styles/styles/mixins"as mixins;
+@use "../node_modules/cui-styles/styles/variables"as variables;
+@use 'static'as *;
+
+@mixin simple-countdown {
+    .simple-countdown-timer {
+        .round-name {
+            font-weight: variables.$text-weight-semi-bold !important;
+        }
+
+        .action-name {
+            font-weight: variables.$text-weight-semi-bold !important;
+        }
+
+        .main-timer {
+            font-size: 80px !important;
+        }
+    }
+
+    @include mixins.media-screen-height-max-small {
+        .simple-countdown-timer {
+            .main-timer {
+                font-size: 90px !important;
+            }
+        }
+    }
+}
+
+@mixin rounded-countdown {
+    .rounded-countdown-timer {
+        .total-circle-progress {
+            display : block;
+            position: relative;
+            width   : 178px;
+            height  : 178px;
+
+            svg {
+                position: absolute;
+                width   : 176px;
+                height  : 176px;
+                top     : 0px;
+                left    : 0px;
+
+                path {
+                    stroke      : variables.$component-background-success;
+                    stroke-width: $countdown-stroke-width;
+                }
+            }
+
+            >div {
+                position : absolute;
+                top      : 50%;
+                left     : 50%;
+                transform: translate(-50%, -50%);
+
+            }
+        }
+
+        .current-circle-progress {
+            display : block;
+            position: relative;
+            width   : 150px;
+            height  : 150px;
+
+            svg {
+                position: absolute;
+                width   : 148px;
+                height  : 148px;
+                top     : 0px;
+                left    : 0px;
+
+                path {
+                    stroke      : variables.$component-background-secondary;
+                    stroke-width: $countdown-stroke-width;
+                }
+            }
+
+            >div {
+                position : absolute;
+                top      : 50%;
+                left     : 50%;
+                transform: translate(-50%, -50%);
+
+            }
+        }
+
+        .countdown-circle-progress {
+            display : block;
+            position: relative;
+            width   : 128px;
+            height  : 128px;
+
+            svg {
+                position: absolute;
+                width   : 126px;
+                height  : 126px;
+                top     : 0px;
+                left    : 0px;
+
+                path {
+                    stroke      : variables.$component-background-accent;
+                    stroke-width: $countdown-stroke-width;
+                }
+            }
+
+            >div {
+                position : absolute;
+                top      : 50%;
+                left     : 50%;
+                transform: translate(-50%, -70%);
+
+            }
+        }
+    }
+
+    @include mixins.media-screen-height-max-small {
+        .rounded-countdown-timer {
+            // .main-timer {
+            //     font-size: 90px !important;
+            // }
+        }
+    }
+}
+
+
+@mixin definitions() {
+
+    @include simple-countdown();
+    @include rounded-countdown();
+}

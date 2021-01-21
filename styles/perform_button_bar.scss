@@ -1,41 +1,35 @@
 @use "../node_modules/cui-styles/styles/mixins"as mixins;
 @use "../node_modules/cui-styles/styles/variables"as variables;
+@use 'static'as *;
+
 
 @mixin definition() {
 
     .training-control-btns {
-        margin-bottom    : calc(36px + #{variables.$margin-global});
-        //width          : 240px;
-        padding          : variables.$padding-global-small;
-        position         : fixed;
-        bottom           : 0;
-        left             : 50%;
-        display          : flex;
-        align-items      : center;
-        justify-content  : center;
-        transform        : translateX(-50%);
-        flex-direction   : row;
-        flex-wrap        : nowrap;
+        margin-bottom  : calc(#{$footer-height} + #{variables.$margin-global});
+        padding        : variables.$padding-global-small;
+        position       : fixed;
+        bottom         : 0;
+        left           : 50%;
+        display        : flex;
+        align-items    : center;
+        justify-content: center;
+        transform      : translateX(-50%);
+        flex-direction : row;
+        flex-wrap      : nowrap;
 
     }
 
     @include mixins.media-screen-height-max-small {
         .training-control-btns {
-            //margin-bottom: calc(#{$footer-height} + #{variables.$margin-global});
-            //width          : 240px;
-            // padding        : variables.$padding-global-small;
-            position       : fixed;
-            top            : 50%;
-            bottom         : auto;
-            right          : 0;
-            left           : auto;
-            display        : flex;
-            align-items    : center;
-            justify-content: center;
-            transform      : translate(0, -50%);
-            margin-right   : variables.$margin-global;
-            margin-bottom  : 0px;
-            flex-direction : column;
+            top           : 50%;
+            bottom        : auto;
+            right         : 0;
+            left          : auto;
+            transform     : translate(0, -50%);
+            margin-right  : variables.$margin-global;
+            margin-bottom : 0px;
+            flex-direction: column;
 
         }
     }

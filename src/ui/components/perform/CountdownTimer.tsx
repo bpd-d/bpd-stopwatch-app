@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { getTextClassByActionType } from '../../../core/helpers';
 import { StopwatchState } from './PerformTraining';
 
 export interface CountDownTimerProps {
@@ -7,20 +8,26 @@ export interface CountDownTimerProps {
 }
 
 export function CountDownTimer(props: CountDownTimerProps) {
-    return (<span className="cui-svg total-circle-progress" cui-circle-progress={props.watchState.trainingProgress}>
-        <div className="">
-            <span className="cui-svg current-circle-progress" cui-circle-progress={props.watchState.roundProgress}>
-                <div>
-                    <span className="cui-svg countdown-circle-progress" cui-circle-progress={props.watchState.progress}>
+
+    return (
+        <div className="rounded-countdown-timer">
+            <p className="cui-margin-remove round-name">{props.watchState.round?.name}</p>
+            <span className="cui-block cui-text-muted cui-text-small round-count">Round {props.watchState.roundIdx + 1}/{props.watchState.roundTotal}</span>
+            <span className="cui-svg total-circle-progress" cui-circle-progress={props.watchState.trainingProgress}>
+                <div className="">
+                    <span className="cui-svg current-circle-progress" cui-circle-progress={props.watchState.roundProgress}>
                         <div>
-                            <span className="cui-block cui-text-small">{props.actionIdx + 1}</span>
-                            <h1 className={"cui-h1 cui-margin-remove " + props.watchState.timerCls}>{props.watchState.timer}</h1>
+                            <span className="cui-svg countdown-circle-progress" cui-circle-progress={props.watchState.progress}>
+                                <div>
+                                    <span className="cui-block cui-text-small">{props.actionIdx + 1}</span>
+                                    <h1 className={"cui-h1 cui-margin-remove " + props.watchState.timerCls}>{props.watchState.timer}</h1>
+                                </div>
+                            </span>
                         </div>
                     </span>
                 </div>
             </span>
-        </div>
-    </span>);
+        </div>);
 }
 
 export function NewCountDownTimer(props: CountDownTimerProps) {
@@ -42,12 +49,12 @@ export function NewCountDownTimer(props: CountDownTimerProps) {
 
 export function SimpleCountDownTimer(props: CountDownTimerProps) {
     return (
-        <div>
-            <p className="cui-margin-remove">{props.watchState.round?.name}</p>
-            <p className="cui-text-muted cui-text-small cui-margin-remove">Round {props.watchState.roundIdx + 1} of {props.watchState.roundTotal}</p>
-            <span className="cui-block cui-text-small">{props.actionIdx + 1}</span>
-            <h1 className={"cui-h1 cui-margin-remove countdown-timer-size " + props.watchState.timerCls}>{props.watchState.timer}</h1>
-            <h3 className={"cui-h3 "}>{props.watchState.action?.name}</h3>
+        <div className="simple-countdown-timer">
+            <p className="cui-margin-remove round-name">{props.watchState.round?.name}</p>
+            <span className="cui-block cui-text-muted cui-text-small round-count">Round {props.watchState.roundIdx + 1}/{props.watchState.roundTotal}</span>
+            <h1 className={"cui-h1 cui-margin-remove main-timer " + props.watchState.timerCls}>{props.watchState.timer}</h1>
+            <h3 className={"cui-h2 cui-margin-remove action-name " + getTextClassByActionType(props.watchState.action?.type)}>{props.watchState.action?.name}</h3>
+            <span className="cui-block cui-text-small action-index">Action {props.watchState.actionIdx + 1}/{props.watchState.actionTotal}</span>
         </div>
     );
 }
