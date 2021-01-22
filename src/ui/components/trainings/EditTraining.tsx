@@ -52,7 +52,7 @@ function EditTraining(props: EditTrainingProps) {
             state: TrainingState.NEW
         }
     })
-
+    const [notFound, setNotFound] = React.useState(false);
     const { id } = useParams();
 
 
@@ -92,7 +92,8 @@ function EditTraining(props: EditTrainingProps) {
                 training: { ...training }
             })
         } else {
-            showMessage("Fail", "Training was not found")
+            setNotFound(true);
+            // showMessage("Fail", "Training was not found")
         }
     }
 
@@ -187,8 +188,10 @@ function EditTraining(props: EditTrainingProps) {
 
     if (isLoading) {
         return <Loading />
-    } else if (!state.training) {
+    } else if (notFound) {
         return <NotFound message="The training you looking for could not be found" classes="" />
+    } else if (!state.training) {
+        return <span></span>;
     }
     return (<>
         <div className="edit-container">

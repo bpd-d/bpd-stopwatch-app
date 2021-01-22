@@ -15,6 +15,7 @@ import { TrainingSoundPlayer, TrainingSoundPlayerItemProps } from './TrainingSou
 import { useStopwatch2 } from './hook';
 import { PerformerButtonBar } from './PerformButtonBar';
 import { getCountDownTimer } from './countdown/functions';
+import { Loading } from '../common/Loading';
 ;
 
 interface TimeStateData {
@@ -51,10 +52,14 @@ export function PerfromTraining() {
     })
 
     const [isLoading, setIsLoading] = useIsLoading(false);
+    const [notFound, setNotFound] = React.useState(false);
 
     const { id } = useParams();
 
     function onGetTraining(training: Training) {
+        if (!training) {
+            setNotFound(true);
+        }
         let validation = new CompleteTrainingValidator().validate(training);
         if (!validation.status) {
             showMessage("Incorrect training", `Training is not correct: ${validation.errors.join(", ")}`)
@@ -79,12 +84,15 @@ export function PerfromTraining() {
             window.$flow.unsubscribe("GET_TRAINING", getTrainingSubscription.id)
         }
     }, [id])
-    return (<>
-        {isLoading ? <div className="cui-height-1-1 cui-flex-center">Loading...</div> : (
-            !state.training ? <NotFound message="We couldn't find training" classes="cui-height-1-1 cui-flex-center" /> :
-                <PerformTrainingElement training={state.training} />
-        )}
-    </>);
+
+    if (isLoading) {
+        return <Loading />;
+    } else if (notFound) {
+        return <NotFound message="We couldn't find training" classes="cui-height-1-1 cui-flex-center" />;
+    } else if (!state.training) {
+        return <span></span>;
+    }
+    return (<PerformTrainingElement training={state.training} />);
 }
 
 
