@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { useParams } from 'react-router-dom';
-import { PUSH_ACTIONS } from '../../../app/push/push';
 import { closeFullscreen, is, openFullscreen } from '../../../../node_modules/bpd-toolkit/dist/esm/index';
 import { KeepScreenAwakeFeature } from '../../../api/screen/screen';
 import { StopWatch, StopWatchPerformState, StopWatchStateOptions } from '../../../api/stopwatch/stopwatch';
@@ -8,13 +7,14 @@ import { calcDisplayTimer, calculateDuration, calculateProgress, getBgClassByTyp
 import { Round, StopwatchAction, Training } from '../../../core/models';
 import { CompleteTrainingValidator } from '../../../core/validators';
 import { NotFound } from '../common/NotFound';
-import { CountDownTimer, SimpleCountDownTimer } from './CountDownTimer';
+import { CountDownTimer, SimpleCountDownTimer } from './countdown/CountdownTimers';
 import { useSettings } from '../../../ui/hooks/settings';
 import { useIsFullscreen } from '../../../ui/hooks/useResize';
-import { IconButton } from '../common/IconButton';
 import { useIsLoading } from '../../../ui/hooks/loading';
 import { TrainingSoundPlayer, TrainingSoundPlayerItemProps } from './TrainingSoundPlayer';
 import { useStopwatch2 } from './hook';
+import { PerformerButtonBar } from './PerformButtonBar';
+import { getCountDownTimer } from './countdown/functions';
 ;
 
 interface TimeStateData {
@@ -45,18 +45,6 @@ export interface StopwatchState {
     totalDuration: number
 }
 
-
-
-interface CurrentStateControls {
-    startBtnCls: string;
-    startBtnText: string;
-    isPauseVisible: boolean;
-    pauseBtnText: string;
-    startBtnIcon: string;
-    pauseBtnIcon: string;
-}
-
-
 export function PerfromTraining() {
     const [state, setState] = React.useState<PerfromTrainingState>({
         training: undefined
@@ -86,12 +74,9 @@ export function PerfromTraining() {
         if (id > -1) {
             setIsLoading(true);
             window.$flow.perform("GET_TRAINING", id)
-
         }
         return () => {
             window.$flow.unsubscribe("GET_TRAINING", getTrainingSubscription.id)
-
-
         }
     }, [id])
     return (<>
@@ -110,7 +95,6 @@ export interface PerformTrainingElementProps {
 export function PerformTrainingElement(props: PerformTrainingElementProps) {
 
     const [errorMessage, setErrorMessage] = React.useState("");
-
 
     function callError(message: string) {
         setErrorMessage(message);
@@ -370,7 +354,7 @@ export function TrainingPerformer(props: TrainingPerformerProps & TrainingSoundP
     return (<div className="stopwatch-layout-content cui-background-default" ref={mainViewRef}>
         <div className={"cui-height-1-1 cui-overflow-y-auto cui-flex cui-center cui-middle " + getBackgroundClass(watchState.action)} >
             <div className="stopwatch-content-width cui-text-center cui-flex-center animation-fade-in">
-                {settings.simpleView ? <SimpleCountDownTimer actionIdx={watchState.actionIdx} watchState={watchState} /> : <CountDownTimer actionIdx={watchState.actionIdx} watchState={watchState} />}
+                {getCountDownTimer(settings.countdownView, watchState)}
             </div>
         </div>
         <PerformerButtonBar playState={watchState.state}
@@ -389,72 +373,3 @@ export function TrainingPerformer(props: TrainingPerformerProps & TrainingSoundP
     </div>);
 }
 
-
-export interface PerformerButtonBarProps {
-    onFullScreen: () => void;
-    onMute: () => void;
-    onPauseResume: () => void;
-    onStartStop: () => void;
-    playState: StopWatchPerformState;
-    soundIcon: string;
-    fullscreenIcon: string;
-}
-
-export function PerformerButtonBar(props: PerformerButtonBarProps) {
-    const [controls, setControls] = React.useState<CurrentStateControls>({
-        startBtnText: "Start",
-        startBtnCls: "cui-accent",
-        pauseBtnText: "Pause",
-        isPauseVisible: false,
-        startBtnIcon: "media_play",
-        pauseBtnIcon: "media_pause"
-    })
-
-
-    function updatePlayStateControls(state: StopWatchPerformState) {
-        switch (state) {
-            case StopWatchStateOptions.RUNNING:
-                setControls({
-                    startBtnCls: "cui-error",
-                    startBtnIcon: "media_stop",
-                    startBtnText: "Stop",
-                    isPauseVisible: true,
-                    pauseBtnIcon: "media_pause",
-                    pauseBtnText: "Pause"
-                })
-                break;
-            case StopWatchStateOptions.PAUSED:
-                setControls({
-                    startBtnCls: "cui-error",
-                    startBtnIcon: "media_stop",
-                    startBtnText: "Stop",
-                    isPauseVisible: true,
-                    pauseBtnIcon: "media_play",
-                    pauseBtnText: "Resume"
-                })
-                break;
-            case StopWatchStateOptions.STOPPED:
-                setControls({
-                    startBtnCls: "cui-accent",
-                    startBtnIcon: "media_play",
-                    startBtnText: "Start",
-                    isPauseVisible: false,
-                    pauseBtnIcon: "media_pause",
-                    pauseBtnText: "Pause"
-                })
-                break;
-        }
-    }
-
-    React.useEffect(() => {
-        updatePlayStateControls(props.playState);
-        return () => { }
-    }, [props.playState])
-
-    return (<div className="training-control-btns">
-        <a className="cui-icon-button cui-default cui-margin-small" cui-icon={props.soundIcon} onClick={props.onMute}></a>
-        { controls.isPauseVisible && <IconButton icon={controls.pauseBtnIcon} onClick={props.onPauseResume} modifiers="cui-margin-small cui-large cui-default" />}
-        <IconButton icon={controls.startBtnIcon} onClick={props.onStartStop} modifiers={"cui-large cui-fill " + controls.startBtnCls} />
-        <a className="cui-icon-button cui-default cui-margin-small" cui-icon={props.fullscreenIcon} onClick={props.onFullScreen}></a>
-    </div >);
-}

@@ -1,0 +1,85 @@
+{
+    "name": "Help",
+    "version": "0.1.0",
+    "sections": [
+        {
+            "id": "help-getting-started",
+            "name": "Getting started",
+            "content": [
+                {
+                    "text": "BPD Stopwatch is more advanced than standard stopwatch. It allows to define complex trainings with many rounds where each round is built from activities you perform during your training."
+                }
+            ]
+        },
+        {
+            "id": "help-actions",
+            "name": "Actions",
+            "content": [
+                {
+                    "header": "Basics",
+                    "text": "Action reflects your activity during training. Whether it is an exercise or break, you set it's name, duration and type and put it into your training."
+                },
+                {
+                    "text": "App provides four types of action. Each type gives different visual experience during training performance where you get different colors to make it easier to catch current activity. Each type makes different sound, so you don't even have to check device to check activity progress. Here are available types:",
+                    "list": [
+                        "Warmup",
+                        "Exercise",
+                        "Break",
+                        "Cooldown"
+                    ]
+                },
+                {
+                    "header": "Edition",
+                    "text": "You can modify or delete you actions and this will not impact on your trainings. During training save, actions are copied into this training. If one action was put on some trainings and you edit it, trainings will not be changed."
+                },
+                {
+                    "text": "Stopwatch comes with few predefined actions which cannot be modified or deleted."
+                }
+            ]
+        },
+        {
+            "id": "help-training",
+            "name": "Training",
+            "content": [
+                {
+                    "text": "Each training consists of rounds. You have two options define a round."
+                },
+                {
+                    "header": "Manual round",
+                    "text": "This is good option to define complex rounds. You can set up one action after another. To add round click 'Add round' button in training editor, then choose current action at the bottom of the dialog and click plus (+) button to add it."
+                },
+                {
+                    "header": "Quick round",
+                    "text": "This method provides a shorter way to define standard round. You define warmup, exercise, break and cooldown actions and set how many exercises you want to perform within this round. Application will automatically create round starting from warmup, then the number desired number of exerices. Break will be put after each exercise except last one. The last action will be a cooldown. You can tweak such round later in the round editor."
+                },
+                {
+                    "header": "Rounds list",
+                    "text": "Rounds which you define are shown as the list. When you perform training, rounds will be executed in the same order as they are shown. If you want to chnage this order, use one of arrow icons available in the toolbar on each list item. You can also edit each round or delete it."
+                },
+                {
+                    "header": "Round editor",
+                    "text": "You can modify each round in the same editor where you created it by clicking an edit icon in the rounds list. Each action can be either deleted or swapped with current action. If you want to swap an action, select current to desired one and click swap icon on the item you want to change."
+                },
+                {
+                    "header": "Edition and drafts",
+                    "text": "When you build new or edit a training, it is saved as draft after each change. That means if you want to modify an action before adding to round, you can leave editor and return to it later."
+                },
+                {
+                    "text": "There is a limitation however - there can be only one draft. That means, when you leave editor and start to edit another training, draft version will be overwritten by new one."
+                },
+                {
+                    "text": "When you are building new training, you have to save it once finished, otherwise it will not be available on the home page and you will not be able to perform it."
+                }
+            ]
+        },
+        {
+            "id": "help-performance",
+            "name": "Performance",
+            "content": [
+                {
+                    "text": "To perform a training, click on the item listed in the home screen."
+                }
+            ]
+        }
+    ]
+}

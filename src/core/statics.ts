@@ -57,7 +57,8 @@ export const DefaultSettings: Settings = {
     darkMode: false,
     soundEnabled: false,
     isWelcome: false,
-    simpleView: false
+    simpleView: false,
+    countdownView: "simple"
 }
 
 export const APP_NAME = "bpd Stopwatch"

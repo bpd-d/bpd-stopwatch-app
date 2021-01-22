@@ -1,0 +1,21 @@
+import * as React from 'react'
+import { useSettings } from '../../../ui/hooks/settings';
+import { MainComponentBase } from '../common/MainComponentBase';
+import { SettingsDevTools } from '../settings/SettingsDevTools';
+
+export function DevTools() {
+    const [settings] = useSettings();
+    return (<div className="stopwatch-content-width">
+        <MainComponentBase routeName="devtools">
+            <div className="cui-section">
+                <button className="cui-button cui-default" onClick={() => {
+                    window.$cui.get("#welcome-dialog").emit("open");
+                }}>Show tutorial dialog</button>
+            </div>
+            <div>
+                Welcome screen status: {settings.isWelcome ? "Yes" : "No"}
+            </div>
+            <SettingsDevTools />
+        </MainComponentBase>
+    </div>);
+}

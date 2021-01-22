@@ -1,4 +1,4 @@
-import { Training, StopwatchAction, Settings } from "../models";
+import { Training, StopwatchAction, Settings, AppSettings } from "../models";
 
 export interface ITrainingsService {
     getAllTrainings(): Training[];
@@ -37,4 +37,8 @@ export interface ISettingsService {
 
 export interface IPushService {
     setNavbarTitle(title: string): string;
+}
+
+export interface IAppSettingsService {
+    getSettings(): AppSettings;
 }

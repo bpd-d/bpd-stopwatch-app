@@ -14,6 +14,8 @@ import { CuiInitData } from "cui-light/dist/esm/initializer";
 import { CuiInit } from "../../cui-light/dist/esm/init";
 import { PushServiceFlow, PushServiceInput, PushServiceOutput } from "./app/push/push";
 import { PushService } from "./core/services/push";
+import { AppSettingsService } from "./core/services/app";
+import { IAppSettingsService } from "./core/services/interfaces";
 
 
 declare global {
@@ -24,6 +26,7 @@ declare global {
         $actionsFlow: Flow<ActionsFlowInput, ActionsFlowOutput>;
         $settingsFlow: Flow<SettingsFlowInput, SettingsFlowOutput>;
         $push: Flow<PushServiceInput, PushServiceOutput>;
+        $appSettings: IAppSettingsService;
     }
 }
 
@@ -98,6 +101,8 @@ function onDataFetch(settings: any, icons: any) {
     const settingsService = new SettingsService();
     const settingsFlow = new SettingsFlow(settingsService);
     const pushService = new PushServiceFlow(new PushService());
+
+    window.$appSettings = new AppSettingsService(settings);
 
     window.$flow = FlowFactory.create<TrainingsFlowInput, TrainingsFlowOutput>(traningsFlow.getActions());
     window.$actionsFlow = FlowFactory.create<ActionsFlowInput, ActionsFlowOutput>(actionsFlow.getActions());

@@ -11,11 +11,22 @@ export const TrainingState = {
     NEW: "new",
 }
 
+export type AppRunningMode = "production" | 'development';
+export const AppRunningModes = {
+    DEVELOPMENT: "development",
+    PRODUCTION: "production"
+};
 export interface Settings {
     darkMode: boolean;
     soundEnabled: boolean;
     isWelcome: boolean;
-    simpleView: boolean;
+    simpleView: boolean; // deprecated
+    countdownView: string;
+}
+
+export interface AppSettings {
+    version: string;
+    mode: AppRunningMode;
 }
 
 export interface StopwatchAction {

@@ -4,7 +4,8 @@ import { enumerateObject, is } from "../../../node_modules/bpd-toolkit/dist/esm/
 export interface RouteDetails {
     url: string,
     name: string,
-    icon?: string
+    icon?: string,
+    description?: string;
 }
 export interface RoutesMapping {
     [id: string]: RouteDetails;
@@ -29,10 +30,16 @@ export class AppMapping {
         return is(route) ? route.url : undefined;
     }
 
+    getIcon(id: string) {
+        let route = this.getRoute(id);
+        return is(route) ? route.icon : undefined;
+    }
+
     getName(id: string) {
         let route = this.getRoute(id);
         return is(route) ? route.name : undefined;
     }
+
     renderUrl(id: string, attributes?: AppRouteAttributes): string {
         let uri = this.getUrl(id)
         if (!is(attributes)) {

@@ -15,6 +15,7 @@ import { ButtonBar, ButtonBarItemProps } from './ButtonBar';
 import { EditRoundDialog } from './EditRoundDialog';
 import { EditRoundListItem } from './EditRoundListItem';
 import { QuickRoundDialog } from './QuickRoundDialog';
+import { Loading } from '../common/Loading';
 
 export interface EditTrainingSectionProps {
     training: Training;
@@ -84,6 +85,7 @@ function EditTraining(props: EditTrainingProps) {
     }
 
     function onGetTraining(training: Training): void {
+        setIsLoading(false);
         if (training) {
             setPageTitle("Edit " + training.name);
             setState({
@@ -104,7 +106,6 @@ function EditTraining(props: EditTrainingProps) {
     }
 
     function pushDraft(training: Training) {
-        //setIsLoading(true);
         window.$flow.perform(ACTIONS.SET_DRAFT, training);
         setState({
             training: { ...training, state: TrainingState.DRAFT }
@@ -183,17 +184,17 @@ function EditTraining(props: EditTrainingProps) {
         }
     }, [state.training.id])
 
+
+    if (isLoading) {
+        return <Loading />
+    } else if (!state.training) {
+        return <NotFound message="The training you looking for could not be found" classes="" />
+    }
     return (<>
         <div className="edit-container">
             <div className="edit-container-content cui-overflow-y-auto">
-                <div className="cui-container stopwatch-content-width">
-                    <PageHeader title={getPageName()} description="Customize your training settings" icon="dumbbell" />
-                </div>
-                <div className="">
-                    {state.training ?
-                        <EditTrainingSection training={state.training} onUpdate={onUpdate} onCancel={goBack} /> :
-                        <NotFound message="The training you looking for could not be found" classes="" />}
-                </div>
+                <PageHeader title={getPageName()} description="Customize your training settings" icon="dumbbell" />
+                <EditTrainingSection training={state.training} onUpdate={onUpdate} onCancel={goBack} />
             </div>
             <div className="edit-container-bottom cui-padding-small-vertical cui-border-top cui-border-remove--l cui-flex stopwatch-content-width">
                 <div className="stopwatch-content-width cui-flex cui-middle cui-center">
@@ -205,6 +206,8 @@ function EditTraining(props: EditTrainingProps) {
         </div>
     </>);
 }
+
+
 
 function EditTrainingSection(props: EditTrainingSectionProps) {
     const [state, setState] = React.useState<EditTrainingSectionState>({

@@ -1,7 +1,7 @@
 import * as React from "react";
 import { ElementManager } from "../../../../node_modules/cui-light/dist/index";
 import { MAPPIGNS } from "../../routes";
-import { NavbarLink } from "../common/NavbarLink";
+import { NavbarLink, RouteNavbarLink } from "../common/NavbarLink";
 
 export interface OffCanvasProps {
 }
@@ -23,11 +23,11 @@ export class OffCanvas extends React.Component<OffCanvasProps, {}> {
                     <div className="cui-width-1-1">
                         <h3 className="cui-h3 cui-text-center">Menu</h3>
                         <ul className="cui-list cui-highlight cui-accent cui-margin-top">
-                            <li><NavbarLink url={MAPPIGNS.renderUrl("home")} name={MAPPIGNS.getName("home")} icon="home" shouldClose={true} isIcon={true} /></li>
-                            <li><NavbarLink url={MAPPIGNS.renderUrl("actions")} name={MAPPIGNS.getName("actions")} icon="link" shouldClose={true} isIcon={true} /></li>
-                            <li><NavbarLink url={MAPPIGNS.renderUrl("settings")} name={MAPPIGNS.getName("settings")} icon="setup" shouldClose={true} isIcon={true} /></li>
-                            <li><NavbarLink url={MAPPIGNS.renderUrl("help")} name={MAPPIGNS.getName("help")} icon="emoji_smile" shouldClose={true} isIcon={true} /></li>
-                            <li><NavbarLink url={MAPPIGNS.renderUrl("about")} name={MAPPIGNS.getName("about")} icon="info" shouldClose={true} isIcon={true} /></li>
+                            <li><RouteNavbarLink route={MAPPIGNS.getRoute("home")} shouldClose={true} isIcon={true} /></li>
+                            <li><RouteNavbarLink route={MAPPIGNS.getRoute("actions")} shouldClose={true} isIcon={true} /></li>
+                            <li><RouteNavbarLink route={MAPPIGNS.getRoute("settings")} shouldClose={true} isIcon={true} /></li>
+                            <li><RouteNavbarLink route={MAPPIGNS.getRoute("help")} shouldClose={true} isIcon={true} /></li>
+                            <li><RouteNavbarLink route={MAPPIGNS.getRoute("about")} shouldClose={true} isIcon={true} /></li>
                         </ul>
                     </div>
 

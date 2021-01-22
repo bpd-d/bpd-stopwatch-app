@@ -53,6 +53,10 @@ $prefix : 'cui' !default;
         max-width: 260px;
     }
 
+    .drop-trigger-width {
+        min-width: 100px;
+    }
+
     .drop-height {
         max-height: 250px;
         overflow-y: auto;
@@ -224,7 +228,7 @@ $prefix : 'cui' !default;
         position: absolute;
     }
 
-    
+
 
     .loop-screen {
         display : inline;

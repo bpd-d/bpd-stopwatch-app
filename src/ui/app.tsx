@@ -17,6 +17,7 @@ import { ElementManager } from "cui-light/dist/esm/managers/element";
 import { is } from "bpd-toolkit/dist/esm/index";
 import { TutorialDialog } from "./components/tutorial/TutorialDialog";
 import { Help } from "./components/help/help";
+import { DevTools } from "./components/devtools/DevTools";
 
 export interface AppProps {
     mode: string;
@@ -87,6 +88,7 @@ export function App(props: AppProps) {
                     <Route path={MAPPIGNS.getUrl("actions")} component={StopwatchActionsComponent}></Route>
                     <Route path={MAPPIGNS.getUrl("settings")} component={StopwatchSettings}></Route>
                     <Route path={MAPPIGNS.getUrl("about")} component={About}></Route>
+                    <Route path={MAPPIGNS.getUrl("devtools")} component={DevTools}></Route>
                     <Route path={MAPPIGNS.getUrl("help")} component={Help}></Route>
                     <Route path={MAPPIGNS.getUrl("home")} component={Home}></Route>
                     <Route>

@@ -1,11 +1,7 @@
 import * as React from 'react'
-import { getTextClassByActionType } from '../../../core/helpers';
-import { StopwatchState } from './PerformTraining';
+import { getTextClassByActionType } from '../../../../core/helpers';
+import { CountDownTimerProps } from './models';
 
-export interface CountDownTimerProps {
-    watchState: StopwatchState;
-    actionIdx: number;
-}
 
 export function CountDownTimer(props: CountDownTimerProps) {
 
@@ -19,7 +15,7 @@ export function CountDownTimer(props: CountDownTimerProps) {
                         <div>
                             <span className="cui-svg countdown-circle-progress" cui-circle-progress={props.watchState.progress}>
                                 <div>
-                                    <span className="cui-block cui-text-small">{props.actionIdx + 1}</span>
+                                    <span className="cui-block cui-text-small">{props.watchState.actionIdx + 1}</span>
                                     <h1 className={"cui-h1 cui-margin-remove " + props.watchState.timerCls}>{props.watchState.timer}</h1>
                                 </div>
                             </span>

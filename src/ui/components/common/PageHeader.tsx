@@ -1,9 +1,14 @@
 import * as React from 'react'
+import { RouteDetails } from '../../../api/routes/routes';
 
 export interface PageHeaderProps {
     title: string;
     description: string;
     icon?: string;
+}
+
+export interface PageHeaderWrapperProps {
+    route: RouteDetails;
 }
 
 
@@ -15,4 +20,9 @@ export function PageHeader(props: PageHeaderProps) {
             <p className="cui-text-center cui-text-muted cui-scale-y-in cui-animation-delay cui-margin-small-top">{props.description}</p>
         </div>
     </div>);
+}
+
+
+export function PageHeaderRouteWrapper(props: PageHeaderWrapperProps) {
+    return (<PageHeader title={props.route.name} description={props.route.description} icon={props.route.icon} />);
 }
