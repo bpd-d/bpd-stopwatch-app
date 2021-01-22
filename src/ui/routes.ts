@@ -8,7 +8,7 @@ export const MAPPIGNS = new AppMapping({
     "help": {
         url: "/help", name: "Help", icon: "emoji_smile", description: "Get information about app features"
     },
-    "devtools": { url: "/dev", name: "Dev Tools", icon: "devices_desktop", description: "Developer settings" },
+    "devtools": { url: "/dev", name: "Dev Tools", icon: "wrench", description: "Developer settings" },
     "newTraining": { url: "/trainings/edit/new", name: "New Training" },
     "editTraining": { url: "/trainings/edit/:id", name: "Edit Training" },
     "perform": { url: "/trainings/perform/:id", name: "Perform Training" }

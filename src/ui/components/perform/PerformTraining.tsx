@@ -362,7 +362,9 @@ export function TrainingPerformer(props: TrainingPerformerProps & TrainingSoundP
     return (<div className="stopwatch-layout-content cui-background-default" ref={mainViewRef}>
         <div className={"cui-height-1-1 cui-overflow-y-auto cui-flex cui-center cui-middle " + getBackgroundClass(watchState.action)} >
             <div className="stopwatch-content-width cui-text-center cui-flex-center animation-fade-in">
-                {getCountDownTimer(settings.countdownView, watchState)}
+                <div>
+                    {getCountDownTimer(settings.countdownView, watchState)}
+                </div>
             </div>
         </div>
         <PerformerButtonBar playState={watchState.state}
