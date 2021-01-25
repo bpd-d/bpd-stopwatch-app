@@ -81,7 +81,7 @@ export class Home extends React.Component<any, HomeState> {
 
     render() {
         return <div className="stopwatch-page-layout" >
-            <div className="stopwatch-page-top  cui-background-default">
+            <div className="stopwatch-page-top  cui-background-default smooth-shadow">
                 <div className="cui-container cui-center stopwatch-content-width cui-height-1-1">
                     <div>
                         <span className="cui-icon stopwatch-icon" cui-icon="stopwatch_7"></span>
