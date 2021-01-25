@@ -81,12 +81,20 @@ export class Home extends React.Component<any, HomeState> {
 
     render() {
         return <div className="stopwatch-page-layout" >
-            <div className="stopwatch-page-top cui-container cui-center">
+            <div className="stopwatch-page-top  cui-background-default">
+                <div className="cui-container cui-center stopwatch-content-width cui-height-1-1">
+                    <div>
+                        <span className="cui-icon stopwatch-icon" cui-icon="stopwatch_7"></span>
+                        <h1 className="cui-h1 cui-text-center cui-margin-small-top stopwatch-title">Stopwatch</h1>
+                    </div>
+                </div>
+            </div>
+            {/* <div className=" cui-container cui-center smooth-shadow">
                 <div>
                     <span className="cui-icon stopwatch-icon" cui-icon="stopwatch_7"></span>
                     <h1 className="cui-h1 cui-text-center cui-margin-small-top stopwatch-title">Stopwatch</h1>
                 </div>
-            </div>
+            </div> */}
             <div className="stopwatch-page-bottom">
                 <div className="stopwatch-home-list cui-overflow-y-auto">
                     {this.state.list.length > 0 ? <TrainingList list={this.state.list} onDelete={this.deleteTraining} /> : <NoTrainings />}

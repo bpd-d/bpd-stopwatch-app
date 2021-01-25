@@ -13,7 +13,7 @@ export interface PageHeaderWrapperProps {
 
 
 export function PageHeader(props: PageHeaderProps) {
-    return (<div className="stopwatch-page-header cui-container cui-center">
+    return (<div className="stopwatch-page-header cui-container cui-center cui-background-default">
         <div>
             {props.icon && <div className="cui-flex-center cui-margin-bottom"><span cui-icon={props.icon}></span></div>}
             <h1 className="cui-h1 cui-text-center cui-margin-remove cui-anim-fade-in">{props.title}</h1>

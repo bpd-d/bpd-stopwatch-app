@@ -44,11 +44,11 @@ export function Navbar(props: NavbarProps) {
             //window.$push.unsubscribe(PUSH_ACTIONS.SET_NAVBAR_TITLE, pushServiceTitleSub.id);
         }
     }, [currentLocation])
-    return <nav className={"cui-navbar cui-sticky cui-transparent stopwatch-layout-navigation"}>
+    return <nav className={"cui-navbar cui-sticky cui-box-shadow-remove stopwatch-layout-navigation"}>
         <div className="cui-navbar-left cui-width-1-1 cui-width-auto--m cui-flex cui-middle cui-between" id="navbar-left">
             <ul>
                 {location && <><li><a cui-icon="chevron_small_left" onClick={() => { history.goBack() }} ></a></li>
-                    <li><Link className="cui-icon" to={MAPPIGNS.renderUrl("home")} cui-icon="stopwatch_small"></Link></li>
+                    <li><Link className="cui-icon" to={MAPPIGNS.renderUrl("home")} cui-icon="stopwatch_small_1"></Link></li>
                     <li><span>{title}</span></li>
                 </>}
             </ul>
