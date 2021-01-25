@@ -7,6 +7,7 @@ $prefix : 'cui' !default;
 
 @use "perform_button_bar"as perform;
 @use "./countdown_timers.scss"as timers;
+@use "./stopwatch_icon.scss"as stopwatch-icon;
 
 @include build.wrapper() {
 
@@ -96,40 +97,7 @@ $prefix : 'cui' !default;
         }
     }
 
-    .stopwatch-icon {
-        height: 170px;
-        width : 170px;
 
-        svg {
-            path {
-                &.outer-border {
-                    stroke-width: 2px;
-                }
-
-                &.center {
-                    fill: variables.$component-background-accent;
-                }
-
-                &.tick {
-                    stroke              : variables.$component-background-accent;
-                    stroke-width        : 2px;
-                    stroke-dasharray    : 12;
-                    // stroke-dashoffset: 12;
-                    animation           : tickFrames 300ms linear forwards;
-                }
-
-                &.minutes {
-                    transform-origin: center center;
-                    animation       : stopTickWatch 300ms ease-out forwards;
-                }
-
-                &.hours {
-                    transform-origin: center center;
-                    animation       : stopTickWatch 500ms ease-out forwards;
-                }
-            }
-        }
-    }
 
     .stopwatch-content-width {
         width : 100%;
@@ -322,26 +290,6 @@ $prefix : 'cui' !default;
         }
     }
 
-    @keyframes stopTickWatch {
-        0% {
-            transform: rotate(-120deg);
-        }
-
-        100% {
-            transform: rotate(0deg);
-        }
-    }
-
-    @keyframes tickFrames {
-        0% {
-            opacity: 0;
-        }
-
-        100% {
-            opacity: 1;
-        }
-    }
-
     @include mixins.media-screen-min-small-landscape {
         .stopwatch-page-layout {
             display: flex;
@@ -503,6 +451,7 @@ $prefix : 'cui' !default;
 
     @include perform.definition();
     @include timers.definitions();
+    @include stopwatch-icon.definitions();
 
 
 }

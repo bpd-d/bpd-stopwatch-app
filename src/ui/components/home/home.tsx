@@ -83,7 +83,7 @@ export class Home extends React.Component<any, HomeState> {
         return <div className="stopwatch-page-layout" >
             <div className="stopwatch-page-top cui-container cui-center">
                 <div>
-                    <span className="cui-icon stopwatch-icon" cui-icon="stopwatch_6"></span>
+                    <span className="cui-icon stopwatch-icon" cui-icon="stopwatch_7"></span>
                     <h1 className="cui-h1 cui-text-center cui-margin-small-top stopwatch-title">Stopwatch</h1>
                 </div>
             </div>

@@ -1,0 +1,75 @@
+@use "../node_modules/cui-styles/styles/variables"as variables;
+
+@mixin definitions() {
+    .stopwatch-icon {
+        height: 170px;
+        width : 170px;
+
+        svg {
+            path {
+                &.outer-border {
+                    stroke-width: 2px;
+                }
+
+                &.center {
+                    fill  : variables.$component-background-accent;
+                    stroke: variables.$component-background-accent;
+                }
+
+                &.tick {
+                    //  stroke              : variables.$component-background-accent;
+                    stroke-width        : 2px;
+                    stroke-dasharray    : 12;
+                    // stroke-dashoffset: 12;
+                    opacity             : 0;
+                    animation           : tickFrames 300ms linear 0.8s forwards;
+                }
+
+                &.tick-small {
+                    opacity  : 0;
+                    animation: tickFrames 300ms linear 1s forwards;
+                }
+
+                &.triangle-large {
+                    transform-origin   : center center;
+                    animation          : stopTickWatch 300ms ease-out forwards;
+                    // fill            : variables.$component-background-accent;
+                    stroke             : variables.$component-background-accent;
+
+                }
+
+                &.triangle-small {
+                    transform-origin   : center center;
+                    animation          : stopTickWatch 500ms ease-out forwards;
+                    // fill            : variables.$component-background-secondary;
+                    stroke             : variables.$component-background-secondary;
+                }
+
+                &.inner-circle {
+                    opacity  : 0;
+                    animation: fadeIn 500ms ease-out 500ms forwards;
+                }
+            }
+        }
+    }
+
+    @keyframes stopTickWatch {
+        0% {
+            transform: rotate(-120deg);
+        }
+
+        100% {
+            transform: rotate(0deg);
+        }
+    }
+
+    @keyframes tickFrames {
+        0% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
+}
