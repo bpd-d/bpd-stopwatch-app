@@ -318,12 +318,23 @@ $usage-list:("navbar",
             display       : flex;
             flex-direction: row;
 
+
             .stopwatch-page-top {
-                height     : 100%;
+                height    : 100%;
+                width     : 40%;
+                box-shadow: 2px 2px 4px #00000010;
+
+                .triangle-wrap {
+                    display: none;
+                }
+
+                &>div {
+                    height: 100%;
+                }
             }
 
             .stopwatch-page-bottom {
-                height   : 100%;
+                height: 100%;
             }
         }
 
@@ -375,7 +386,17 @@ $usage-list:("navbar",
             .stopwatch-page-top {
                 height     : auto;
                 // overflow: hidden;
-                // width   : 100%;
+                width      : 100%;
+                box-shadow : none;
+
+                .triangle-wrap {
+                    display: block;
+                }
+
+                &>div {
+                    height: auto;
+                }
+
             }
 
             .stopwatch-page-bottom {
