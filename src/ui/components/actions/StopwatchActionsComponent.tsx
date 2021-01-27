@@ -90,16 +90,15 @@ export function StopwatchActionsComponent() {
         }
     }, [state.actions])
 
-    return (<><div className="stopwatch-content-width">
+    return (<>
         <MainComponentBase routeName="actions" >
-            <div className="cui-container cui-flex cui-middle cui-middle cui-center cui-right--s">
+            <div key="search-input" className="cui-container cui-flex cui-middle cui-middle cui-center cui-right--s">
                 <ClearableInput value={filter} onUpdate={updateFilter} className="cui-width-1-1 cui-width-1-3--m cui-width-1-4--l" />
             </div>
-            <ActionsEditGrid filter={filter} actions={state.actions} onEdit={onAddOrEditClick} onDelete={onDelete} />
-            <div className="cui-position-float cui-position-bottom cui-position-center cui-margin-large-bottom app-float-bottom z-index-100">
+            <ActionsEditGrid key="actions-grid" filter={filter} actions={state.actions} onEdit={onAddOrEditClick} onDelete={onDelete} />
+            <div key="btn-bar" className="cui-position-float cui-position-bottom cui-position-center cui-margin-large-bottom app-float-bottom z-index-100">
                 <button className="cui-icon-button cui-large cui-background-default cui-box-shadow" cui-icon="plus" onClick={() => { onAddOrEditClick() }}></button>
             </div>
         </MainComponentBase>
-    </div>
         <AddActionDialog action={state.current} onSave={onDialogSave} /></>);
 }

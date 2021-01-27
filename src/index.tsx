@@ -116,7 +116,7 @@ function onDataFetch(settings: any, icons: any) {
             loading.remove();
             rootElement.classList.remove("hidden");
         });
-    }, 100)
+    }, 0)
 
 }
 

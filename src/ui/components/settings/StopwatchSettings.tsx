@@ -41,9 +41,9 @@ export function StopwatchSettings() {
     React.useEffect(() => {
 
     }, [settings.darkMode, settings.soundEnabled])
-    return (<><div className="stopwatch-content-width">
+    return (<>
         <MainComponentBase routeName="settings">
-            <div className="cui-section">
+            <div className="cui-section stopwatch-content-width">
                 <ul className="cui-list">
                     <li>
                         <SettingsSwitchListItem label="Dark mode" name="darkMode" value={settings.darkMode} onUpdate={onValueChange} />
@@ -63,7 +63,5 @@ export function StopwatchSettings() {
             <div className="cui-flex cui-center cui-right--s">
                 {appSettings.mode === AppRunningModes.DEVELOPMENT && <Link to={MAPPIGNS.getUrl('devtools')} className="cui-link" >Visit DevTools</Link>}
             </div>
-        </MainComponentBase>
-
-    </div></>);
+        </MainComponentBase></>);
 }

@@ -33,11 +33,16 @@ export function MainComponentBase(props: MainComponentBaseProps) {
     return (
         <>
             <PageHeader title={title} icon={routeData.icon} description={routeData.description} />
-            {
-                createArray(props.children).map(child => {
-                    return React.cloneElement(child, { setPageTitle: updateTitle, ...child.props })
-                })
-            }
+            <div className="stopwatch-content-width cui-margin-top">
+                {
+                    createArray(props.children).map(child => {
+                        if (typeof child.type === 'string') {
+                            return React.cloneElement(child, { ...child.props })
+                        }
+                        return React.cloneElement(child, { setPageTitle: updateTitle, ...child.props })
+                    })
+                }
+            </div>
         </>
     );
 }

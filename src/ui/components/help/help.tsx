@@ -1,8 +1,6 @@
 import * as React from 'react'
 import { FetchResponse, useFetch } from '../../../ui/hooks/fetch';
-import { setNavbarTitle, setPageTitle } from '../../../core/helpers';
 import { BpdLoading } from '../common/BpdLoading';
-import { PageHeader } from '../common/PageHeader';
 import { BpdError } from '../common/BpdError';
 import { DocComponentSection } from '../docs/components';
 import { Doc } from '../docs/interfaces';
@@ -10,11 +8,11 @@ import { MainComponentBase } from '../common/MainComponentBase';
 
 
 export function Help() {
-    return (<div className="stopwatch-content-width">
+    return (
         <MainComponentBase routeName="help">
-            <HelpContent />
-        </MainComponentBase>
-    </div>);
+            <HelpContent key="help" />
+        </MainComponentBase >
+    );
 }
 
 export function HelpContent() {

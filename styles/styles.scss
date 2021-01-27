@@ -1,6 +1,8 @@
 $prefix : 'cui' !default;
 @use 'static'as *;
 
+
+
 @use "../node_modules/cui-styles/styles/variables"as variables with($prefix : $prefix);
 @use "../node_modules/cui-styles/styles/mixins"as mixins;
 @use "../node_modules/cui-styles/styles/build"as build;
@@ -75,19 +77,20 @@ $usage-list:("navbar",
     }
 
     .stopwatch-page-layout {
-        height  : 100%;
-        overflow: hidden;
+        height        : 100%;
+        overflow      : hidden;
+        display       : flex;
+        flex-direction: column;
 
         .stopwatch-page-top {
-            height  : 40%;
+            //  height  : 50%;
             overflow: hidden;
         }
 
         .stopwatch-page-bottom {
-            height                 : 60%;
-            border-top-right-radius: 12px;
-            border-top-left-radius : 12px;
-            transition             : transform 300ms ease-in;
+            // height    : 50%;
+            flex      : 1 1 auto;
+            transition: transform 300ms ease-in;
         }
     }
 
@@ -109,7 +112,7 @@ $usage-list:("navbar",
     }
 
     .stopwatch-page-header {
-        height: 30vh;
+        min-height: 30vh;
     }
 
     .training-list-item-icon {
@@ -268,27 +271,6 @@ $usage-list:("navbar",
 
 
 
-    .delay-100 {
-        animation-delay: 100ms !important;
-    }
-
-    .delay-200 {
-        animation-delay: 200ms !important;
-    }
-
-    .delay-300 {
-        animation-delay: 300ms !important;
-    }
-
-    .delay-400 {
-        animation-delay: 400ms !important;
-    }
-
-    .anim-fade-in {
-        opacity  : 1;
-        animation: fadeee 300ms ease-out;
-    }
-
     .width-100 {
         width: 100px !important;
     }
@@ -297,19 +279,14 @@ $usage-list:("navbar",
         width: 200px !important;
     }
 
-    .smooth-shadow {
-        box-shadow: rgba(27, 31, 35, 0.04) 0px 1px 0px,
-            rgba(255, 255, 255, 0.25) 0px 1px 0px inset;
+    .triangle {
+        height: 30px;
+
+        clip-path: polygon(0 0, 100% 0, 100% 60%, 0 10%); //polygon(100% 0, 0 0, 100% 60%);
     }
 
-    @keyframes fadeee {
-        0% {
-            opacity: 0;
-        }
-
-        100% {
-            opacity: 1;
-        }
+    .triangle-wrap {
+        filter: drop-shadow(-1px 6px 3px rgba(0, 0, 0, 0.05));
     }
 
     @keyframes timerPulse {
@@ -338,17 +315,15 @@ $usage-list:("navbar",
 
     @include mixins.media-screen-min-small-landscape {
         .stopwatch-page-layout {
-            display: flex;
+            display       : flex;
+            flex-direction: row;
 
             .stopwatch-page-top {
-                height  : 100%;
-                overflow: hidden;
-                width   : 40%;
+                height     : 100%;
             }
 
             .stopwatch-page-bottom {
-                height: 100%;
-                width : 60%;
+                height   : 100%;
             }
         }
 
@@ -382,7 +357,7 @@ $usage-list:("navbar",
         }
 
         .stopwatch-page-header {
-            height: 20vh;
+            min-height: 20vh;
 
         }
 
@@ -395,16 +370,17 @@ $usage-list:("navbar",
         }
 
         .stopwatch-page-layout {
-            display: block;
+            flex-direction: column;
 
             .stopwatch-page-top {
-                height  : 40%;
-                overflow: hidden;
-                width   : 100%;
+                height     : auto;
+                // overflow: hidden;
+                // width   : 100%;
             }
 
             .stopwatch-page-bottom {
-                height: 60%;
+                height: auto;
+                flex  : 1 1 auto;
                 width : 100%;
             }
         }
@@ -431,7 +407,7 @@ $usage-list:("navbar",
         }
 
         .stopwatch-page-header {
-            height: 20vh;
+            min-height: 20vh;
         }
 
         .stopwatch-page-content {

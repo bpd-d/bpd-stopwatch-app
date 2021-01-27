@@ -5,6 +5,7 @@ import { Training, WarmUp, CoolDown, Exercise } from "../../../core/models";
 import { FlowTask } from "../../../../node_modules/bpd-flow/dist/index";
 import { setPageTitle, showMessage } from "../../../core/helpers";
 import { MAPPIGNS } from "../../routes";
+import { TriangleShadow } from "../common/TriangleShadow";
 
 export interface HomeProps {
     site?: string;
@@ -81,20 +82,15 @@ export class Home extends React.Component<any, HomeState> {
 
     render() {
         return <div className="stopwatch-page-layout" >
-            <div className="stopwatch-page-top  cui-background-default smooth-shadow">
-                <div className="cui-container cui-center stopwatch-content-width cui-height-1-1">
+            <div className="stopwatch-page-top ">
+                <div className="cui-container cui-center cui-background-default cui-padding-large-vertical">
                     <div>
                         <span className="cui-icon stopwatch-icon" cui-icon="stopwatch_7"></span>
                         <h1 className="cui-h1 cui-text-center cui-margin-small-top stopwatch-title">Stopwatch</h1>
                     </div>
                 </div>
+                <TriangleShadow />
             </div>
-            {/* <div className=" cui-container cui-center smooth-shadow">
-                <div>
-                    <span className="cui-icon stopwatch-icon" cui-icon="stopwatch_7"></span>
-                    <h1 className="cui-h1 cui-text-center cui-margin-small-top stopwatch-title">Stopwatch</h1>
-                </div>
-            </div> */}
             <div className="stopwatch-page-bottom">
                 <div className="stopwatch-home-list cui-overflow-y-auto">
                     {this.state.list.length > 0 ? <TrainingList list={this.state.list} onDelete={this.deleteTraining} /> : <NoTrainings />}
@@ -112,3 +108,24 @@ export function NoTrainings() {
         <p className="cui-text-muted cui-text-center">There are no trainings recorded. <Link className="cui-link cui-accent" to={MAPPIGNS.renderUrl("newTraining")}>Add new</Link> training to start your execises!</p>
     </div>;
 }
+
+
+{/* <div className="stopwatch-page-layout" >
+    <div className="stopwatch-page-top ">
+        <div className="cui-container cui-center cui-background-default">
+            <div>
+                <span className="cui-icon stopwatch-icon" cui-icon="stopwatch_7"></span>
+                <h1 className="cui-h1 cui-text-center cui-margin-small-top stopwatch-title">Stopwatch</h1>
+            </div>
+        </div>
+        <TriangleShadow />
+    </div>
+    <div className="stopwatch-page-bottom">
+        <div className="stopwatch-home-list cui-overflow-y-auto">
+            {this.state.list.length > 0 ? <TrainingList list={this.state.list} onDelete={this.deleteTraining} /> : <NoTrainings />}
+        </div>
+    </div>
+    <div className="cui-position-float cui-position-bottom cui-position-center cui-margin-large-bottom app-float-bottom z-index-100">
+        <Link to={MAPPIGNS.renderUrl("newTraining")} className="cui-icon-button cui-large cui-background-default cui-box-shadow" cui-icon="plus"></Link>
+    </div>
+</div>; */}

@@ -5,7 +5,7 @@ import { SettingsDevTools } from '../settings/SettingsDevTools';
 
 export function DevTools() {
     const [settings] = useSettings();
-    return (<div className="stopwatch-content-width">
+    return (
         <MainComponentBase routeName="devtools">
             <div className="cui-section">
                 <button className="cui-button cui-default" onClick={() => {
@@ -16,6 +16,5 @@ export function DevTools() {
                 Welcome screen status: {settings.isWelcome ? "Yes" : "No"}
             </div>
             <SettingsDevTools />
-        </MainComponentBase>
-    </div>);
+        </MainComponentBase>);
 }
