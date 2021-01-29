@@ -1,21 +1,21 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import '../styles/styles.scss';
-import { App, AppBase } from "./ui/app";
+import { AppBase } from "./ui/app";
 import { CuiIconsPack } from 'bpd-cui-icons/esm/index';
 import { Flow, FlowFactory } from '../node_modules/bpd-flow/dist/index';
 import { TrainingsStorageService, ActionStorageService, SettingsService } from './core/services/storage';
 import { TrainingsFlow, TrainingsFlowInput, TrainingsFlowOutput } from "./app/flow/trainings";
 import { ActionsFlowInput, ActionsFlowOutput, ActionsFlow } from "./app/flow/actions";
 import { SettingsFlow, SettingsFlowInput, SettingsFlowOutput } from "./app/flow/settings";
-import { CuiSetupInit } from "cui-light-core/dist/esm/models/setup";
-import { CuiInstance } from "cui-light/dist/esm/index";
-import { CuiInitData } from "cui-light/dist/esm/initializer";
-import { CuiInit } from "../../cui-light/dist/esm/init";
+import { CuiInstance } from "cui-light-app/dist/esm/index";
+import { CuiInitData, CuiInitializer } from "cui-light-app/dist/esm/app/initializer";
 import { PushServiceFlow, PushServiceInput, PushServiceOutput } from "./app/push/push";
 import { PushService } from "./core/services/push";
 import { AppSettingsService } from "./core/services/app";
 import { IAppSettingsService } from "./core/services/interfaces";
+import { CuiSetupInit } from "../../cui-light-app/dist/esm/core/models/setup";
+import { getUsedCuiComponents, getUsedPlugins } from "./ui/imports";
 
 
 declare global {
@@ -88,6 +88,8 @@ function onDataFetch(settings: any, icons: any) {
 
     const cuiSetup: CuiInitData = {
         setup: setup,
+        components: getUsedCuiComponents(),
+        plugins: getUsedPlugins(),
         icons: {
             ...CuiIconsPack,
             ...icons
@@ -110,8 +112,7 @@ function onDataFetch(settings: any, icons: any) {
     window.$push = FlowFactory.create<PushServiceInput, PushServiceOutput>(pushService.getActions());
 
     setTimeout(() => {
-        new CuiInit().init(cuiSetup).then((result) => {
-            console.log(settings.mode)
+        new CuiInitializer().init(cuiSetup).then((result) => {
             ReactDOM.render(<AppBase mode={settings.mode} />, rootElement);
             loading.remove();
             rootElement.classList.remove("hidden");
