@@ -15,6 +15,8 @@ import { CuiTooltipComponent } from "cui-light-app/dist/esm/components/tooltip/t
 
 import { CuiAutoLightModePlugin } from "cui-light-app/dist/esm/plugins/light/light";
 import { CuiAutoPrintModePlugin } from "cui-light-app/dist/esm/plugins/print/print";
+import { CuiToastPlugin } from "cui-light-app/dist/esm/plugins/toast/toast";
+import { CuiAlertsPlugin } from "cui-light-app/dist/esm/plugins/alert/alert";
 
 export function getUsedCuiComponents(): ICuiComponent[] {
     let prefix = 'cui'
@@ -38,6 +40,8 @@ export function getUsedCuiComponents(): ICuiComponent[] {
 export function getUsedPlugins(): ICuiPlugin[] {
     return [
         new CuiAutoLightModePlugin({ autoLight: true }),
-        new CuiAutoPrintModePlugin({ autoPrint: false })
+        new CuiAutoPrintModePlugin({ autoPrint: false }),
+        new CuiToastPlugin({}),
+        new CuiAlertsPlugin()
     ]
 }
