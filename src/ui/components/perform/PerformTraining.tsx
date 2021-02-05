@@ -29,7 +29,7 @@ interface PerfromTrainingState {
     training: Training;
 }
 
-export interface StopwatchState {
+interface StopwatchState {
     timer: string;
     state: StopWatchPerformState;
     timerCls: string;
@@ -46,7 +46,7 @@ export interface StopwatchState {
     totalDuration: number
 }
 
-export function PerfromTraining() {
+export default function PerfromTraining() {
     const [state, setState] = React.useState<PerfromTrainingState>({
         training: undefined
     })
@@ -96,11 +96,11 @@ export function PerfromTraining() {
 }
 
 
-export interface PerformTrainingElementProps {
+interface PerformTrainingElementProps {
     training: Training;
 }
 
-export function PerformTrainingElement(props: PerformTrainingElementProps) {
+function PerformTrainingElement(props: PerformTrainingElementProps) {
 
     const [errorMessage, setErrorMessage] = React.useState("");
 
@@ -138,12 +138,12 @@ export function PerformTrainingElement(props: PerformTrainingElementProps) {
     );
 }
 
-export interface TrainingPerformerProps {
+interface TrainingPerformerProps {
     callError: (error: string) => void;
     training: Training;
 }
 
-export function TrainingPerformer(props: TrainingPerformerProps & TrainingSoundPlayerItemProps) {
+function TrainingPerformer(props: TrainingPerformerProps & TrainingSoundPlayerItemProps) {
 
     const [stopwatch, setOnTick] = useStopwatch2();
 

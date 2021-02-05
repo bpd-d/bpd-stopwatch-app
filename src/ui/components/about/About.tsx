@@ -2,7 +2,7 @@ import * as React from 'react'
 import { setNavbarTitle, setPageTitle } from '../../../core/helpers';
 import { MainComponentBase } from '../common/MainComponentBase';
 
-export function About() {
+export default function About() {
     setPageTitle("About");
     setNavbarTitle("About");
     return (<>
@@ -14,7 +14,7 @@ export function About() {
 }
 
 
-export function AboutContent() {
+function AboutContent() {
     return (<div className="stopwatch-content-width cui-margin-top">
         <div className="cui-container ">
             <h3 className="cui-h3">Creator</h3>

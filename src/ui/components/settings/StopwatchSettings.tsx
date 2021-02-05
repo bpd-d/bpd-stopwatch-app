@@ -11,12 +11,12 @@ import { AppRunningModes } from '../../../core/models';
 import { MainComponentBase } from '../common/MainComponentBase';
 import { Link } from 'react-router-dom';
 
-export interface SettingsState {
+interface SettingsState {
     darkModeEnabled: boolean;
     soundEnabled: boolean;
 }
 
-export function StopwatchSettings() {
+export default function StopwatchSettings() {
     const [settings, setSettings] = useSettings();
     const appSettings = useAppSettings();
 
@@ -43,7 +43,7 @@ export function StopwatchSettings() {
     }, [settings.darkMode, settings.soundEnabled])
     return (<>
         <MainComponentBase routeName="settings">
-            <div className="cui-section stopwatch-content-width">
+            <div key="settings-switches" className="cui-section stopwatch-content-width">
                 <ul className="cui-list">
                     <li>
                         <SettingsSwitchListItem label="Dark mode" name="darkMode" value={settings.darkMode} onUpdate={onValueChange} />
@@ -60,7 +60,7 @@ export function StopwatchSettings() {
 
                 </ul>
             </div>
-            <div className="cui-flex cui-center cui-right--s">
+            <div key="settings-devtool" className="cui-flex cui-center cui-right--s">
                 {appSettings.mode === AppRunningModes.DEVELOPMENT && <Link to={MAPPIGNS.getUrl('devtools')} className="cui-link" >Visit DevTools</Link>}
             </div>
         </MainComponentBase></>);

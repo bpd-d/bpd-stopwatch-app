@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { useAudioContext } from '../../../ui/hooks/AudioContext';
 import { createArray } from '../../../core/helpers';
 
 export interface TrainingSoundPlayerProps {
@@ -12,6 +13,13 @@ export function TrainingSoundPlayer(props: TrainingSoundPlayerProps) {
     const breakSound = React.useRef(null);
     const cooldownSound = React.useRef(null);
     const endSound = React.useRef(null);
+    const endSoundTrack = React.useRef(null);
+    const countdownSoundTrack = React.useRef(null);
+    const exerciseSoundTrack = React.useRef(null);
+    const warmupSoundTrack = React.useRef(null);
+    const breakSoundTrack = React.useRef(null);
+    const cooldownSoundTrack = React.useRef(null);
+    const AudioContext = useAudioContext();
 
     function playSound(type: string) {
         let element = undefined;
@@ -38,9 +46,37 @@ export function TrainingSoundPlayer(props: TrainingSoundPlayerProps) {
         }
         if (element) {
             element.currentTime = 0;
+            AudioContext.resume();
             element.play();
         }
     }
+
+    React.useEffect(() => {
+        if (countdownSound.current) {
+            countdownSoundTrack.current = AudioContext.createMediaElementSource(countdownSound.current);
+            countdownSoundTrack.current.connect(AudioContext.destination);
+        }
+        if (warmupSound.current) {
+            warmupSoundTrack.current = AudioContext.createMediaElementSource(warmupSound.current);
+            warmupSoundTrack.current.connect(AudioContext.destination);
+        }
+        if (exerciseSound.current) {
+            exerciseSoundTrack.current = AudioContext.createMediaElementSource(exerciseSound.current);
+            exerciseSoundTrack.current.connect(AudioContext.destination);
+        }
+        if (breakSound.current) {
+            breakSoundTrack.current = AudioContext.createMediaElementSource(breakSound.current);
+            breakSoundTrack.current.connect(AudioContext.destination);
+        }
+        if (cooldownSound.current) {
+            cooldownSoundTrack.current = AudioContext.createMediaElementSource(cooldownSound.current);
+            cooldownSoundTrack.current.connect(AudioContext.destination);
+        }
+        if (endSound.current) {
+            endSoundTrack.current = AudioContext.createMediaElementSource(endSound.current);
+            endSoundTrack.current.connect(AudioContext.destination);
+        }
+    }, [])
 
     return (<>
         {

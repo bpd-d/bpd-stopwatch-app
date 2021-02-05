@@ -20,17 +20,17 @@ const defaultAction: StopwatchAction = {
     editable: true
 }
 
-export interface BpdDialogState {
+interface BpdDialogState {
     action: StopwatchAction;
 }
 
-export interface StopWatchActionsState {
+interface StopWatchActionsState {
     actions: StopwatchAction[];
     current: StopwatchAction;
 }
 
 
-export function StopwatchActionsComponent() {
+export default function StopwatchActionsComponent() {
     const [state, setState] = React.useState<StopWatchActionsState>({
         actions: [...DefaultActions],
         current: null

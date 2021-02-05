@@ -7,7 +7,7 @@ import { Doc } from '../docs/interfaces';
 import { MainComponentBase } from '../common/MainComponentBase';
 
 
-export function Help() {
+export default function Help() {
     return (
         <MainComponentBase routeName="help">
             <HelpContent key="help" />
@@ -15,7 +15,7 @@ export function Help() {
     );
 }
 
-export function HelpContent() {
+function HelpContent() {
     const helpDocsData: FetchResponse<Doc> = useFetch<Doc>('/static/docs/help.json');
 
     React.useEffect(() => {
@@ -29,11 +29,10 @@ export function HelpContent() {
     return (<HelpDoc doc={helpDocsData.response} />);
 }
 
-
-export interface HelpDocProps {
+interface HelpDocProps {
     doc: Doc;
 }
-export function HelpDoc(props: HelpDocProps) {
+function HelpDoc(props: HelpDocProps) {
 
     return (<>
         <div className="cui-section">

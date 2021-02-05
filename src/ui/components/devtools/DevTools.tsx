@@ -3,7 +3,7 @@ import { useSettings } from '../../../ui/hooks/settings';
 import { MainComponentBase } from '../common/MainComponentBase';
 import { SettingsDevTools } from '../settings/SettingsDevTools';
 
-export function DevTools() {
+export default function DevTools() {
     const [settings] = useSettings();
     return (
         <MainComponentBase routeName="devtools">
