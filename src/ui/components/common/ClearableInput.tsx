@@ -9,21 +9,21 @@ export interface ClearableInputProps {
 
 
 export function ClearableInput(props: ClearableInputProps) {
-    const [value, setValue] = React.useState<string>('');
-
     function onInputChange(ev: any) {
         changeValue(ev.target.value);
     }
 
     function changeValue(value: string) {
-        setValue(value);
         if (is(props.onUpdate)) {
             props.onUpdate(value);
         }
     }
 
+    React.useEffect(() => {
+    }, [props.value])
+
     return (<div className={"cui-input-mix " + props.className}>
-        <input type="text" className="cui-input" placeholder="Filter" value={value} onChange={onInputChange} />
-        {is(value) && <a className="cui-icon" cui-icon="close" onClick={() => changeValue("")}></a>}
+        <input type="text" className="cui-input" placeholder="Filter" value={props.value} onChange={onInputChange} />
+        {is(props.value) && <a className="cui-icon" cui-icon="close" onClick={() => changeValue("")}></a>}
     </div>);
 }

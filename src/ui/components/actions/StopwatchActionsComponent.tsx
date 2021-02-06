@@ -1,15 +1,16 @@
 import * as React from 'react'
+import { useHistory, useLocation } from 'react-router-dom';
 import { StopwatchAction } from '../../../core/models';
 import { DefaultActions } from '../../../core/statics';
 import { ACTIONS_FLOW_ACTIONS } from '../../../app/flow/actions';
 import { AddActionDialog } from './AddActionDialog';
-import { PageHeader } from '../common/PageHeader';
-import { setNavbarTitle, setPageTitle } from '../../../core/helpers';
 import { is } from '../../../../node_modules/bpd-toolkit/dist/esm/index';
 import { ClearableInput } from '../common/ClearableInput';
 import { ActionsEditGrid } from './ActionsEditGrid';
-import { MAPPIGNS } from '../../../ui/routes';
 import { MainComponentBase } from '../common/MainComponentBase';
+import { useSearchParams } from '../../../ui/hooks/SearchParams';
+
+const PARAM_FILTER: string = 'filter'
 
 const defaultAction: StopwatchAction = {
     id: undefined,
@@ -18,10 +19,6 @@ const defaultAction: StopwatchAction = {
     duration: "5",
     removable: true,
     editable: true
-}
-
-interface BpdDialogState {
-    action: StopwatchAction;
 }
 
 interface StopWatchActionsState {
@@ -35,9 +32,9 @@ export default function StopwatchActionsComponent() {
         actions: [...DefaultActions],
         current: null
     })
-
-    const routeData = MAPPIGNS.getRoute('actions');
-
+    const location = useLocation();
+    const history = useHistory();
+    const { searchParams, search } = useSearchParams(location);
     const [filter, setFilter] = React.useState<string>("");
 
     function onDialogSave(action: StopwatchAction) {
@@ -65,6 +62,12 @@ export default function StopwatchActionsComponent() {
     }
 
     function updateFilter(value: string) {
+        const params = new URLSearchParams();
+        params.set(PARAM_FILTER, value);
+        history.push({
+            pathname: location.pathname,
+            search: params.toString()
+        })
         setFilter(value);
     }
 
@@ -77,18 +80,18 @@ export default function StopwatchActionsComponent() {
     }
 
     React.useEffect(() => {
-        setPageTitle(routeData.name);
+        let value = searchParams.get(PARAM_FILTER);
+        setFilter(value);
         const getAllSub = window.$actionsFlow.subscribe(ACTIONS_FLOW_ACTIONS.GET_ALL, { finish: onGetAll })
         const setActionSub = window.$actionsFlow.subscribe(ACTIONS_FLOW_ACTIONS.SET_ACTION)
         const removeActionSub = window.$actionsFlow.subscribe(ACTIONS_FLOW_ACTIONS.REMOVE_ACTION)
         window.$actionsFlow.perform(ACTIONS_FLOW_ACTIONS.GET_ALL);
         return () => {
-            //setNavbarTitle("");
             window.$actionsFlow.unsubscribe(ACTIONS_FLOW_ACTIONS.GET_ALL, getAllSub.id);
             window.$actionsFlow.unsubscribe(ACTIONS_FLOW_ACTIONS.SET_ACTION, setActionSub.id);
             window.$actionsFlow.unsubscribe(ACTIONS_FLOW_ACTIONS.REMOVE_ACTION, removeActionSub.id);
         }
-    }, [state.actions])
+    }, [search])
 
     return (<>
         <MainComponentBase routeName="actions" >
