@@ -29,6 +29,10 @@ export function CountDownTimer(props: CountDownTimerProps) {
         </div>);
 }
 
+/**
+ * TEST
+ * @param props 
+ */
 export function NewCountDownTimer(props: CountDownTimerProps) {
     return (
         <div>
@@ -61,5 +65,25 @@ export function SimpleCountDownTimer(props: CountDownTimerProps) {
 
             <h1 className={"cui-h1 main-timer " + props.watchState.timerCls}>{calcDisplayTimer(props.watchState.timer)}</h1>
         </div>
+    );
+}
+
+/**
+ * SIMPLE EXT
+ * @param props 
+ */
+export function SimpleExtCountDownTimer(props: CountDownTimerProps) {
+    return (
+        <>
+            <div className="simple-countdown-timer">
+                <p className="cui-margin-remove round-name">{props.watchState.round?.name}</p>
+                <h3 className={"cui-h2 cui-margin-remove action-name " + getTextClassByActionType(props.watchState.action?.type)}>{props.watchState.action?.name}</h3>
+                <h1 className={"cui-h1 main-timer " + props.watchState.timerCls}>{calcDisplayTimer(props.watchState.timer)}</h1>
+            </div>
+            <div className="cui-flex cui-between">
+                <span className="cui-text-small round-count">Round {props.watchState.roundIdx + 1}/{props.watchState.roundTotal}</span>
+                <span className="cui-margin-left cui-text-small action-index">Action {props.watchState.actionIdx + 1}/{props.watchState.actionTotal}</span>
+            </div>
+        </>
     );
 }

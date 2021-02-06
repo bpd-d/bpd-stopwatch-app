@@ -15,35 +15,8 @@ import { useStopwatch2 } from './hook';
 import { PerformerButtonBar } from './PerformButtonBar';
 import { getCountDownTimer } from './countdown/functions';
 import { Loading } from '../common/Loading';
-;
+import { PerfromTrainingState, StopwatchState, TimeStateData } from './interfaces';
 
-interface TimeStateData {
-    time: number;
-    progress: number;
-    ct?: number;
-    total: number;
-}
-
-interface PerfromTrainingState {
-    training: Training;
-}
-
-interface StopwatchState {
-    timer: number;
-    state: StopWatchPerformState;
-    timerCls: string;
-    progress: number;
-    roundProgress: number;
-    trainingProgress: number;
-    roundIdx: number;
-    roundTotal: number;
-    actionIdx: number;
-    actionTotal: number;
-    round: Round,
-    action: StopwatchAction,
-    roundDuration: number,
-    totalDuration: number
-}
 
 export default function PerfromTraining() {
     const [state, setState] = React.useState<PerfromTrainingState>({
@@ -345,7 +318,7 @@ function TrainingPerformer(props: TrainingPerformerProps & TrainingSoundPlayerIt
 
 
     React.useEffect(() => {
-
+        
         if (props.training) {
             setDefaultWatchState(props.training);
             setOnTick(onStopwatchTick);
