@@ -92,7 +92,7 @@ export function App(props: AppProps) {
         <div className="stopwatch-layout-main">
             <Navbar />
             <div className="stopwatch-layout-content cui-overflow-y-auto">
-                <React.Suspense fallback={<Loading />}>
+                <React.Suspense fallback={<Loading modifiers="cui-height-viewport-1-1" />}>
                     <Switch location={location}>
                         <Route path={MAPPIGNS.getUrl("perform")} render={() => <PerfromTraining />}></Route>
                         <Route path={MAPPIGNS.getUrl("newTraining")} render={() => <EditTraining />}></Route>

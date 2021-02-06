@@ -1,6 +1,4 @@
 import * as React from 'react'
-import { setNavbarTitle, setPageTitle } from '../../../core/helpers';
-import { PageHeaderRouteWrapper } from '../common/PageHeader';
 import { SettingsSwitchListItem } from './SettingsSwitchListItem'
 import { useSettings } from '../../../ui/hooks/settings';
 import { BpdDrop } from '../common/BpdDrop';
@@ -10,11 +8,6 @@ import { useAppSettings } from '../../../ui/hooks/AppSettings';
 import { AppRunningModes } from '../../../core/models';
 import { MainComponentBase } from '../common/MainComponentBase';
 import { Link } from 'react-router-dom';
-
-interface SettingsState {
-    darkModeEnabled: boolean;
-    soundEnabled: boolean;
-}
 
 export default function StopwatchSettings() {
     const [settings, setSettings] = useSettings();

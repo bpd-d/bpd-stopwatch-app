@@ -24,30 +24,20 @@ export function calcDisplayTimer(seconds: number): string {
     if (seconds < 0) {
         return "Error"
     }
-    return getSimplifiedDuration(seconds, (value: number, type: string) => {
+    return getFormattedDuration(seconds, (value: number, type: string) => {
         switch (type) {
             case "hour":
+                return getDisplayTimerValue(value) + ":";
             case "minute":
-                return getDisplayTimerValue(value) + ":"
+                return getDisplayTimerValue(value) + ":";
             default:
-                return getDisplayTimerValue(value)
+                return getDisplayTimerValue(value);
         }
     })
-    // if (seconds < 60) {
-    //     return "00:" + getDisplayTimerValue(seconds)
-    // } else if (seconds < 3600) {
-    //     let minutes = Math.floor(seconds / 60);
-    //     let restSeconds = seconds % 60;
-    //     return getDisplayTimerValue(minutes) + ":" + getDisplayTimerValue(restSeconds);
-    // } else {
-    //     let hours = Math.floor(seconds / 3600);
-    //     let secondsLeft = seconds % 3600
-    //     return getDisplayTimerValue(hours) + ":" + calcDisplayTimer(secondsLeft);
-    // }
 }
 
 export function getUserDisplayNotation(seconds: number) {
-    return getSimplifiedDuration(seconds, (value: number, type: string) => {
+    return getFormattedDuration(seconds, (value: number, type: string) => {
         switch (type) {
             case "hour":
                 return `${value}h`
@@ -60,6 +50,7 @@ export function getUserDisplayNotation(seconds: number) {
 }
 
 export function getSimplifiedDuration(seconds: number, format: (value: number, type: string) => string): string {
+
     if (seconds < 60) {
         return format(seconds, "second");
     } else if (seconds < 3600) {
@@ -69,11 +60,22 @@ export function getSimplifiedDuration(seconds: number, format: (value: number, t
     } else {
         let hours = Math.floor(seconds / 3600);
         let secondsLeft = seconds % 3600;
-        return format(hours, 'hours') + getSimplifiedDuration(secondsLeft, format);
+        return format(hours, 'hour') + getSimplifiedDuration(secondsLeft, format);
     }
+
 }
 
-
+export function getFormattedDuration(seconds: number, format: (value: number, type: string) => string): string {
+    if (seconds < 3600) {
+        let minutes = Math.floor(seconds / 60);
+        let restSeconds = seconds % 60;
+        return format(minutes, 'minute') + format(restSeconds, 'second');
+    } else {
+        let hours = Math.floor(seconds / 3600);
+        let secondsLeft = seconds % 3600;
+        return format(hours, 'hour') + getFormattedDuration(secondsLeft, format);
+    }
+}
 
 export function getDisplayTimerValue(value: number): string {
     if (value < 0 || value > 59) {

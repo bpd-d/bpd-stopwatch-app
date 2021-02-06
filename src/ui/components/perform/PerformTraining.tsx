@@ -3,11 +3,10 @@ import { useParams } from 'react-router-dom';
 import { closeFullscreen, is, openFullscreen } from '../../../../node_modules/bpd-toolkit/dist/esm/index';
 import { KeepScreenAwakeFeature } from '../../../api/screen/screen';
 import { StopWatch, StopWatchPerformState, StopWatchStateOptions } from '../../../api/stopwatch/stopwatch';
-import { calcDisplayTimer, calculateDuration, calculateProgress, getBgClassByType, getTotalDuration, showMessage, getTextClassByActionType, setPageTitle, setNavbarTitle } from '../../../core/helpers';
+import { calculateDuration, calculateProgress, getBgClassByType, getTotalDuration, showMessage, setPageTitle, setNavbarTitle } from '../../../core/helpers';
 import { Round, StopwatchAction, Training } from '../../../core/models';
 import { CompleteTrainingValidator } from '../../../core/validators';
 import { NotFound } from '../common/NotFound';
-import { CountDownTimer, SimpleCountDownTimer } from './countdown/CountdownTimers';
 import { useSettings } from '../../../ui/hooks/settings';
 import { useIsFullscreen } from '../../../ui/hooks/useResize';
 import { useIsLoading } from '../../../ui/hooks/loading';
@@ -30,7 +29,7 @@ interface PerfromTrainingState {
 }
 
 interface StopwatchState {
-    timer: string;
+    timer: number;
     state: StopWatchPerformState;
     timerCls: string;
     progress: number;
@@ -148,7 +147,7 @@ function TrainingPerformer(props: TrainingPerformerProps & TrainingSoundPlayerIt
     const [stopwatch, setOnTick] = useStopwatch2();
 
     const [watchState, setWatchState] = React.useState<StopwatchState>({
-        timer: "-",
+        timer: 0,
         state: StopWatchStateOptions.STOPPED,
         timerCls: "",
         progress: 100,
@@ -299,7 +298,7 @@ function TrainingPerformer(props: TrainingPerformerProps & TrainingSoundPlayerIt
             let trainginProgress = calculateTrainingProgress(timeData.total);
             setWatchState({
                 ...watchStateRef.current,
-                timer: calcDisplayTimer(timeData.time),
+                timer: timeData.time,
                 timerCls: getTimerCls(timeData.time, watchstate),
                 state: watchstate,
                 progress: timeData.progress,
@@ -357,7 +356,7 @@ function TrainingPerformer(props: TrainingPerformerProps & TrainingSoundPlayerIt
                 stopWatchRef.current.stop();
             }
         }
-    }, [props.training, settings.soundEnabled])
+    }, [props.training])
 
     return (<div className="stopwatch-layout-content cui-background-default" ref={mainViewRef}>
         <div className={"cui-height-1-1 cui-overflow-y-auto cui-flex cui-center cui-middle " + getBackgroundClass(watchState.action)} >
