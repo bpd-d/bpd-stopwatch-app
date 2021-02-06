@@ -15,7 +15,8 @@ module.exports = {
     mode: isProd ? 'production' : 'development',
     devtool: 'source-map',
     optimization: {
-        runtimeChunk: false,
+        moduleIds: 'hashed',
+        runtimeChunk: 'single',
         minimize: true,
         minimizer: [new OptimizeCssAssetsPlugin({
             cssProcessorOptions: { discardComments: { removeAll: true } },
@@ -23,12 +24,23 @@ module.exports = {
         })],
         splitChunks: {
             chunks: "all", //Taken from https://gist.github.com/sokra/1522d586b8e5c0f5072d7565c2bee693
+            minSize: 20000,
             cacheGroups: {
                 styles: {
                     name: 'styles',
                     test: /\.css$/,
                     chunks: 'all',
                     enforce: true,
+                },
+                vendor: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name: 'vendors',
+                    chunks: 'all',
+                },
+                default: {
+                    minChunks: 2,
+                    priority: -20,
+                    reuseExistingChunk: true,
                 }
             }
         }
@@ -78,7 +90,8 @@ module.exports = {
     output: {
         filename: 'stopwatch.[name].js',
         path: path.resolve(__dirname, 'dist'),
-        publicPath: "/"
+        publicPath: "/",
+        chunkFilename: "stopwatch.chunk.[name].[chunkhash].js"
     },
     // externals: {
     //     "react": "React",
